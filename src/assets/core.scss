@@ -1,0 +1,30 @@
+$primary: #0299e3;
+.title-alt {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.125;
+  color: #363636;
+}
+.orwell-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+#app {
+  flex: 1
+}
+
+.section {
+  padding: 1rem 1.5rem;
+}
+
+.container {
+  max-width: 1024px ! important;
+}
+@import "~bulma/sass/utilities/_all";
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
