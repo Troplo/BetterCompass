@@ -1,58 +1,114 @@
 <template>
-  <div id="app">
+  <v-app>
+    <v-overlay :value="$store.state.site.loading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
     <Header></Header>
-    <router-view/>
-    <Footer></Footer>
-  </div>
+    <v-main>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
-<style lang="scss">
-@import './assets/core.scss';
-</style>
 <style>
-@import 'https://kit-pro.fontawesome.com/releases/v5.15.1/css/pro.min.css';
+.troplo-nav {
+  font-family: 'Roboto', sans-serif;
+}
+
+.troplo-header {
+  -webkit-font-smoothing: antialiased !important;
+  background: -webkit-radial-gradient(#0179f3, #0190ea) !important;
+}
+.troplo-header-title {
+  -webkit-font-smoothing: antialiased !important;
+  font-family: "JetBrains Mono", sans-serif !important;
+  font-weight: 450;
+  elevation: 0 !important;
+  font-size: 15rem;
+  font-style: italic;
+  text-shadow: none !important;
+  color: -webkit-radial-gradient(#0179f3, #0190ea) !important;
+  -webkit-background-clip: text;
+}
+.troplo-title {
+  font-weight: 500;
+  background: -webkit-radial-gradient(#0179f3, #0190ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.theme--dark.v-sheet {
+  background-color: #151515 !important;
+  border-color: #151515 !important;
+  color: #ffffff;
+}
+.card {
+  overflow: hidden;
+}
+.theme--dark.v-card {
+  background-color: #151515 !important;
+}
+
+div .theme--dark.v-calendar-events .v-event-timed {
+  border: 1px transparent !important;
+}
+
+div .theme--dark.v-calendar-daily {
+  background-color: #151515 !important;
+  border: 1px transparent !important;
+}
+
+div .theme--dark.v-calendar-daily .v-calendar-daily__day {
+  border: 1px transparent !important;
+}
+
+/* Works on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: black #151515;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0e0e0e;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #151515;
+  border-radius: 20px;
+  border: 3px solid #151515;
+}
 </style>
 <script>
-import Header from './components/Header'
-import Footer from './components/Footer'
+import Header from './components/Header.vue'
 export default {
   name: 'App',
   components: {
-    Header,
-    Footer
+    Header
   },
+  data: () => ({
+    //
+  }),
   mounted() {
-        this.axios
-            .post('/Services/Subjects.svc/GetStandardClassesOfUserInAcademicGroup?_dc=1622173098998', {
-              userId: this.$store.state.user.id,
-              targetUserId: this.$store.state.user.id,
-              limit: 50,
-              page: 1,
-              start: 0,
-              academicGroupId: -1
-            })
-            .then((res) =>
-                this.$store.commit("initClasses", {
-                  classes: res.data.d
-                }))
-        this.axios
-            .post('/Services/User.svc/GetUserDetailsBlobByUserId?sessionstate=readonly&_dc=1622121679514', {
-              userId: this.$store.state.user.id,
-              targetUserId: this.$store.state.user.id,
-            })
-            .then((res) =>
-                this.$store.commit("initUser", {
-                  username: res.data.d.userSussiID,
-                  firstName: res.data.d.userPreferredName,
-                  lastName: res.data.d.userPreferredLastName,
-                  name: res.data.d.userFullName,
-                  avatar: "https://bhs-vic.compass.education" + res.data.d.userSquarePhotoPath,
-                  yearLevelName: res.data.d.userYearLevel,
-                  yearLevel: res.data.d.userYearLevelId,
-                  flags: res.data.d.userFlags,
-                  email: res.data.d.userEmail,
-                  info: res.data.d.userDetails,
-                  house: res.data.d.userHouse
-                }))
+    document.title = this.$route.name + " - BetterCompass"
+    this.$vuetify.theme = {dark: true}
+    this.$store.commit("setSchool", {
+      name: localStorage.getItem("schoolName"),
+      id: localStorage.getItem("schoolId"),
+      fqdn: localStorage.getItem("schoolFqdn"),
+      instance: localStorage.getItem("schoolInstance")
+    })
+    // set CompassApiKey header in axios
+    this.axios.defaults.headers.common['CompassApiKey'] = localStorage.getItem('apiKey')
+    this.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
+    this.$store.dispatch("getUserInfo")
+  },
+  watch: {
+    $route(to) {
+      document.title = to.name + " - BetterCompass"
+    }
   }
-}
+};
 </script>

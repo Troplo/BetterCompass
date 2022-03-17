@@ -5,51 +5,46 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    compass: {
-      debug: true
+    school: null,
+    site: {
+      release: "dev",
+      loading: true
     },
-    school: {
-      name: 'Belmont High School'
-    },
-    user: {
-      id: '5090',
-      username: '',
-      avatar: '',
-      name: '',
-      token: '',
-      house: '',
-      flags: [],
-      email: '',
-      role: 1,
-      yearLevel: 0,
-      yearLevelName: '',
-      info: '',
-      admin: false,
-      firstName: '',
-      lastName: '',
-      parent: false
-    },
-    classes: []
+    user: null,
+    token: null
   },
   mutations: {
-    initUser (state, payload) {
-      state.user.username = payload.username
-      state.user.avatar = payload.avatar
-      state.user.name = payload.name
-      state.user.firstName = payload.firstName
-      state.user.lastName = payload.lastName
-      state.user.house = payload.house
-      state.user.token = payload.token
-      state.user.email = payload.email
-      state.user.yearLevel = payload.yearLevel
-      state.user.info = payload.info
-      state.user.yearLevelName = payload.yearLevelName
+    setUser(state, user) {
+      state.user = user
     },
-    initClasses (state, payload) {
-      state.classes = payload.classes
+    setSchool(state, school) {
+      state.school = school
+    },
+    setSite(state, site) {
+      state.site = site
+    },
+    setToken(state, token) {
+      state.token = token
+    },
+    setLoading(state, value) {
+      state.site.loading = value
     }
   },
   actions: {
+    getUserInfo(context) {
+      Vue.axios.defaults.headers.common['CompassApiKey'] = localStorage.getItem('apiKey')
+      Vue.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
+      return new Promise((resolve, reject) => {
+        Vue.axios.post("/services/mobile.svc/GetPersonalDetails").then((res) => {
+          context.commit("setUser", res.data.d.data)
+          context.commit("setLoading", false)
+          resolve(res.data.d.data);
+        }).catch((e) => {
+          context.commit("setLoading", false)
+          reject(e);
+        })
+      })
+    }
   },
   modules: {
   }

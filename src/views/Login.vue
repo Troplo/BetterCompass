@@ -1,28 +1,57 @@
 <template>
   <div id="login">
-    <section class="hero is-primary is-fullheight">
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns is-centered">
-            <div class="column is-5">
-              <div class="box">
-                <p class="title-alt has-text-centered">{{ $store.state.school.name }}</p>
-                <b-field label="Username">
-                  <b-input v-model="login.username" type="username" placeholder="ABC0101"></b-input>
-                </b-field>
-                <b-field label="Password">
-                  <b-input v-model="login.password" type="password" placeholder="Password"></b-input>
-                </b-field>
-                <div class="buttons">
-                  <b-button class="is-primary" @click="doLogin" :loading="login.loading">Login</b-button>
-                  <b-button>Forgot Password?</b-button>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div class="outer">
+      <div class="middle">
+        <div class="innerLogin">
+          <v-card class="rounded-xl" elevation="7" width="700">
+            <v-container>
+              <v-form ref="form" class="pa-4 pt-6">
+                <p class="text-center text-h4">
+                  Login to <span class="troplo-title">BetterCompass</span>
+                </p>
+                <v-autocomplete
+                    v-model="searchValue"
+                    :items="schools"
+                    :loading="loading"
+                    :search-input.sync="search"
+                    color="white"
+                    label="Search your School"
+                    placeholder="Start typing to Search"
+                ></v-autocomplete>
+                <v-text-field
+                    class="rounded-xl"
+                    v-model="username"
+                    label="Username"
+                    placeholder="FOO1000"
+                    type="email"
+                ></v-text-field>
+                <v-text-field
+                    class="rounded-xl"
+                    v-model="password"
+                    color="blue accent-7"
+                    label="Password"
+                    type="password"
+                ></v-text-field>
+                <br />
+                <v-divider class="mt-5"></v-divider>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      class="rounded-xl"
+                      :loading="loading"
+                      color="primary"
+                      text
+                      @click="doLogin()"
+                  >
+                    Login
+                  </v-btn>
+                </v-card-actions>
+              </v-form>
+            </v-container>
+          </v-card>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -31,37 +60,121 @@ export default {
   name: "Login",
   data() {
     return {
-      login: {
-        username: '',
-        password: '',
-        loading: false,
-        stateDump: ''
-      }
+      username: "",
+      password: "",
+      school: {
+        id: "",
+        name: "",
+        fqdn: "",
+        instance: ""
+      },
+      loading: false,
+      search: "",
+      searchValue: "",
+      schools: []
     }
   },
   methods: {
-    doLogin() {
-      this.login.loading = true
-      this.axios.post('/login.aspx?sessionstate=disabled', {
-        username: this.login.username,
-        password: this.login.password,
-        "g-recaptcha-response": '',
-        "__VIEWSTATE": "Vze2vzuymPtDm9RCwuE15sqZUts/AT9l52Euur9qZW4VjL1LEnVkO02JJOeblEFpdh2i3zGLj19MXIARwyLlXZhtzpV9wEGtn/ydLd1vJoJSfKnSkIS3PKgVa96J2gmxJpDAxuKoZ8jd0nSGQASDzf/1YljfhkSPudUP6meb5X/cEsb2BtKW2ZpZbdKJy+sI+aJ1RC7nBOp8/PXXfVmI+eS4SAM0vB1PZ7ox3j5/hBxADcHLqVCf5qW5B8UOv2+ihb85OqfI4ivIt7NIA78aD7dum6fqiTjiJ0z9Icy57iyTfjmBYe8Qg41lrOTITlZap81SvG3Bzxkn7CySKLZ+2PxjZwANNsWWt3YynnTvFuBAk8qeZJEMZmBAs+dM6CqbF/kqHGLow2Whtp19Z5wMJHgqBcVHkeZ5MkIMb55GAYjmq2kwLeRZ+vVbsJgoWLX8/FOnVjXXvkIRsX899Qz4tKQSQrxJNuINoXRzBrNHxdfPN5YprxT9pVxJ+yMd1D0pRasz/qcJ+kZm3BdYcmRoOtaF1+SZvHCyv2NpgQPrsT1xGuTHMokQ+T0Y/qpRBnXa4CgkwwYT9+3cklgHi+Qaut3pbbOPCP6yNuS09WWyj1yBuVGhCTvY33ar0POlGDThoZbp9fHz+QkJiLvX+JPu8xAGD42/VrCXQH7y3KtiIACsvCVzVMh3+mlpre6Ps/FJA6LCMZ61yJI6qA+5gXBtnxmlZi/pIRZv0asmiM2KeET+pR81DjwGKN0Vurlfb68M1yEbygXUDwM66RmosEs5jA96aPF3/ReXrKK6fsDjBCjuw5hEvydjtCfc6HMmFi2k",
-        "__EVENTTARGET": "button1",
-        "browserFingerprint": "3888210037",
-        "__VIEWSTATEGENERATOR": "C2EE9ABB"
+    searchSchool() {
+      this.axios.post("/services/admin.svc/GetSchoolName", {
+        keyword: this.search
+      },
+          {
+            headers: {
+              "compassInstance": "devices"
+            }
+          }).then(res => {
+        this.schools = res.data.d
       })
-          .then((res) => {
-            this.login.stateDump(res)
-          })
-          .catch((res) => {
-            this.login.stateDump(res)
-          })
+    },
+    setInstance() {
+      this.axios.post("/services/admin.svc/GetSchoolDetailBasic", {
+        schoolName: this.searchValue
+      },
+          {
+            headers: {
+              "compassInstance": "devices"
+            }
+          }).then(res => {
+        if(res.data.d) {
+          this.school.fqdn = "https://" + res.data.d.Fqdn + "/"
+          this.axios.defaults.headers.common['compassInstance'] = res.data.d.Fqdn.replace(".compass.education", "")
+          this.school.id = res.data.d.SchoolId
+          this.school.name = res.data.d.Name
+          this.school.instance = res.data.d.Fqdn.replace(".compass.education", "")
+          this.$toast.success("School successfully set to " + this.school.name)
+        } else {
+          this.$toast.error("Your school is not yet on Compass.")
+        }
+      })
+    },
+    doLogin() {
+      localStorage.setItem("schoolFqdn", this.school.fqdn)
+      localStorage.setItem("schoolName", this.school.name)
+      localStorage.setItem("schoolId", this.school.id)
+      localStorage.setItem("schoolInstance", this.school.instance)
+      this.$store.commit("setSchool", this.school)
+      this.loading = true
+      this.axios.post("/services/admin.svc/AuthenticateUserCredentials", {
+        password: this.password,
+        username: this.username,
+        schoolId: this.$store.state.school.id
+      }).then(() => {
+        this.axios.post("/services/mobile.svc/GetPersonalDetails").then((res) => {
+          this.$store.commit("setUser", res.data.d.data)
+          this.$router.push("/")
+        })
+      })
+      this.axios.post("/services/admin.svc/GetApiKey", {
+        password: this.password,
+        schoolId: this.$store.state.school.id,
+        sussiId: this.username
+      }).then((res) => {
+        if(res.data.d) {
+          this.loading = false
+          localStorage.setItem("apiKey", res.data.d)
+          this.$store.commit("setToken", res.data.d)
+          this.$router.push("/")
+        } else {
+          this.loading = false
+          this.$toast.error("Invalid username or password.")
+        }
+      })
+    }
+  },
+  watch: {
+    search() {
+      if(this.search?.length > 3) {
+        this.searchSchool()
+      }
+    },
+    searchValue() {
+      if(this.searchValue) {
+        this.setInstance()
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+.outer {
+  display: table;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
 
+.middle {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.innerLogin {
+  margin-left: auto;
+  margin-right: auto;
+  width: 1098px;
+}
 </style>

@@ -1,0 +1,19 @@
+{
+  "name": "compass-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "proxy": "lcp --proxyUrl https://bhs-vic.compass.education --port 3001 --proxyPartial /"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "^4.17.1",
+    "http-errors": "~1.6.3",
+    "http-proxy-middleware": "^2.0.0",
+    "jade": "~1.11.0",
+    "local-cors-proxy": "^1.1.0",
+    "morgan": "^1.10.0"
+  }
+}

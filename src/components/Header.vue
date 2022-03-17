@@ -1,60 +1,196 @@
 <template>
-  <div id="header" class="wrapper">
-    <b-navbar>
-      <template #brand>
-        <b-navbar-item tag="router-link" :to="{ path: '/' }">
-          <p class="subtitle">Logo</p>
-        </b-navbar-item>
-      </template>
-      <template #start v-if="$store.state.user.username">
-        <b-navbar-item href="#">
-          <i class="far fa-calendar-alt orwell-icon"></i>
-        </b-navbar-item>
-        <b-navbar-dropdown hoverable arrowless>
-          <template slot="label">
-            <i class="far fa-pencil-alt orwell-icon"></i>
-          </template>
-          <b-navbar-item tag="router-link" to="/learning/tasks">
-            Learning Tasks
-          </b-navbar-item>
-          <b-navbar-item tag="router-link" to="/learning/resources">
-            School Resources
-          </b-navbar-item>
-          <hr>
-          <b-navbar-item tag="router-link" v-for="orwellClass in $store.state.classes.data" :key="'orwell-navbar-classes-' + orwellClass.id" :to="'/class/' + orwellClass.id" >
-            {{orwellClass.subjectLongName}}
-          </b-navbar-item>
-        </b-navbar-dropdown>
-        <b-navbar-item tag="router-link" :to="{ path: '/debug' }">
-          Debug
-        </b-navbar-item>
-      </template>
+  <div id="header">
+    <v-app-bar app>
+      <v-app-bar-nav-icon
+          @click.stop="drawer = !drawer"
+          v-if="$vuetify.breakpoint.mobile"
+      ></v-app-bar-nav-icon>
+      <v-toolbar-title
+          class="troplo-title"
+          @click="$router.push('/')"
+          style="cursor: pointer"
+      >BetterCompass</v-toolbar-title
+      >
+      <v-spacer></v-spacer>
+    </v-app-bar>
+    <v-navigation-drawer
+        v-model="drawer"
+        app
+        color="#151515"
+        floating
+    >
+      <v-divider></v-divider>
+      <v-list dense nav>
+        <v-list v-if="$store.state.user">
+          <v-list>
+            <template>
+              <v-list-item
+                  class="ml-1"
+                  style="text-transform: unset !important"
+                  text
+                  v-for="(item, index) in menus.authenticated"
+                  :key="item.id"
+                  :href="item.externalPath"
+                  :to="item.path"
+                  link
+                  :color="active(item.name)"
+                  @click="handleClick(index)"
+              >
+                <v-list-item-icon>
+                  <v-icon>{{ item.icon }} </v-icon>
+                </v-list-item-icon>
 
-      <template #end>
-        <b-navbar-item tag="div" v-if="!$store.state.user.username">
-          <div class="buttons">
-            <a class="button is-primary">
-              <strong>Sign up</strong>
-            </a>
-            <a class="button is-light">
-              Log in
-            </a>
-          </div>
-        </b-navbar-item>
-        <b-navbar-item tag="router-link" to="/profile" v-if="$store.state.user.username">
-          <i class="fas fa-user-circle orwell-icon"></i>
-        </b-navbar-item>
-        <b-navbar-item v-if="$store.state.user.username">
-          <i class="fa fa-sign-out orwell-icon"></i>
-        </b-navbar-item>
-      </template>
-    </b-navbar>
+                <v-list-item-content>
+                  <v-list-item-title
+                  >{{ item.name }}
+                    <v-chip
+                        v-if="item.new"
+                        class="ma-2"
+                        color="green"
+                        outlined
+                        x-small
+                    >
+                      NEW
+                    </v-chip>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <template v-if="$store.state.site.release === 'dev'">
+              <v-list-item
+                  v-for="(item, index) in menus.debug"
+                  :key="item.id"
+                  :to="item.path"
+                  link
+                  @click="handleClick(index)"
+              >
+                <v-list-item-icon>
+                  <v-icon
+                      v-bind:class="{
+                      gradient:
+                        item.name === $route.name &&
+                        !$store.state.site.whitelabel
+                    }"
+                  >{{ item.icon }}
+                  </v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title
+                  >{{ item.name }}
+                    <v-chip
+                        v-if="item.preview"
+                        class="ma-2"
+                        color="success"
+                        outlined
+                        rounded
+                        x-small
+                    >
+                      <v-icon>mdi-flask</v-icon>
+                    </v-chip>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-list>
+        </v-list>
+        <v-list v-else>
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <v-icon x-large>mdi-account-circle</v-icon>
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title>Please login</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list>
+            <v-list-item
+                v-for="(item, index) in menus.default"
+                :key="index"
+                :to="item.path"
+                link
+                @click="handleClick(index)"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-list>
+      </v-list>
+    </v-navigation-drawer>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Header"
+  name: "Header",
+  data() {
+    return {
+      drawer: true,
+      menus: {
+        debug: [
+          {
+            id: 2,
+            name: "Debug",
+            path: "/debug",
+            icon: "mdi-bug",
+            preview: false
+          }
+        ],
+        default: [
+          {
+            id: 1,
+            name: "Login",
+            path: "/login",
+            icon: "mdi-login",
+            click() {}
+          }
+        ],
+        authenticated: [
+          {
+            id: 3,
+            name: "Dashboard",
+            path: "/",
+            icon: "mdi-view-dashboard",
+            click() {}
+          },
+          {
+            id: 4,
+            name: "Profile",
+            path: "/profile",
+            icon: "mdi-account",
+            click() {}
+          },
+          {
+            id: 5,
+            name: "Settings",
+            path: "/settings",
+            icon: "mdi-settings",
+            click() {}
+          }
+        ]
+      }
+    }
+  },
+  methods: {
+    active(path) {
+      if (path === this.$route.name) {
+        return "#007aff"
+      } else {
+        return null
+      }
+    },
+    handleClick(index) {
+      this.menus.selected = this.$route.name
+      this.menus.authenticated[index].click.call(this)
+    }
+  }
 }
 </script>
 
