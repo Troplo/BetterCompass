@@ -9,7 +9,7 @@ if(process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
 }
 const compassRouter = function(req) {
-    const instance = req.header("compassInstance") || "devices"
+    const instance = req.header("compassInstance") || req.query.forceInstance || "devices"
     console.log("Instance: " + instance)
     return "https://" + instance + ".compass.education";
 }

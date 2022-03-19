@@ -5,7 +5,7 @@
         <div class="innerLogin">
           <v-card class="rounded-xl" elevation="7" width="700">
             <v-container>
-              <v-form ref="form" class="pa-4 pt-6">
+              <v-form ref="form" class="pa-4 pt-6" @keyup.enter="doLogin">
                 <p class="text-center text-h4">
                   Login to <span class="troplo-title">BetterCompass</span>
                 </p>
@@ -102,7 +102,11 @@ export default {
           this.school.id = res.data.d.SchoolId
           this.school.name = res.data.d.Name
           this.school.instance = res.data.d.Fqdn.replace(".compass.education", "")
-          this.$toast.success("School successfully set to " + this.school.name)
+          localStorage.setItem("schoolFqdn", this.school.fqdn)
+          localStorage.setItem("schoolName", this.school.name)
+          localStorage.setItem("schoolId", this.school.id)
+          localStorage.setItem("schoolInstance", this.school.instance)
+          //this.$toast.success("School successfully set to " + this.school.name)
         } else {
           this.$toast.error("Your school is not yet on Compass.")
         }
@@ -119,10 +123,13 @@ export default {
         password: this.password,
         username: this.username,
         schoolId: this.$store.state.school.id
-      }).then(() => {
-        this.axios.post("/services/mobile.svc/GetPersonalDetails").then((res) => {
+      }).then((res) => {
+        localStorage.setItem("userId", res.data.d?.roles[0].userId)
+        this.axios.post("/services/mobile.svc/GetPersonalDetails", {
+          userId: res.data.d?.roles[0].userId
+        }).then((res) => {
+          localStorage.setItem("userId", res.data.d.userId)
           this.$store.commit("setUser", res.data.d.data)
-          this.$router.push("/")
         })
       })
       this.axios.post("/services/admin.svc/GetApiKey", {
@@ -141,6 +148,15 @@ export default {
         }
       })
     }
+  },
+  mounted() {
+    this.school.fqdn = localStorage.getItem("schoolFqdn")
+    this.school.name = localStorage.getItem("schoolName")
+    this.school.id = localStorage.getItem("schoolId")
+    this.school.instance = localStorage.getItem("schoolInstance")
+    this.search = this.school.name
+    this.searchValue = this.school.name
+    this.$store.commit("setSchool", this.school)
   },
   watch: {
     search() {
@@ -175,6 +191,6 @@ export default {
 .innerLogin {
   margin-left: auto;
   margin-right: auto;
-  width: 1098px;
+  width: 700px;
 }
 </style>

@@ -9,7 +9,11 @@ import VueAxios from "vue-axios"
 import Toast from "vue-toastification"
 import "vue-toastification/dist/index.css"
 import VCalendar from 'v-calendar';
+import VueCal from 'vue-cal'
+import 'vue-cal/dist/vuecal.css'
 
+Vue.use(require('vue-shortkey'))
+Vue.use(VueCal)
 Vue.use(VCalendar, {
   componentPrefix: 'vc',
 });

@@ -3,6 +3,43 @@
     <v-overlay :value="$store.state.site.loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
+    <v-dialog v-model="$store.state.modals.settings" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">BetterCompass Settings</span>
+        </v-card-title>
+        <v-card-text>
+          <v-switch
+            v-model="settings.dark"
+            inset
+            label="Dark theme"
+            color="info"
+            ></v-switch>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="saveSettings()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="$store.state.modals.search" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">BetterCompass QuickSwitcher (BETA)</span>
+        </v-card-title>
+        <v-container>
+          <v-autocomplete v-model="search" :items="$store.state.subjects" item-text="subjectLongName" label="Search" outlined autofocus return-object>
+            <template slot="selection" slot-scope="{ data }">
+              {{ data.item.name }} - {{ data.item.subjectLongName }}
+            </template>
+            <template slot="item" slot-scope="data">
+              <!-- HTML that describe how select should render items when the select is open -->
+              {{ data.item.name }} - {{ data.item.subjectLongName }}
+            </template>
+          </v-autocomplete>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <Header></Header>
     <v-main>
       <router-view/>
@@ -36,6 +73,7 @@
   -webkit-text-fill-color: transparent;
 }
 .theme--dark.v-sheet {
+  overflow:auto !important;
   background-color: #151515 !important;
   border-color: #151515 !important;
   color: #ffffff;
@@ -47,8 +85,20 @@
   background-color: #151515 !important;
 }
 
+
+.v-calendar-daily_head-day {
+  border-right: 1px transparent !important;
+
+}
+
 div .theme--dark.v-calendar-events .v-event-timed {
-  border: 1px transparent !important;
+  border: 1px solid white !important;
+  border-radius: 5px !important;
+  margin: 2px;
+}
+
+.vuecal__cell {
+  height: 50px !important;
 }
 
 div .theme--dark.v-calendar-daily {
@@ -80,6 +130,16 @@ div .theme--dark.v-calendar-daily .v-calendar-daily__day {
   border-radius: 20px;
   border: 3px solid #151515;
 }
+.vuecal__event-time {
+  margin: 3px 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.vuecal__event {
+  margin: 5px 0;
+}
 </style>
 <script>
 import Header from './components/Header.vue'
@@ -89,11 +149,37 @@ export default {
     Header
   },
   data: () => ({
-    //
+    search: "",
+    results: [],
+    settings: {
+      dark: true
+    }
   }),
+  methods: {
+    filterItems(needle, heystack) {
+      let query = needle.toLowerCase();
+      return heystack.filter(item => item.subjectLongName.toLowerCase().indexOf(query) >= 0);
+    },
+    doSearch(search) {
+      console.log(search)
+      if(search.length > 0) {
+        this.results = this.filterItems(search, this.$store.state.subjects)
+      }
+    },
+    saveSettings() {
+      localStorage.setItem('settings', JSON.stringify(this.settings))
+      this.$store.commit('setSettings', this.settings)
+      this.$store.commit("showSettings", false)
+      this.$vuetify.theme = {dark: this.$store.state.settings.dark}
+    }
+  },
   mounted() {
     document.title = this.$route.name + " - BetterCompass"
-    this.$vuetify.theme = {dark: true}
+    if(!JSON.parse(localStorage.getItem("settings"))) {
+      localStorage.setItem("settings", JSON.stringify(this.settings))
+    }
+    this.$store.commit("setSettings", JSON.parse(localStorage.getItem("settings")))
+    this.$vuetify.theme = {dark: this.$store.state.settings.dark}
     this.$store.commit("setSchool", {
       name: localStorage.getItem("schoolName"),
       id: localStorage.getItem("schoolId"),
@@ -103,7 +189,9 @@ export default {
     // set CompassApiKey header in axios
     this.axios.defaults.headers.common['CompassApiKey'] = localStorage.getItem('apiKey')
     this.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
-    this.$store.dispatch("getUserInfo")
+    this.$store.dispatch("getUserInfo").catch(() => {
+      this.$router.push('/login')
+    })
   },
   watch: {
     $route(to) {
