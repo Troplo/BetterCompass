@@ -1,4 +1,3 @@
-require("dotenv").config()
 console.log("Initializing")
 let express = require('express')
 let app = express()
@@ -8,6 +7,11 @@ let os = require('os')
 const { createProxyMiddleware } = require('http-proxy-middleware');
 if(process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
+}
+const compassRouter = function(req) {
+    const instance = req.header("compassInstance") || req.query.forceInstance || "devices"
+    console.log("Instance: " + instance)
+    return "https://" + instance + ".compass.education";
 }
 
 app.use(function(req, res, next) {
@@ -19,7 +23,7 @@ app.use(function(req, res, next) {
 
 app.use('/', createProxyMiddleware({
     target: "devices.compass.education",
-    router: process.env.HOSTNAME,
+    router: compassRouter,
     changeOrigin: true,
     cookieDomainRewrite: process.env.HOSTNAME,
     pathRewrite: {
