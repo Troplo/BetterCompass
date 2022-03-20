@@ -125,21 +125,28 @@
                       <td style="white-space: pre-line; overflow-wrap: anywhere">{{ submission.fileName }}</td>
                       <td>{{moment(submission.timestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</td>
                       <td>
-                        <v-btn text rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 4">
-                          <v-icon>
-                            mdi-open-in-new
-                          </v-icon>
-                        </v-btn>
-                        <v-btn text rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 7">
-                          <v-icon>
-                            mdi-download
-                          </v-icon>
-                        </v-btn>
-                        <v-btn text rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 1">
-                          <v-icon>
-                            mdi-download
-                          </v-icon>
-                        </v-btn>
+                        <v-card-actions>
+                          <v-btn text fab small rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 4">
+                            <v-icon>
+                              mdi-open-in-new
+                            </v-icon>
+                          </v-btn>
+                          <v-btn text fab small rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 7">
+                            <v-icon>
+                              mdi-download
+                            </v-icon>
+                          </v-btn>
+                          <v-btn text fab small rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 1">
+                            <v-icon>
+                              mdi-download
+                            </v-icon>
+                          </v-btn>
+                          <v-btn v-if="false" text fab small rounded @click="deleteSubmission(submission)">
+                            <v-icon>
+                              mdi-delete
+                            </v-icon>
+                          </v-btn>
+                        </v-card-actions>
                       </td>
                     </tr>
                     </tbody>
@@ -244,6 +251,13 @@ export default {
     }
   },
   methods: {
+    deleteSubmission(submission) {
+      this.axios.post("/Services/FileAsset.svc/DeleteFile", {
+        fileAssetId: submission.taskSubmissionItemId
+      }).then(() => {
+        this.getLearningTasks()
+      })
+    },
     uploadFile() {
       this.upload.loading = true
       const formData = new FormData()

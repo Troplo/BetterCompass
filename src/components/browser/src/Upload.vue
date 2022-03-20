@@ -55,13 +55,12 @@
       <v-divider></v-divider>
       <v-toolbar dense flat>
         <div class="grow"></div>
-        <v-btn class="rounded-xl" class="mx-1" text @click="cancel"
+        <v-btn class="rounded-xl mx-1" text @click="cancel"
           >Cancel</v-btn
         >
         <v-btn
-          class="rounded-xl"
+          class="rounded-xl mx-1"
           :disabled="!files"
-          class="mx-1"
           color="warning"
           depressed
           @click="clear"
@@ -70,9 +69,8 @@
           Clear
         </v-btn>
         <v-btn
-          class="rounded-xl"
+          class="rounded-xl mx-1"
           :disabled="listItems.length >= maxUploadFilesCount"
-          class="mx-1"
           color="info"
           depressed
           @click="$refs.inputUpload.click()"
@@ -88,9 +86,8 @@
           />
         </v-btn>
         <v-btn
-          class="rounded-xl"
+          class="rounded-xl ml-1"
           :disabled="!files"
-          class="ml-1"
           color="success"
           depressed
           @click="upload"
@@ -198,21 +195,20 @@ export default {
         formData.append("files", file, file.name)
       }
 
-      let url = this.endpoint.url
+    /*  let url = this.endpoint.url
         .replace(new RegExp("{storage}", "g"), this.storage)
         .replace(new RegExp("{path}", "g"), this.path)
-
-      let config = {
+*/
+      /*let config = {
         url,
         method: this.endpoint.method || "post",
         data: formData,
         onUploadProgress: (progressEvent) => {
           this.progress = (progressEvent.loaded / progressEvent.total) * 100
         }
-      }
+      }*/
 
       this.uploading = true
-      let response = await this.axios.request(config)
       this.uploading = false
       this.$emit("uploaded")
     }

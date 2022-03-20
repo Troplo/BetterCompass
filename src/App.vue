@@ -36,14 +36,7 @@
           <span class="headline">BetterCompass QuickSwitcher (BETA)</span>
         </v-card-title>
         <v-container>
-          <v-autocomplete v-model="search" :items="$store.state.subjects" item-text="subjectLongName" label="Search" outlined autofocus return-object>
-            <template slot="selection" slot-scope="{ data }">
-              {{ data.item.name }} - {{ data.item.subjectLongName }}
-            </template>
-            <template slot="item" slot-scope="data">
-              <!-- HTML that describe how select should render items when the select is open -->
-              {{ data.item.name }} - {{ data.item.subjectLongName }}
-            </template>
+          <v-autocomplete auto-select-first v-model="search" :items="$store.state.subjects" item-text="subjectLongName" label="Search" outlined autofocus return-object>
           </v-autocomplete>
         </v-container>
       </v-card>
@@ -198,6 +191,7 @@ export default {
     // set CompassApiKey header in axios
     this.axios.defaults.headers.common['CompassApiKey'] = localStorage.getItem('apiKey')
     this.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
+    this.axios.defaults.headers.common['compassSchoolId'] = localStorage.getItem('schoolId')
     this.$store.dispatch("getUserInfo").catch(() => {
       this.$router.push('/login')
     })
@@ -205,6 +199,16 @@ export default {
   watch: {
     $route(to) {
       document.title = to.name + " - BetterCompass"
+    },
+    search() {
+      console.log(1)
+      if(this.search) {
+        if(this.search.id) {
+          this.$router.push("/activity/activity/" + this.search.id)
+          this.$store.commit("setSearch", false)
+          this.search = ""
+        }
+      }
     }
   }
 };

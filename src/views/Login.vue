@@ -100,6 +100,7 @@ export default {
         if(res.data.d) {
           this.school.fqdn = "https://" + res.data.d.Fqdn + "/"
           this.axios.defaults.headers.common['compassInstance'] = res.data.d.Fqdn.replace(".compass.education", "")
+          this.axios.defaults.headers.common['compassSchoolId'] = res.data.d.SchoolId
           this.school.id = res.data.d.SchoolId
           this.school.name = res.data.d.Name
           this.school.instance = res.data.d.Fqdn.replace(".compass.education", "")

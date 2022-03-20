@@ -22,7 +22,8 @@ export default new Vuex.Store({
     modals: {
       settings: false,
       search: false
-    }
+    },
+    quickSwitchCache: []
   },
   mutations: {
     setUser(state, user) {
@@ -57,12 +58,23 @@ export default new Vuex.Store({
     },
     setSearch(state, value) {
       state.modals.search = value
+    },
+    updateQuickSwitchCache(state, value, push) {
+      if(push) {
+        state.quickSwitchCache.push(value)
+      } else {
+        state.quickSwitchCache = value
+      }
     }
   },
   actions: {
+    quickSwitchCache(context) {
+      context.commit("updateQuickSwitchCache", [context.state.quickSwitchCache, true])
+    },
     getUserInfo(context) {
       Vue.axios.defaults.headers.common['CompassApiKey'] = localStorage.getItem('apiKey')
       Vue.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
+      Vue.axios.defaults.headers.common['compassSchoolId'] = localStorage.getItem('schoolId')
       return new Promise((resolve, reject) => {
         Vue.axios.post("/services/mobile.svc/GetPersonalDetails", {
           userId: localStorage.getItem("userId")
