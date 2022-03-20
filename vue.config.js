@@ -1,6 +1,9 @@
 module.exports = {
   productionSourceMap: false,
   pwa: {
+    workboxOptions: {
+      skipWaiting: true
+    },
     name: 'BetterCompass',
     themeColor: '#0179f3',
     msTileColor: '#0179f3',
