@@ -24,6 +24,14 @@ export default {
          this.users.push(res.data.d);
        })
      })
+      /*this.axios.post("/Services/User.svc/GetNameById", {
+        "userIds": this.activity.AttendeeUserIdList,
+        limit: 1000,
+        page: 1,
+        start: 0
+      }).then((res) => {
+        this.users = res.data.d
+      })*/
     }
   },
   mounted() {

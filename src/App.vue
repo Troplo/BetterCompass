@@ -16,6 +16,14 @@
             color="info"
             ></v-switch>
         </v-card-text>
+        <v-card-text>
+          <v-switch
+              v-model="settings.learningTaskNotification"
+              inset
+              label="Show overdue learning task warning"
+              color="warning"
+          ></v-switch>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="saveSettings()">Save</v-btn>
@@ -152,7 +160,8 @@ export default {
     search: "",
     results: [],
     settings: {
-      dark: true
+      dark: true,
+      learningTaskNotification: true
     }
   }),
   methods: {

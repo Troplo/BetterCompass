@@ -3,14 +3,14 @@
     <v-container>
       <v-row>
         <v-col xl="6">
-          <v-alert
+          <!--<v-alert
               dismissible
               elevation="5"
               class="rounded-xl ma-3"
               type="info"
           >
             Link your parent account to BetterCompass to get additional features.
-          </v-alert>
+          </v-alert>-->
           <v-alert
               dismissible
               v-model="learningTaskAlert"
@@ -18,7 +18,7 @@
               class="rounded-xl ma-3"
               type="warning"
           >
-            4 overdue learning tasks.
+            {{overDueLearningTasks}} overdue learning tasks.
           </v-alert>
           <v-card class="rounded-xl ma-3" elevation="7">
             <v-overlay :value="loading.calendar" absolute>
@@ -27,7 +27,33 @@
             <v-toolbar>
               <v-icon @click="changeDay('subtract')">mdi-arrow-left</v-icon>
               &nbsp;
-              <v-icon @click="changeDay('add')">mdi-calendar</v-icon>
+              <v-menu
+                  ref="menu"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn text small v-on="on">
+                    <v-icon>mdi-calendar</v-icon>
+                  </v-btn>
+                </template>
+                <v-date-picker
+                    v-model="focus"
+                    no-title
+                    scrollable
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.menu.save(focus)"
+                  >
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
               <v-spacer></v-spacer>
               <v-toolbar-title>{{ moment(focus).format("dddd, MMMM Do YYYY") }}</v-toolbar-title>
               <v-spacer></v-spacer>
@@ -36,29 +62,18 @@
               <v-icon @click="changeDay('add')">mdi-arrow-right</v-icon>
             </v-toolbar>
             <v-sheet   style="position: sticky">
-            <!--  <vue-cal :today-button="true" :twelveHour="true" :timeStep="30"
-                       :disable-views="['month', 'years', 'year']" :time="true" hide-weekends :events="computeEvents">
-                <template v-slot:event="{ event }">
-                  <div tabindex="0" draggable="false" class="vuecal__event" style="background: transparent" :style="{backgroundColor: computeColor(event)}">
-                    <div class="vuecal__event-title" v-html="event.title"></div>
-                    <div class="vuecal__event-time">{{event.start.formatTime()}}<span>&nbsp;- {{event.end.formatTime()}}</span>
-                    </div>
-                  </div>
-                  <div class="event-content" :style="{ backgroundColor: computeColor(event), color: computeTextColor(event) }">
-                    <div class="vuecal__event-title" v-html="event.title"></div>
-                    <hr/><em class="vuecal__event-time"><strong>Event start: </strong><span>{{ event.start.formatTime() }}</span><br/><strong>Event end: </strong><span>{{ event.end.formatTime() }}</span></em>
-                  </div>
-                </template>
-              </vue-cal>-->
-              <!-- small chips for computeAllDayEvents -->
               <v-tabs
                   fixed-tabs
+                  v-model="tab"
               >
-                <v-tab @click="type = 'day'" :active="type === 'day'">
+                <v-tab @click="type = 'day'" value="day">
                   Daily Schedule
                 </v-tab>
-                <v-tab @click="type = 'week'" :active="type === 'week'">
+                <v-tab @click="type = 'week'" value="week">
                   Weekly Schedule
+                </v-tab>
+                <v-tab @click="type = 'month'" value="month" v-if="false">
+                  Monthly Schedule
                 </v-tab>
               </v-tabs>
               <v-calendar
@@ -232,15 +247,17 @@ export default {
   },
   data() {
     return {
+      tab: 0,
       loading: {
         calendar: true,
       },
+      learningTaskAlert: false,
       type: 'day',
       types: ['month', 'week', 'day', '4day'],
       mode: 'stack',
       modes: ['stack', 'column'],
-      learningTaskAlert: true,
       alerts: [],
+      overDueLearningTasks: 0,
       weekday: [0, 1, 2, 3, 4, 5, 6],
       weekdays: [
         { text: 'Sun - Sat', value: [0, 1, 2, 3, 4, 5, 6] },
@@ -259,6 +276,56 @@ export default {
     }
   },
   methods: {
+    getStatus(item) {
+      if(item.students[0].submissionStatus === 1) {
+        return {
+          status: "pending",
+          text: "Pending submission"
+        }
+      } else if(item.students[0].submissionStatus === 2) {
+        return {
+          status: "pendingLate",
+          text: "Pending submission, overdue."
+        }
+      } else if(item.students[0].submissionStatus === 3) {
+        return {
+          status: "submitted",
+          text: "Submitted"
+        }
+      } else if(item.students[0].submissionStatus === 4) {
+        return {
+          status: "submittedLate",
+          text: "Submitted late"
+        }
+      } else {
+        return {
+          status: "unknown",
+          text: "Unknown status, please report (status: " + item.students[0].submissionStatus + ")"
+        }
+      }
+    },
+    getLearningTasks() {
+      this.axios.post("/Services/LearningTasks.svc/GetAllLearningTasksByUserId", {
+        forceTaskId: 0,
+        limit: 2000,
+        page: 1,
+        sort: "[{\"property\":\"dueDateTimestamp\",\"direction\":\"ASC\"}]",
+        start: 0,
+        showHiddenTasks: true,
+        userId: this.$store.state.user.userId
+      }).then((res) => {
+        res.data.d.data.forEach((item) => {
+          if (this.getStatus(item).status === "pendingLate") {
+            this.overDueLearningTasks++
+          }
+        })
+        if(this.overDueLearningTasks > 0 && this.$store.state.settings.learningTaskNotification) {
+          this.learningTaskAlert = true
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
+    },
     pushEvent(event) {
       this.$router.push("/activity/" + event.event.instanceId);
     },
@@ -356,16 +423,32 @@ export default {
     }
   },
   mounted() {
+    if(!localStorage.getItem("calendarType")) {
+      localStorage.setItem("calendarType", "day")
+    }
+    this.type = localStorage.getItem("calendarType") || "day";
+    this.tab = localStorage.getItem("calendarType") === "day" ? 0 : 1;
     this.$store.dispatch("getUserInfo").then((res) => {
       this.user = res
       this.fetchEvents();
       this.getNews()
       this.getAlerts()
+      this.getLearningTasks()
     })
   },
   watch: {
     type() {
       this.fetchEvents();
+      localStorage.setItem("calendarType", this.type);
+    },
+    learningTaskAlert() {
+      if(!this.learningTaskAlert) {
+        const settings = {
+          learningTaskNotification: false,
+          dark: this.$store.state.settings.dark
+        }
+        localStorage.setItem('settings', JSON.stringify(settings))
+      }
     }
   }
 }

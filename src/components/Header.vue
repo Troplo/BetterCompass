@@ -160,10 +160,10 @@
                   <v-list-item
                       v-for="subject in $store.state.subjects"
                       :key="subject.id"
+                      :to="'/activity/activity/' + subject.id"
                       link
                   >
                     <v-list-item-title>{{subject.subjectLongName}}</v-list-item-title>
-
                   </v-list-item>
                 </v-list-group>
               </v-list-group>

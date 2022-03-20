@@ -40,9 +40,9 @@ if(process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
 }
 
 function main () {
-    let server = app.listen(3001, () => {
+    let server = app.listen(23994, () => {
         console.log('Initialized')
-        console.log('Listening on port 0.0.0.0:' + 3001)
+        console.log('Listening on port 0.0.0.0:' + 23994)
 
         app.locals.appStarted = true
         app.emit('appStarted')
@@ -50,6 +50,7 @@ function main () {
 
 }
 if(process.env.NODE_ENV === 'test') {
+
 } else {
     main()
 }

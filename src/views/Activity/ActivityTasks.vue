@@ -29,25 +29,54 @@
         <v-container>
           <v-row>
             <v-col>
-              <v-card elevation="3">
+              <v-card elevation="3" class="mb-4">
                 <v-container>
                   Name: <b>{{selectedTask.name}}</b><br>
                   <template v-if="selectedTask.dueDateTimestamp">Due Date: <b>{{moment(selectedTask.dueDateTimestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</b></template><br>
                     Online Submission Enabled: <b>{{selectedTask.submissionItems.length ? "Yes" : "No"}}</b><br>
                 </v-container>
               </v-card>
-              <br>
-              <v-card elevation="3">
+              <v-card elevation="3" class="mb-4">
                 <v-container>
                   <html v-html="selectedTask.description || '<p>There is no task description set.</p>'"></html>
                 </v-container>
               </v-card>
+              <template v-if="selectedTask.attachments">
+                <v-card elevation="3" v-for="attachment in selectedTask.attachments" :key="attachment.id" class="mb-4">
+                  <v-container>
+                    <v-row>
+                      <v-col>
+                        <v-card-title>
+                          {{attachment.name}}
+                          <v-spacer></v-spacer>
+                          <v-btn text rounded target="_blank" :href="'/Services/FileAssets.svc/DownloadFile?id=' + attachment.id + '&originalFileName=' + attachment.fileName + '&forceInstance=' + $store.state.school.instance">
+                            <v-icon>
+                              mdi-download
+                            </v-icon>
+                          </v-btn>
+                        </v-card-title>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card>
+              </template>
             </v-col>
-            <v-col>
+            <v-col v-if="selectedTask.submissionItems">
               <v-card elevation="3" v-for="submission in selectedTask.submissionItems" :key="submission.id" class="mb-3">
                 <v-toolbar :color="getSubmissionStatus(submission).color">
                   <v-toolbar-title>
-                    {{submission.name}} | {{getSubmissionStatus(submission).text}}
+                    <v-icon v-if="getSubmissionStatus(submission).status === 'pending'">
+                      mdi-circle-outline
+                    </v-icon>
+                    <v-icon v-if="getSubmissionStatus(submission).status === 'submitted'">
+                      mdi-check-circle-outline
+                    </v-icon>
+                    <v-icon v-if="getSubmissionStatus(submission).status === 'submittedLate'">
+                      mdi-check-circle-outline
+                    </v-icon>
+                    <v-icon v-if="getSubmissionStatus(submission).status === 'pendingLate'">
+                      mdi-alert-circle-outline
+                    </v-icon>&nbsp;{{submission.name}} | {{getSubmissionStatus(submission).text}}
                   </v-toolbar-title>
                   <v-spacer>
                   </v-spacer>
@@ -168,7 +197,7 @@ export default {
   data() {
     return {
       tasks: [],
-      dialog: true,
+      dialog: false,
       upload: {
         file: null,
         loading: false,
@@ -177,15 +206,40 @@ export default {
       },
       page: 1,
       offset: 0,
-      selectedTask: {"__type":"Task:http://jdlf.com.au/ns/data/learningtasks/","activityId":48601,"activityName":"10ENG16","activityStart":"2022-01-27T13:00:00Z","assessmentPeriodId":null,"attachments":[{"__type":"TaskAttachment:http://jdlf.com.au/ns/data/learningtasks/","contentUrl":null,"fileName":"CAT - SELFISH PARENTS SHUN SAFETY.docx","id":"e4cf05f9-9026-448e-aa70-20009665f37e","name":"CAT - SELFISH PARENTS SHUN SAFETY","wikiNodeId":232859,"wikiNodeType":3},{"__type":"TaskAttachment:http://jdlf.com.au/ns/data/learningtasks/","contentUrl":null,"fileName":"CAT-analysis scaffold.docx","id":"9c353f8e-eccd-4b82-a539-556b8b57e9e7","name":"CAT-analysis scaffold","wikiNodeId":232860,"wikiNodeType":3},{"__type":"TaskAttachment:http://jdlf.com.au/ns/data/learningtasks/","contentUrl":null,"fileName":"instructions and template.doc.docx","id":"0f2d15cf-ede9-430a-a22e-dd3cf1f85a66","name":"instructions and template.doc","wikiNodeId":232861,"wikiNodeType":3}],"canEditResults":false,"canManage":false,"canvasIntegrationId":null,"categoryId":5,"createdTimestamp":"2022-02-10T05:34:24Z","description":"<strong><u>CAT instructions:</u></strong><br />\n1. Carefully read and annotate the attached article,&nbsp;<strong>Selfish Parents Shun Safety.&nbsp;</strong><br />\n2. Complete the analysis scaffold handout.<br />\n3.&nbsp;Write your practice essay using the attached template as a guide to help you.&nbsp;Make sure&nbsp;<br />\n&nbsp; &nbsp; &nbsp;your&nbsp;essay has an introduction, at least 3 body paragraphs, and a conclusion.<br />\n4. <strong>You must upload your practice essay/CFA2 to receive feedback prior to writing up your final copy, CAT.</strong>","displayPrimaryGrading":false,"distributionType":1,"dueDateTimestamp":null,"gradingItems":[{"__type":"TaskGradingItem:http://jdlf.com.au/ns/data/learningtasks/","calculationSettings":null,"calculationType":null,"canvasIntegrationId":null,"category":null,"commentLength":null,"commentType":1,"decimalPlaces":null,"dimension":null,"gradingItemOrderBy":0,"id":89590,"includeInCrossSubjectSummaryReport":false,"includeInSemesterReport":false,"includedCalculationCycleMeasures":[],"irishSubjectCode":null,"isAggregateItem":false,"isContributingItem":false,"isPrimaryGrade":false,"isSelfAssessment":false,"isSystemScheme":false,"max":"","measureUniqueId":"CommentBank","min":"","name":"Comment (Open)","ordinal":1,"parentStudentAccess":1,"progressGraphItemType":0,"reportIncludeDistribution":false,"reportOrdinal":1,"reportRenderType":0,"shortName":"","staffAccess":1,"strandCode":null,"taskId":28564,"tempId":null,"weighting":0}],"groupName":"10ENG16","hidden":false,"id":28564,"important":false,"includeBreakdownHeading":false,"includeInOverall":false,"includeInSemesterReports":false,"isAggregateTask":false,"isContributingTask":false,"name":"Term 1 CFA 2 & CAT Language Analysis 2022","parentCode":"10ENG16","promptForCycleOnPush":false,"reportDisplayType":1,"reportOrdinal":null,"resultDistributionDisplayType":1,"rubricItems":null,"rubricWikiNodeIds":[232862],"securityOptions":[{"__type":"TaskSecurityOption:http://jdlf.com.au/ns/data/learningtasks/","allowSubmission":false,"enableCommentChain":false,"gradingVisible":false,"taskVisible":true,"userBaseRole":3},{"__type":"TaskSecurityOption:http://jdlf.com.au/ns/data/learningtasks/","allowSubmission":false,"enableCommentChain":true,"gradingVisible":true,"taskVisible":true,"userBaseRole":2},{"__type":"TaskSecurityOption:http://jdlf.com.au/ns/data/learningtasks/","allowSubmission":true,"enableCommentChain":true,"gradingVisible":false,"taskVisible":true,"userBaseRole":1}],"semesterReportCycles":null,"sendSmsOutstanding":false,"showAverageBoxPlot":true,"showLegendBoxPlot":true,"showTaskDueDates":false,"singleResultBreakdownCols":1,"students":[{"__type":"TaskStudent:http://jdlf.com.au/ns/data/learningtasks/","comments":null,"dueDateTimestamp":"","id":546104,"lastSubmittedTimestamp":"","primaryResult":null,"results":[],"rubricResults":null,"selfAssessmentEnabled":false,"smsOutstandingSentTimestamp":"","submissionStatus":1,"submissions":null,"submittedTimestamp":"","taskId":28564,"teacherResponses":null,"userId":5090,"userName":"Matthew NICHOLS"}],"subjectId":null,"subjectName":"10 YR 10 ENGLISH","submissionItems":[{"__type":"TaskSubmissionItem:http://jdlf.com.au/ns/data/learningtasks/","id":22414,"name":"Universal","taskId":28564,"type":2}],"taskReportDescription":"","taskTitleOnReport":"Term 1 CAT Language Analysis","verticalBreakdownHeadings":false,"wikiNodeId":232858},
+      selectedTask:{
+        "__type": "Task:http://jdlf.com.au/ns/data/learningtasks/",
+        "activityId": 0,
+        "activityName": "PLACEHOLDER",
+        "activityStart": "2022-01-27T13:00:00Z",
+        "assessmentPeriodId": null,
+        "canEditResults": false,
+        "canManage": false,
+        "canvasIntegrationId": null,
+        "categoryId": 5,
+        "createdTimestamp": "2022-02-10T05:34:24Z",
+        "description": "Placeholder item",
+        "displayPrimaryGrading": false,
+        "distributionType": 1,
+        "dueDateTimestamp": null,
+        "gradingItems": [],
+        "groupName": "PLACEHOLDER",
+        "id": 0,
+        "name": "PLACEHOLDER",
+        "parentCode": "PLACEHOLDER",
+        "singleResultBreakdownCols": 1,
+        "students": [
+          {}
+        ],
+        "subjectName": "PLACEHOLDER",
+        "submissionItems": [],
+      },
       headers: [
         {
           text: 'Title',
           value: 'name',
         },
         { text: 'Tags', value: 'tags', sortable: false },
-        { text: 'Status', value: 'status' },
-        { text: 'Actions', value: 'actions' },
+        { text: 'Status', value: 'status' }
       ],
     }
   },
@@ -258,7 +312,7 @@ export default {
         return {
           status: "pendingLate",
           text: "Pending submission, overdue.",
-          color: "danger"
+          color: "red darken-1"
         }
       } else if(submittedSubmission && this.selectedTask.students[0].submissionStatus === 3) {
         return {

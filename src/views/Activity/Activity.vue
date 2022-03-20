@@ -44,7 +44,12 @@
         </v-tooltip>
       </v-tab>
     </v-tabs>
-    <router-view :activity="activity" :activityFull="activityFull" :resources="resources"></router-view>
+    <v-container v-if="!activity.RunningStatus">
+      <v-alert type="info" class="mx-5">
+        This session has been cancelled!
+      </v-alert>
+    </v-container>
+    <router-view :news="news" :getActivity="getActivity" :activity="activity" :activityFull="activityFull" :resources="resources"></router-view>
   </div>
 </template>
 
@@ -58,14 +63,24 @@ export default {
       resources: {},
       headerImage: "",
       type: "day",
+      news: [],
     }
   },
   methods: {
     getActivity() {
-      this.axios.post("/Services/Activity.svc/GetLessonsByInstanceIdQuick", {
-        instanceId: this.$route.params.id
-      }).then(res => {
+      const type = this.$route.params.type === "instance" ? "instanceId" : "activityId"
+      const type2 = this.$route.params.type === "instance" ? "Instance" : "Activity"
+      this.axios.post(`/Services/Activity.svc/GetLessonsBy${type2}IdQuick`, {
+          [type]: this.$route.params.id
+        }).then(res => {
         this.activity = res.data.d
+        this.axios.post("/Services/NewsFeed.svc/GetActivityNewsFeedPaged", {
+          activityId: this.activity.ActivityId,
+          limit: 15,
+          start: 0
+        }).then(res => {
+          this.news = res.data.d.data
+        });
         this.axios.post("/Services/Wiki.svc/GetActivityAndSubjectResourcesNode", {
           activityId: this.activity.ActivityId
         }).then(res => {
@@ -77,8 +92,9 @@ export default {
           this.headerImage = this.$store.state.school.fqdn + res.data.d.replace("assetPath", "Assets12.1.155.1")
         })
       });
-      this.axios.post("/Services/Activity.svc/GetLessonsByInstanceId", {
-        instanceId: this.$route.params.id
+
+      this.axios.post(`/Services/Activity.svc/GetLessonsBy${type2}Id`, {
+        [type]: this.$route.params.id
       }).then(res => {
         this.activityFull = res.data.d
       });
@@ -86,6 +102,11 @@ export default {
   },
   mounted() {
     this.getActivity()
+  },
+  watch: {
+    $route() {
+      this.getActivity()
+    }
   }
 }
 </script>

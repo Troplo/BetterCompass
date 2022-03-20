@@ -34,6 +34,7 @@
                 ></v-text-field>
                 <br />
                 <v-divider class="mt-5"></v-divider>
+                <small>BetterCompass is not affiliated with Compass Education.<br>Compass is a registered trademark of Compass Education Pty Ltd (Australia)</small>
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn

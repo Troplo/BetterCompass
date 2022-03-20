@@ -16,8 +16,12 @@ const routes = [
   },
   {
     path: '/activity/:id',
+    redirect: "/activity/instance/:id/dashboard"
+  },
+  {
+    path: '/activity/:type/:id',
     name: 'Activity',
-    redirect: '/activity/:id/dashboard',
+    redirect: '/activity/:type/:id/dashboard',
     children: [
       {
         path: 'dashboard',
