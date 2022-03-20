@@ -10,10 +10,6 @@ if(process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
 }
 
-const hostname = function(req) {
-    return req.host
-}
-
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.header("Access-Control-Allow-Methods", "*");
@@ -25,7 +21,7 @@ app.use('/', createProxyMiddleware({
     target: "devices.compass.education",
     router: process.env.HOSTNAME,
     changeOrigin: true,
-    cookieDomainRewrite: hostname,
+    cookieDomainRewrite: process.env.HOSTNAME,
     pathRewrite: {
         [`^/json_placeholder`]: '',
     },
