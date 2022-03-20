@@ -331,6 +331,11 @@ export default {
       this.menus.selected = this.$route.name
       this.menus.authenticated[index].click.call(this)
     }
+  },
+  mounted() {
+    if(this.$vuetify.breakpoint.mobile) {
+      this.drawer = false
+    }
   }
 }
 </script>
