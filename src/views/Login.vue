@@ -1,8 +1,8 @@
 <template>
   <div id="login">
-    <div class="outer">
-      <div class="middle">
-        <div class="innerLogin">
+    <div :class="{outer: !$vuetify.breakpoint.mobile}">
+      <div :class="{middle: !$vuetify.breakpoint.mobile}">
+        <div :class="{innerLogin: !$vuetify.breakpoint.mobile}">
           <v-card class="rounded-xl" elevation="7" width="700">
             <v-container>
               <v-form ref="form" class="pa-4 pt-6" @keyup.enter="doLogin">
