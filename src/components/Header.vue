@@ -6,11 +6,13 @@
           v-if="$vuetify.breakpoint.mobile"
       ></v-app-bar-nav-icon>
       <v-toolbar-title
+          v-if="!$vuetify.breakpoint.mobile"
           class="troplo-title"
           @click="$router.push('/')"
           style="cursor: pointer"
       >BetterCompass</v-toolbar-title
       ><v-app-bar-nav-icon
+        v-if="!$vuetify.breakpoint.mobile"
         style="z-index: 1000"
         disabled
     >Beta</v-app-bar-nav-icon
@@ -91,6 +93,24 @@
         color="#151515"
         floating
     >
+      <v-list-item v-if="$vuetify.breakpoint.mobile">
+        <v-list-item-content>
+          <v-list-item-title class="text-h6">
+            <v-toolbar-title
+                v-if="$vuetify.breakpoint.mobile"
+                class="troplo-title text-center justify-center"
+                @click="$router.push('/')"
+                style="cursor: pointer"
+            >BetterCompass</v-toolbar-title
+            >&nbsp;<v-app-bar-nav-icon
+              v-if="$vuetify.breakpoint.mobile"
+              style="z-index: 1000"
+              disabled
+          >Beta</v-app-bar-nav-icon
+          >
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-divider></v-divider>
       <v-list dense nav>
         <v-list v-if="$store.state.user">
@@ -271,15 +291,7 @@ export default {
             icon: "mdi-settings"
           },
         ],
-        debug: [
-          {
-            id: 2,
-            name: "Debug",
-            path: "/debug",
-            icon: "mdi-bug",
-            preview: false
-          }
-        ],
+        debug: [],
         default: [
           {
             id: 1,

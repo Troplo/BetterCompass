@@ -49,7 +49,7 @@
         This session has been cancelled!
       </v-alert>
     </v-container>
-    <router-view :news="news" :getActivity="getActivity" :activity="activity" :activityFull="activityFull" :resources="resources"></router-view>
+    <router-view :lessonPlan="lessonPlan" :news="news" :getActivity="getActivity" :activity="activity" :activityFull="activityFull" :resources="resources"></router-view>
   </div>
 </template>
 
@@ -58,15 +58,24 @@ export default {
   name: "Activity",
   data() {
     return {
-      activity: {},
+      activity: null,
       activityFull: {},
       resources: {},
       headerImage: "",
       type: "day",
+      lessonPlan: "",
       news: [],
     }
   },
   methods: {
+    getLessonPlan() {
+      this.lessonPlan = "<p>Loading...</p>";
+      this.axios.get(`/Services/FileAssets.svc/DownloadFile?sessionstate=readonly&id=${this.activity.lp.fileAssetId}&nodeId=${this.activity.lp.wnid}`).then((res) => {
+        this.lessonPlan = res.data.replaceAll(`<img src="/Services/FileAssets.svc/DownloadFile?`, `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`);
+      }).catch(() => {
+        this.lessonPlan = "<p>No lesson plan has been uploaded yet.</p>";
+      })
+    },
     getActivity() {
       const type = this.$route.params.type === "instance" ? "instanceId" : "activityId"
       const type2 = this.$route.params.type === "instance" ? "Instance" : "Activity"
@@ -74,6 +83,7 @@ export default {
           [type]: this.$route.params.id
         }).then(res => {
         this.activity = res.data.d
+        this.getLessonPlan()
         this.axios.post("/Services/NewsFeed.svc/GetActivityNewsFeedPaged", {
           activityId: this.activity.ActivityId,
           limit: 15,

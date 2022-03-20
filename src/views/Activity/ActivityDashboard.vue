@@ -46,7 +46,7 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
-              <html v-html="lp"></html>
+              <html v-html="lessonPlan"></html>
             </v-container>
           </v-card>
         </v-col>
@@ -100,6 +100,7 @@ export default {
     activityFull: {},
     resources: {},
     news: {},
+    lessonPlan: {},
     getActivity: {
       type: Function,
       default: () => {}
@@ -118,22 +119,15 @@ export default {
     pushEvent(event) {
       this.$router.push("/activity/" + event);
       this.getActivity(event);
-      this.getLessonPlan()
-    },
-    getLessonPlan() {
-      this.lp = "<p>Loading...</p>";
-      this.axios.get(`/Services/FileAssets.svc/DownloadFile?sessionstate=readonly&id=${this.activity.lp.fileAssetId}&nodeId=${this.activity.lp.wnid}`).then((res) => {
-        this.lp = res.data.replaceAll(`<img src="/Services/FileAssets.svc/DownloadFile?`, `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`);
-      }).catch(() => {
-        this.lp = "<p>No lesson plan has been uploaded yet.</p>";
-      })
     }
   },
   mounted() {
     this.selectedActivity = this.activity.id;
-    this.$nextTick(() => {
-      this.getLessonPlan();
-    });
+  },
+  watch: {
+    $route() {
+      this.selectedActivity = this.activity.id;
+    }
   }
 }
 </script>
