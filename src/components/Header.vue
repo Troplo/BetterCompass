@@ -25,7 +25,7 @@
           hide-details
           outlined
           placeholder="English"
-          label="Search Compass... (CTRL + K)"
+          :label="$vuetify.breakpoint.mobile ? 'Search Compass...' : 'Search Compass... (CTRL + K)' "
           @click="$store.commit('setSearch', true)"
           style="max-width: 450px;"
       >
@@ -57,6 +57,7 @@
               :key="item.id"
               :disabled="item.disabled"
               :to="item.path"
+              :style="'color:' + item.color"
               @click="handleClickDropdown(index)"
           >
             <v-list-item-title>{{ item.name }}</v-list-item-title>
@@ -102,12 +103,7 @@
                 @click="$router.push('/')"
                 style="cursor: pointer"
             >BetterCompass</v-toolbar-title
-            >&nbsp;<v-app-bar-nav-icon
-              v-if="$vuetify.breakpoint.mobile"
-              style="z-index: 1000"
-              disabled
-          >Beta</v-app-bar-nav-icon
-          >
+            >
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -288,6 +284,7 @@ export default {
             click() {
               this.$store.dispatch("logout")
             },
+            color: "#c53030",
             icon: "mdi-settings"
           },
         ],
