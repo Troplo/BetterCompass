@@ -180,6 +180,7 @@ export default {
     if(!JSON.parse(localStorage.getItem("settings"))) {
       localStorage.setItem("settings", JSON.stringify(this.settings))
     }
+    this.settings = JSON.parse(localStorage.getItem("settings"))
     this.$store.commit("setSettings", JSON.parse(localStorage.getItem("settings")))
     this.$vuetify.theme = {dark: this.$store.state.settings.dark}
     this.$store.commit("setSchool", {
