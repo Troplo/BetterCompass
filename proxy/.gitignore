@@ -80,3 +80,5 @@ rendering/marketplacecontent
 rendering/usercontent
 nodeinfo.json
 nodeinfo.json
+
+.env
