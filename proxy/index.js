@@ -14,6 +14,10 @@ const compassRouter = function(req) {
     return "https://" + instance + ".compass.education";
 }
 
+const hostname = function(req) {
+    return req.host
+}
+
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.header("Access-Control-Allow-Methods", "*");
@@ -25,7 +29,7 @@ app.use('/', createProxyMiddleware({
     target: "devices.compass.education",
     router: compassRouter,
     changeOrigin: true,
-    cookieDomainRewrite: "localhost",
+    cookieDomainRewrite: hostname,
     pathRewrite: {
         [`^/json_placeholder`]: '',
     },
