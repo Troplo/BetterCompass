@@ -21,7 +21,6 @@ app.use(function(req, res, next) {
         { expires: new Date(253402300000000), httpOnly: true, secure: true });
     res.cookie('ASP.NET_SessionId', req.cookies["ASP.NET_SessionId"],
         { expires: new Date(253402300000000), httpOnly: true, secure: true });
-    console.log(req.cookies)
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.header("Access-Control-Allow-Methods", "*");
     res.header("Access-Control-Allow-Headers", req.header('access-control-request-headers'));
