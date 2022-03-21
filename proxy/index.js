@@ -8,10 +8,8 @@ let axios = require('axios')
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cookieParser = require("cookie-parser");
 app.use(cookieParser())
-app.set("trust proxy", "127.0.0.1");
-if(process.env.NODE_ENV === 'production') {
-    app.set('trust proxy', 1);
-}
+app.set('trust proxy', true);
+
 const compassRouter = function(req) {
     const instance = req.header("compassInstance") || req.query.forceInstance || "devices"
     console.log("Instance: " + instance)
