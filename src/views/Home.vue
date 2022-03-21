@@ -185,6 +185,48 @@
               </v-container>
             </v-card>
           </v-card>
+          <v-card
+              class="rounded-xl ma-3 text-center justify-center"
+              elevation="7"
+              v-if="weather"
+          >
+            <v-toolbar>
+              <v-spacer></v-spacer>
+              <v-toolbar-title>
+                Weather
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-list-item two-line>
+              <v-list-item-content>
+                <v-list-item-title class="text-h5">
+                  {{weather.name}}
+                </v-list-item-title>
+                <v-list-item-subtitle>{{ moment().format("dddd, MMMM Do YYYY") }}, {{weather.weather[0].main}}: {{weather.weather[0].description}}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-card-text>
+              <v-row align="center">
+                <v-col
+                    class="text-h2"
+                >
+                  {{ weather.main.temp }}&deg;C
+                </v-col>
+              </v-row>
+              <small>Feels like: {{weather.main.feels_like}}&deg;C</small>
+            </v-card-text>
+
+            <v-list-item>
+              <v-list-item-subtitle>
+                {{weather.wind.speed}} km/h wind speed</v-list-item-subtitle>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-subtitle>
+                {{ weather.main.humidity }}% humidity</v-list-item-subtitle>
+            </v-list-item>
+          </v-card>
           <v-card class="rounded-xl ma-3" elevation="7">
             <v-toolbar>
               <v-spacer></v-spacer>
@@ -208,6 +250,7 @@
                 <li>You can now see what teacher you have on the activity.</li>
                 <li>The activity instance will now automatically set itself upon QuickSwitch.</li>
                 <li>You can now easily change between activity instances with arrows.</li>
+                <li>There is now a weather widget built into BetterCompass. (Can be disabled in BetterCompass Settings)</li>
               </ul>
               <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
             </v-container>
@@ -243,10 +286,20 @@ export default {
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
       focus: moment().format(),
       news: [],
-      user: {}
+      user: {},
+      weather: null
     }
   },
   methods: {
+    getWeather() {
+      if(this.$store.state.settings.weather) {
+        this.axios.get("/api/v1/weather").then(res => {
+          this.weather = res.data;
+        }).catch(error => {
+          console.log(error);
+        });
+      }
+    },
     getStatus(item) {
       if(item.students[0].submissionStatus === 1) {
         return {
@@ -394,6 +447,7 @@ export default {
     }
   },
   mounted() {
+    this.getWeather()
     if(!localStorage.getItem("calendarType")) {
       localStorage.setItem("calendarType", "day")
     }

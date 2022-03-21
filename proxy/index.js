@@ -4,6 +4,7 @@ let app = express()
 //Middle-ware
 let bodyParser = require('body-parser')
 let os = require('os')
+let axios = require('axios')
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cookieParser = require("cookie-parser");
 app.use(cookieParser())
@@ -21,6 +22,29 @@ const compassRouter = function(req) {
         return "https://devices.compass.education"
     }
 }
+
+app.get("/api/v1/weather", (req, res) => {
+    try {
+        axios.get("http://ip-api.com/json/124.169.202.0").then((response1) => {
+            console.log(response1.data)
+            axios.get("https://api.openweathermap.org/data/2.5/weather?lat=" + response1.data.lat + "&lon=" + response1.data.lon + "&appid=cc89e60155163ce2bbd7a7a5e3ca413b&units=metric")
+                .then(response2 => {
+                    res.send(response2.data)
+                })
+                .catch(error => {
+                    res.send(error.response.data)
+                })
+        })
+    } catch (e) {
+        res.status(500).send(e)
+    }
+})
+
+app.all("/api/*", (req, res) => {
+    res.status(404).json({
+        message: "This is reserved, and cannot be proxied through Compass."
+    })
+})
 
 app.use(function(req, res, next) {
     res.cookie('cpssid_' + req.header("compassSchoolId"), req.cookies["cpssid_" + req.header("compassSchoolId")],

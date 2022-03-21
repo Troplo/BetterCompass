@@ -7,6 +7,7 @@
     "proxy": "lcp --proxyUrl https://bhs-vic.compass.education --port 3001 --proxyPartial /"
   },
   "dependencies": {
+    "axios": "^0.26.1",
     "cookie-parser": "^1.4.6",
     "debug": "~2.6.9",
     "dotenv": "^16.0.0",

@@ -24,6 +24,14 @@
               color="warning"
           ></v-switch>
         </v-card-text>
+        <v-card-text>
+          <v-switch
+              v-model="settings.weather"
+              inset
+              label="Show weather widget"
+              color="info"
+          ></v-switch>
+        </v-card-text>
         <div class="mx-6">
             <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
         </div>
@@ -157,6 +165,7 @@ export default {
     results: [],
     searchInput: null,
     settings: {
+      weather: true,
       dark: true,
       learningTaskNotification: true
     }
@@ -183,6 +192,15 @@ export default {
     document.title = this.$route.name + " - BetterCompass"
     if(!JSON.parse(localStorage.getItem("settings"))) {
       localStorage.setItem("settings", JSON.stringify(this.settings))
+    }
+    this.settings = JSON.parse(localStorage.getItem("settings"))
+    if(JSON.parse(localStorage.getItem("settings")).weather === null) {
+      localStorage.setItem("settings", JSON.stringify({
+        weather: true,
+        dark: this.settings.dark,
+        learningTaskNotification: this.settings.learningTaskNotification
+      }))
+      this.settings = JSON.parse(localStorage.getItem("settings"))
     }
     this.settings = JSON.parse(localStorage.getItem("settings"))
     this.$store.commit("setSettings", JSON.parse(localStorage.getItem("settings")))
