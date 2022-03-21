@@ -36,7 +36,7 @@
           <span class="headline">BetterCompass QuickSwitcher (BETA)</span>
         </v-card-title>
         <v-container>
-          <v-autocomplete auto-select-first v-model="search" :items="$store.state.subjects" item-text="subjectLongName" label="Search" outlined autofocus return-object>
+          <v-autocomplete auto-select-first v-model="search" :items="$store.state.subjects" item-text="subjectLongName" label="Search" outlined autofocus return-object :search-input.sync="searchInput">
           </v-autocomplete>
         </v-container>
       </v-card>
@@ -93,7 +93,7 @@
 }
 
 div .theme--dark.v-calendar-events .v-event-timed {
-  border: 1px solid white !important;
+  border: 1px solid #181818 !important;
   border-radius: 5px !important;
   margin: 2px;
 }
@@ -152,6 +152,7 @@ export default {
   data: () => ({
     search: "",
     results: [],
+    searchInput: null,
     settings: {
       dark: true,
       learningTaskNotification: true
@@ -202,12 +203,14 @@ export default {
       document.title = to.name + " - BetterCompass"
     },
     search() {
-      console.log(1)
       if(this.search) {
         if(this.search.id) {
           this.$router.push("/activity/activity/" + this.search.id)
           this.$store.commit("setSearch", false)
-          this.search = ""
+          this.search = null
+          this.$nextTick(() => {
+            this.searchInput = null
+          })
         }
       }
     }

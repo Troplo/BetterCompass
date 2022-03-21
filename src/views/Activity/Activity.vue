@@ -71,7 +71,12 @@ export default {
     getLessonPlan() {
       this.lessonPlan = "<p>Loading...</p>";
       this.axios.get(`/Services/FileAssets.svc/DownloadFile?sessionstate=readonly&id=${this.activity.lp.fileAssetId}&nodeId=${this.activity.lp.wnid}`).then((res) => {
-        this.lessonPlan = res.data.replaceAll(`<img src="/Services/FileAssets.svc/DownloadFile?`, `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`);
+        // regex for //*.compass.education
+
+        this.lessonPlan = res.data
+            .replaceAll(/https:(.*)\.compass\.education/g, "")
+            .replaceAll(`<img src="/Services/FileAssets.svc/DownloadFile?`, `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`)
+            .replaceAll(`<a href="/Services/FileAssets.svc/DownloadFile?`, `<a href="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`)
       }).catch(() => {
         this.lessonPlan = "<p>No lesson plan has been uploaded yet.</p>";
       })

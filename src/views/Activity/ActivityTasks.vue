@@ -22,139 +22,274 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialog" max-width="1200px" class="rounded-xl">
+
       <v-card>
         <v-card-title>
           {{selectedTask.name}}
         </v-card-title>
         <v-container>
-          <v-row>
-            <v-col>
-              <v-card elevation="3" class="mb-4">
-                <v-container>
-                  Name: <b>{{selectedTask.name}}</b><br>
-                  <template v-if="selectedTask.dueDateTimestamp">Due Date: <b>{{moment(selectedTask.dueDateTimestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</b></template><br>
-                    Online Submission Enabled: <b>{{selectedTask.submissionItems.length ? "Yes" : "No"}}</b><br>
-                </v-container>
-              </v-card>
-              <v-card elevation="3" class="mb-4">
-                <v-container>
-                  <html v-html="selectedTask.description || '<p>There is no task description set.</p>'"></html>
-                </v-container>
-              </v-card>
-              <template v-if="selectedTask.attachments">
-                <v-card elevation="3" v-for="attachment in selectedTask.attachments" :key="attachment.id" class="mb-4">
-                  <v-container>
-                    <v-row>
-                      <v-col>
-                        <v-card-title>
-                          {{attachment.name}}
-                          <v-spacer></v-spacer>
-                          <v-btn text rounded target="_blank" :href="'/Services/FileAssets.svc/DownloadFile?id=' + attachment.id + '&originalFileName=' + attachment.fileName + '&forceInstance=' + $store.state.school.instance">
-                            <v-icon>
-                              mdi-download
-                            </v-icon>
-                          </v-btn>
-                        </v-card-title>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card>
-              </template>
-            </v-col>
-            <v-col v-if="selectedTask.submissionItems">
-              <v-card elevation="3" v-for="submission in selectedTask.submissionItems" :key="submission.id" class="mb-3">
-                <v-toolbar :color="getSubmissionStatus(submission).color">
-                  <v-toolbar-title>
-                    <v-icon v-if="getSubmissionStatus(submission).status === 'pending'">
-                      mdi-circle-outline
-                    </v-icon>
-                    <v-icon v-if="getSubmissionStatus(submission).status === 'submitted'">
-                      mdi-check-circle-outline
-                    </v-icon>
-                    <v-icon v-if="getSubmissionStatus(submission).status === 'submittedLate'">
-                      mdi-check-circle-outline
-                    </v-icon>
-                    <v-icon v-if="getSubmissionStatus(submission).status === 'pendingLate'">
-                      mdi-alert-circle-outline
-                    </v-icon>&nbsp;{{submission.name}} | {{getSubmissionStatus(submission).text}}
-                  </v-toolbar-title>
-                  <v-spacer>
-                  </v-spacer>
-                  <v-menu offset-y>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                          text
-                          v-bind="attrs"
-                          v-on="on"
-                      >
-                        <v-icon>
-                          mdi-upload
-                        </v-icon>
-                      </v-btn>
+          <v-tabs>
+            <v-tab>
+              Details
+            </v-tab>
+            <v-tab>
+              Feedback
+            </v-tab>
+            <v-tab-item>
+                <v-row>
+                  <v-col>
+                    <v-card elevation="3" class="ma-2">
+                      <v-container>
+                        Name: <b>{{selectedTask.name}}</b><br>
+                        <template v-if="selectedTask.dueDateTimestamp">Due Date: <b>{{moment(selectedTask.dueDateTimestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</b></template><br>
+                        Online Submission Enabled: <b>{{selectedTask.submissionItems ? "Yes" : "No"}}</b><br>
+                      </v-container>
+                    </v-card>
+                    <v-card elevation="3" class="ma-2">
+                      <v-container>
+                        <html v-html="selectedTask.description || '<p>There is no task description set.</p>'"></html>
+                      </v-container>
+                    </v-card>
+                    <template v-if="selectedTask.attachments">
+                      <v-card elevation="3" v-for="attachment in selectedTask.attachments" :key="attachment.id" class="ma-2">
+                        <v-container>
+                          <v-row>
+                            <v-col>
+                              <v-card-title>
+                                {{attachment.name}}
+                                <v-spacer></v-spacer>
+                                <v-btn text rounded target="_blank" :href="'/Services/FileAssets.svc/DownloadFile?id=' + attachment.id + '&originalFileName=' + attachment.fileName + '&forceInstance=' + $store.state.school.instance">
+                                  <v-icon>
+                                    mdi-download
+                                  </v-icon>
+                                </v-btn>
+                              </v-card-title>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-card>
                     </template>
-                    <v-list>
-                      <v-list-item @click="upload.type = 7; upload.dialog = true">
-                        <v-list-item-title>File Upload</v-list-item-title>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-list-item-title>URL Upload</v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-toolbar>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                    <tr>
-                      <th class="text-left">
-                        Name
-                      </th>
-                      <th class="text-left">
-                        Upload Date
-                      </th>
-                      <th class="text-left">
-                        Actions
-                      </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr
-                        v-for="submission in selectedTask.students[0].submissions"
-                        :key="submission.id"
-                    >
-                      <td style="white-space: pre-line; overflow-wrap: anywhere">{{ submission.fileName }}</td>
-                      <td>{{moment(submission.timestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</td>
-                      <td>
-                        <v-card-actions>
-                          <v-btn text fab small rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 4">
-                            <v-icon>
-                              mdi-open-in-new
-                            </v-icon>
-                          </v-btn>
-                          <v-btn text fab small rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 7">
-                            <v-icon>
-                              mdi-download
-                            </v-icon>
-                          </v-btn>
-                          <v-btn text fab small rounded target="_blank" :href="submission.fileName" v-if="submission.submissionFileType === 1">
-                            <v-icon>
-                              mdi-download
-                            </v-icon>
-                          </v-btn>
-                          <v-btn v-if="false" text fab small rounded @click="deleteSubmission(submission)">
-                            <v-icon>
-                              mdi-delete
-                            </v-icon>
-                          </v-btn>
-                        </v-card-actions>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </v-card>
-            </v-col>
-          </v-row>
+                  </v-col>
+                  <v-col v-if="selectedTask.submissionItems">
+                    <v-card elevation="3" v-for="submission in selectedTask.submissionItems" :key="submission.id" class="ma-2">
+                      <v-toolbar :color="getSubmissionStatus(submission).color">
+                        <v-toolbar-title>
+                          <v-icon v-if="getSubmissionStatus(submission).status === 'pending'">
+                            mdi-circle-outline
+                          </v-icon>
+                          <v-icon v-if="getSubmissionStatus(submission).status === 'submitted'">
+                            mdi-check-circle-outline
+                          </v-icon>
+                          <v-icon v-if="getSubmissionStatus(submission).status === 'submittedLate'">
+                            mdi-check-circle-outline
+                          </v-icon>
+                          <v-icon v-if="getSubmissionStatus(submission).status === 'pendingLate'">
+                            mdi-alert-circle-outline
+                          </v-icon>&nbsp;{{submission.name}} | {{getSubmissionStatus(submission).text}}
+                        </v-toolbar-title>
+                        <v-spacer>
+                        </v-spacer>
+                        <v-menu offset-y>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                text
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                              <v-icon>
+                                mdi-upload
+                              </v-icon>
+                            </v-btn>
+                          </template>
+                          <v-list>
+                            <v-list-item @click="upload.type = 7; upload.dialog = true">
+                              <v-list-item-title>File Upload</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item>
+                              <v-list-item-title>URL Upload</v-list-item-title>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                      </v-toolbar>
+                      <v-simple-table>
+                        <template v-slot:default>
+                          <thead>
+                          <tr>
+                            <th class="text-left">
+                              Name
+                            </th>
+                            <th class="text-left">
+                              Upload Date
+                            </th>
+                            <th class="text-left">
+                              Actions
+                            </th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr
+                              v-for="userSubmission in selectedTask.students[0].submissions"
+                              :key="userSubmission.id"
+                          >
+                            <template v-if="userSubmission.taskSubmissionItemId === submission.id">
+                              <td style="white-space: pre-line; overflow-wrap: anywhere">{{ userSubmission.fileName }}</td>
+                              <td>{{moment(userSubmission.timestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</td>
+                              <td>
+                                <v-card-actions>
+                                  <v-btn text fab small rounded target="_blank" :href="userSubmission.fileName" v-if="userSubmission.submissionFileType === 4">
+                                    <v-icon>
+                                      mdi-open-in-new
+                                    </v-icon>
+                                  </v-btn>
+                                  <v-btn text fab small rounded :href="'/Services/FileAssets.svc/DownloadFile?id='+ userSubmission.fileId +'&originalFileName=' + userSubmission.fileName + '&forceInstance=' + $store.state.school.instance" v-if="userSubmission.submissionFileType === 7">
+                                    <v-icon>
+                                      mdi-download
+                                    </v-icon>
+                                  </v-btn>
+                                  <v-btn text fab small rounded :href="'/Services/FileAssets.svc/DownloadFile?id='+ userSubmission.fileId +'&originalFileName=' + userSubmission.fileName + '&forceInstance=' + $store.state.school.instance" v-if="userSubmission.submissionFileType === 1">
+                                    <v-icon>
+                                      mdi-download
+                                    </v-icon>
+                                  </v-btn>
+                                  <v-btn v-if="false" text fab small rounded @click="deleteSubmission(userSubmission)">
+                                    <v-icon>
+                                      mdi-delete
+                                    </v-icon>
+                                  </v-btn>
+                                </v-card-actions>
+                              </td>
+                            </template>
+                          </tr>
+                          </tbody>
+                        </template>
+                      </v-simple-table>
+                    </v-card>
+                  </v-col>
+                </v-row>
+            </v-tab-item>
+            <v-tab-item>
+              <v-row>
+                <v-col sm="7" v-if="selectedTask.gradingItems.length || selectedTask.rubric">
+                  <v-card elevation="3" class="ma-2" v-if="selectedTask.gradingItems.length">
+                    <v-toolbar>
+                      <v-toolbar-title>
+                        Grading Items
+                      </v-toolbar-title>
+                    </v-toolbar>
+                    <v-container>
+                      <v-card-text>
+                        Any assessment results provided below are raw scores and may change during school or state based statistical assessment moderation. The statistical, state based, moderation process is used to ensure that schools’ assessments are comparable throughout the state. It involves adjusting each schools’ coursework scores for that study to match the level and spread of the combined examination and GAT scores for the students in that school doing that study. For more information on assessment moderation, please contact the school.
+                      </v-card-text>
+                      <v-simple-table>
+                        <template v-slot:default>
+                          <thead>
+                          <tr>
+                            <th class="text-left">
+                              Name
+                            </th>
+                            <th class="text-left">
+                              Result
+                            </th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr
+                              v-for="(gradingItem, index) in selectedTask.gradingItems"
+                              :key="gradingItem.id"
+                          >
+                            <td style="white-space: pre-line; overflow-wrap: anywhere">{{ gradingItem.name }}</td>
+                            <td>{{ selectedTask.students[0].results[index].result }}</td>
+                          </tr>
+                          </tbody>
+                        </template>
+                      </v-simple-table>
+                    </v-container>
+                  </v-card>
+                  <v-card elevation="3" class="ma-2" v-if="selectedTask.rubric">
+                    <v-toolbar>
+                      <v-toolbar-title>
+                        Rubric
+                      </v-toolbar-title>
+                    </v-toolbar>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="6">
+                          <v-card-text>
+                           <!-- <v-list>
+                              <v-data-table
+                                  :headers="selectedTask.rubric.criteria"
+                                  :items="selectedTask.rubric.criteria"
+                                  :single-expand="singleExpand"
+                                  :expanded.sync="expanded"
+                                  item-key="name"
+                                  show-expand
+                                  class="elevation-1"
+                              >
+                                <template v-slot:top>
+                                  <v-toolbar flat>
+                                    <v-toolbar-title>Expandable Table</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-switch
+                                        v-model="singleExpand"
+                                        label="Single expand"
+                                        class="mt-2"
+                                    ></v-switch>
+                                  </v-toolbar>
+                                </template>
+                                <template v-slot:expanded-item="{ headers, item }">
+                                  <td :colspan="headers.length">
+                                    More info about {{ item.name }}
+                                  </td>
+                                </template>
+                              </v-data-table>
+                              <v-list-item v-for="criteria in selectedTask.rubric.criteria" :key="criteria.id">
+                                <v-list-item-title>
+                                  {{criteria.name}}
+                                </v-list-item-title>
+                              </v-list-item>
+                            </v-list>-->
+                          </v-card-text>
+                        </v-col>
+                      </v-row>
+                      <v-alert type="info">
+                        Rubric is coming soon!<br>This task has a rubric that can be accessed via real Compass.
+                      </v-alert>
+                    </v-container>
+                  </v-card>
+                </v-col>
+                <v-col>
+                  <v-card class="ma-2">
+                    <v-toolbar>
+                      <v-toolbar-title>
+                        Feedback Chat
+                      </v-toolbar-title>
+                    </v-toolbar>
+                    <v-container>
+                      <v-card class="mt-2" v-for="feedback in selectedTask.students[0].comments" :key="feedback.id">
+                        <v-container>
+                          <v-list-item-title>
+                            <b>{{ feedback.userNamePoster }}</b>
+                          </v-list-item-title>
+                          <v-list-item-content>
+                            {{ feedback.comment }}
+                          </v-list-item-content>
+                          <small>{{ moment(feedback.timestamp).format("dddd, MMMM Do YYYY") }}</small>
+                        </v-container>
+                      </v-card>
+                      <v-text-field
+                        v-model="newFeedback"
+                        label="Send Response"
+                        placeholder="I wanted to let you know that..."
+                        append-outer-icon="mdi-send"
+                        @click:append-outer="sendFeedback">
+
+                      </v-text-field>
+                    </v-container>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-tab-item>
+          </v-tabs>
         </v-container>
       </v-card>
 
@@ -203,6 +338,8 @@ export default {
   props: ["activity", "activityFull"],
   data() {
     return {
+      newFeedback: "",
+      loading: false,
       tasks: [],
       dialog: false,
       upload: {
@@ -251,6 +388,20 @@ export default {
     }
   },
   methods: {
+    sendFeedback() {
+      this.selectedTask.loading = true
+      this.axios.post("/Services/LearningTasks.svc/CreateTaskStudentComment", {
+        taskId: this.selectedTask.id,
+        taskStudentComment: {
+          taskStudentId: this.selectedTask.students[0].id,
+          comment: this.newFeedback
+        }
+      }).then((res) => {
+        this.selectedTask.students[0].comments.push(res.data);
+        this.selectedTask.loading = false
+        this.newFeedback = ""
+      })
+    },
     deleteSubmission(submission) {
       this.axios.post("/Services/FileAsset.svc/DeleteFile", {
         fileAssetId: submission.taskSubmissionItemId
@@ -308,8 +459,22 @@ export default {
       return moment(date);
     },
     taskDialog(task) {
+      this.selectedTask = null
       this.selectedTask = task;
-      this.dialog = true;
+      this.selectedTask.loading = false
+      // only supports single rubric for now, no lesson plan for multiple available.
+      if(task.rubricWikiNodeIds) {
+        this.loading = true
+        this.axios.post("/Services/Rubrics.svc/GetRubric", {
+          id: null,
+          wikiNodeId: task.rubricWikiNodeIds[0]
+        }).then((res) => {
+          this.selectedTask.rubric = res.data.d
+          this.dialog = true;
+        })
+      } else {
+        this.dialog = true;
+      }
     },
     getSubmissionStatus(submission) {
       let submittedSubmission
@@ -318,7 +483,7 @@ export default {
       }
       if(!submittedSubmission && this.selectedTask.students[0].submissionStatus === 1) {
         return {
-          status:  "pending",
+          status: "pending",
           text: "Pending submission",
           color: "warning"
         }

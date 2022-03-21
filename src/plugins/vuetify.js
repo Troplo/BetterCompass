@@ -13,11 +13,12 @@ export default new Vuetify({
                 accent: colors.shades.black,
                 error: colors.red.accent3,
                 text: "#000000",
+                dark: "#151515",
                 nav: "#FFFFFF",
             },
             dark: {
                 primary: colors.info,
-                nav: "#181818",
+                nav: "#151515",
                 dark: "#181818",
                 text: "#ffffff"
             },

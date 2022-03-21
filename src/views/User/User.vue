@@ -92,7 +92,9 @@ export default {
     }
   },
   mounted() {
-    this.getUserData();
+    this.$store.dispatch("getUserInfo").then(() => {
+      this.getUserData();
+    })
   }
 }
 </script>

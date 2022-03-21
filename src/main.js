@@ -7,16 +7,9 @@ import axios from "axios"
 import VueAxios from "vue-axios"
 import Toast from "vue-toastification"
 import "vue-toastification/dist/index.css"
-import VCalendar from 'v-calendar';
-import VueCal from 'vue-cal'
-import 'vue-cal/dist/vuecal.css'
 import './registerServiceWorker'
 
 Vue.use(require('vue-shortkey'))
-Vue.use(VueCal)
-Vue.use(VCalendar, {
-  componentPrefix: 'vc',
-});
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.use(Toast)

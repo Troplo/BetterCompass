@@ -157,8 +157,12 @@ export default {
     },
     async load() {
       this.$emit("loading", true)
-
-      this.items = this.resources.children
+      console.log("Load Requested")
+      if(this.path === "/" || this.path === "//") {
+        this.items = this.resources.children
+      } else {
+        this.items = this.resources.children[this.resources.children.findIndex(x => x.id === this.path.replace("/", ""))].children
+      }
       this.$emit("loading", false)
     },
     async downloadItem(item) {

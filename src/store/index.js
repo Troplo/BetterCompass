@@ -6,6 +6,10 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     school: null,
+    versioning: {
+      date: process.env.VUE_APP_BUILD_DATE,
+      version: process.env.VUE_APP_VERSION
+    },
     site: {
       release: "dev",
       loading: true

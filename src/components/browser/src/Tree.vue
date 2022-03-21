@@ -156,11 +156,6 @@ export default {
       this.init()
     },
     path() {
-      this.active = [this.path]
-      if (!this.open.includes(this.path)) {
-        this.open.push(this.path)
-      }
-      console.log(this.open)
     },
     async refreshPending() {
       if (this.refreshPending) {

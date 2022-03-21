@@ -23,6 +23,16 @@
         <v-container>
           <v-row>
             <v-col>
+              <h3>Teacher</h3>
+              <h1>
+                <v-avatar
+                    large
+                >
+                  <img :src="getTeacherPhoto">
+                </v-avatar>&nbsp;
+             {{activity.ManagerTextReadable}}</h1>
+            </v-col>
+            <v-col>
               <h3>Location</h3>
               <h1>{{activity.LocationDetails.longName}}</h1>
             </v-col>
@@ -110,6 +120,15 @@ export default {
     return {
       selectedActivity: null,
       lp: "<p>No lesson plan has been uploaded yet.</p>",
+    }
+  },
+  computed: {
+    getTeacherPhoto() {
+      if(this.activity.managers[0].CoveringPhotoPath) {
+        return this.activity.managers[0].CoveringPhotoPath.replace('full', 'square') + '?forceInstance=' + this.$store.state.school.instance
+      } else {
+        return this.activity.managers[0].ManagerPhotoPath.replace('full', 'square') + '?forceInstance=' + this.$store.state.school.instance
+      }
     }
   },
   methods: {

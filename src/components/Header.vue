@@ -25,7 +25,7 @@
           hide-details
           outlined
           placeholder="English"
-          :label="$vuetify.breakpoint.mobile ? 'Search Compass...' : 'Search Compass... (CTRL + K)' "
+          :label="$vuetify.breakpoint.mobile ? 'Search BetterCompass...' : 'Search BetterCompass... (CTRL + K)' "
           @click="$store.commit('setSearch', true)"
           style="max-width: 450px;"
       >
@@ -91,7 +91,7 @@
         v-model="drawer"
         v-if="$store.state.user"
         app
-        color="#151515"
+        :color="navColor"
         floating
     >
       <v-list-item v-if="$vuetify.breakpoint.mobile">
@@ -321,6 +321,15 @@ export default {
             click() {}
           }
         ]
+      }
+    }
+  },
+  computed: {
+    navColor() {
+      if(this.$vuetify.theme.dark) {
+        return "#151515"
+      } else {
+        return "#FFFFFF"
       }
     }
   },

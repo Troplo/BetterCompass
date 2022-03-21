@@ -25,7 +25,9 @@
               <v-progress-circular indeterminate size="64"></v-progress-circular>
             </v-overlay>
             <v-toolbar>
-              <v-icon @click="changeDay('subtract')">mdi-arrow-left</v-icon>
+              <v-btn text small fab @click="changeDay('subtract')">
+                <v-icon>mdi-arrow-left</v-icon>
+              </v-btn>
               &nbsp;
               <v-menu
                   ref="menu"
@@ -35,7 +37,7 @@
                   min-width="auto"
               >
                 <template v-slot:activator="{ on }">
-                  <v-btn text small v-on="on">
+                  <v-btn text small fab v-on="on">
                     <v-icon>mdi-calendar</v-icon>
                   </v-btn>
                 </template>
@@ -43,6 +45,7 @@
                     v-model="focus"
                     no-title
                     scrollable
+                    color="info"
                 >
                   <v-spacer></v-spacer>
                   <v-btn
@@ -58,8 +61,12 @@
               <v-toolbar-title>{{ moment(focus).format("dddd, MMMM Do YYYY") }}</v-toolbar-title>
               <v-spacer></v-spacer>
               &nbsp;
-              <v-icon @click="changeDay('add')">mdi-number</v-icon>
-              <v-icon @click="changeDay('add')">mdi-arrow-right</v-icon>
+              <v-btn text small fab @click="focus = new Date(); fetchEvents">
+                <v-icon>mdi-refresh</v-icon>
+              </v-btn>
+              <v-btn text small fab @click="changeDay('add')">
+                <v-icon>mdi-arrow-right</v-icon>
+              </v-btn>
             </v-toolbar>
             <v-sheet   style="position: sticky">
               <v-tabs
@@ -120,61 +127,8 @@
               </v-card>
             </v-container>
           </v-card>
-          <v-card class="rounded-xl ma-3" elevation="7" v-if="!$vuetify.breakpoint.xl">
-            <v-toolbar>
-              <v-spacer></v-spacer>
-              <v-toolbar-title>{{ $store.state.school.name }} News</v-toolbar-title>
-              <v-spacer></v-spacer>
-            </v-toolbar>
-            <v-card
-                v-for="item in news"
-                :key="item.id"
-                class="rounded-xl mx-2 ma-3"
-                dense
-                elevation="3"
-                text
-            >
-              <v-container class="text-center align-center justify-center">
-                <div>
-                  <v-avatar
-                      :src="$store.state.school.fqdn + item.UserImageUrl"
-                      align="center"
-                      class="text-center justify-center"
-                      justify="center"
-                      size="40"
-                  >
-                    <img
-                        :src="$store.state.school.fqdn + item.UserImageUrl"
-                    />
-                  </v-avatar>
-                  <p class="text-h5">
-                    {{ item.UserName }}
-                  </p>
-                  <div class="text-block" style="white-space: pre-line" v-html="item.Content1">
-                  </div>
-                  <v-card-actions class="justify-center">
-                    <v-chip
-                        v-for="attachment in item.Attachments"
-                        :key="attachment.id"
-                        :href="attachment.Url"
-                        download
-                        color="indigo"
-                        dark
-                    >
-                      <v-icon>mdi-download</v-icon>
-                      {{ attachment.Name }}
-                    </v-chip>
-                  </v-card-actions>
-
-                  <small>{{
-                      moment(item.PostDateTime).format("dddd, MMMM Do YYYY, hh:mm A")
-                    }}</small>
-                </div>
-              </v-container>
-            </v-card>
-          </v-card>
-        </v-col>
-        <v-col v-if="$vuetify.breakpoint.xl">
+      </v-col>
+        <v-col>
           <v-alert v-for="alert in alerts" :key="alert.id" type="info" class="rounded-xl ma-3">
             {{ alert.Body }}
           </v-alert>
@@ -231,6 +185,30 @@
               </v-container>
             </v-card>
           </v-card>
+          <v-card class="rounded-xl ma-3" elevation="7">
+            <v-toolbar>
+              <v-spacer></v-spacer>
+              <v-toolbar-title>What's new in BetterCompass v{{$store.state.versioning.version}}?</v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            <v-container>
+              <ul>
+                <li>Fixed the dark sidebar on light theme.</li>
+                <li>Removed white border around calendar.</li>
+                <li>Added calendar refresh button (which also jumps to today).</li>
+                <li>Added feedback tab to learning tasks.</li>
+                <li>Compass links in learning tasks will be replaced with BetterCompass equivalents.</li>
+                <li>Weekly schedule will exclude weekends.</li>
+                <li>"Your Profile" now won't crash if you load it as the initial route.</li>
+                <li>Learning task uploader now properly supports 2 or more upload types.</li>
+                <li>Extra chronicle info has been moved to a dialog.</li>
+                <li>The QuickSwitcher now clears the input automatically.</li>
+                <li>The PWA app has been modified so the title-bar matches the background.</li>
+                <li>The calendar now recognizes substitute teacher classes.</li>
+                <li>You can now see what teacher you have on the activity.</li>
+              </ul>
+            </v-container>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
@@ -253,23 +231,13 @@ export default {
       },
       learningTaskAlert: false,
       type: 'day',
-      types: ['month', 'week', 'day', '4day'],
       mode: 'stack',
-      modes: ['stack', 'column'],
       alerts: [],
       overDueLearningTasks: 0,
-      weekday: [0, 1, 2, 3, 4, 5, 6],
-      weekdays: [
-        { text: 'Sun - Sat', value: [0, 1, 2, 3, 4, 5, 6] },
-        { text: 'Mon - Sun', value: [1, 2, 3, 4, 5, 6, 0] },
-        { text: 'Mon - Fri', value: [1, 2, 3, 4, 5] },
-        { text: 'Mon, Wed, Fri', value: [1, 3, 5] },
-      ],
+      weekday: [1, 2, 3, 4, 5],
       value: '',
       events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-      categories: ["1"],
       focus: moment().format(),
       news: [],
       user: {}
@@ -346,9 +314,9 @@ export default {
       }
     },
     computeColor(event) {
-      if (event.activityType === 7) {
+      if (event.activityType === 7 || event.color === "#f4dcdc") {
         return "red"
-      } else if (event.activityType === 1) {
+      } else if (event.color === "#dce6f4") {
         return "indigo"
       } else if(event.activityType === 10) {
         return "orange"
@@ -396,7 +364,7 @@ export default {
             // lookup event.title in this.$store.state.subjects for name
             name: this.subjectName(event),
             content: event.longTitle,
-            color: this.computeColor(event),
+            color: event.backgroundColor,
             start: new Date(event.start),
             end: new Date(event.finish),
             timed: !event.allDay,

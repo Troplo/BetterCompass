@@ -13,7 +13,13 @@ if(process.env.NODE_ENV === 'production') {
 const compassRouter = function(req) {
     const instance = req.header("compassInstance") || req.query.forceInstance || "devices"
     console.log("Instance: " + instance)
-    return "https://" + instance + ".compass.education";
+    // this is to avoid the ability to proxy non Compass sites through the proxy.
+    if(instance.match(/^[a-zA-Z0-9-]+$/)) {
+        return "https://" + instance + ".compass.education"
+    } else {
+        console.log("Test failed: " + "https://" + instance + ".compass.education")
+        return "https://devices.compass.education"
+    }
 }
 
 app.use(function(req, res, next) {
