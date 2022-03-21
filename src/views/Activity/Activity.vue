@@ -8,7 +8,7 @@
         <v-row align="center"
                justify="center">
           <v-col>
-            <h1>{{ activity.SubjectName }}</h1>
+            <h1>{{ activity.SubjectName || activity.ActivityDisplayName }}</h1>
             <p>{{ activity.ActivityDisplayName }}</p>
           </v-col>
         </v-row>
@@ -88,6 +88,13 @@ export default {
           [type]: this.$route.params.id
         }).then(res => {
         this.activity = res.data.d
+        if(!this.activity.LocationDetails) {
+          this.activity.LocationDetails = {
+            longName: "???",
+            seatNumber: 0,
+            computerNumber: 0
+          }
+        }
         this.getLessonPlan()
         this.axios.post("/Services/NewsFeed.svc/GetActivityNewsFeedPaged", {
           activityId: this.activity.ActivityId,
