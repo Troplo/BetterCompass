@@ -61,7 +61,7 @@
               <v-toolbar-title>{{ moment(focus).format("dddd, MMMM Do YYYY") }}</v-toolbar-title>
               <v-spacer></v-spacer>
               &nbsp;
-              <v-btn text small fab @click="focus = new Date(); fetchEvents">
+              <v-btn text small fab @click="focus = moment().toISOString(); fetchEvents()">
                 <v-icon>mdi-refresh</v-icon>
               </v-btn>
               <v-btn text small fab @click="changeDay('add')">
@@ -188,7 +188,7 @@
           <v-card class="rounded-xl ma-3" elevation="7">
             <v-toolbar>
               <v-spacer></v-spacer>
-              <v-toolbar-title>What's new in BetterCompass v{{$store.state.versioning.version}}?</v-toolbar-title>
+              <v-toolbar-title>What's new in BetterCompass?</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
@@ -207,6 +207,7 @@
                 <li>The calendar now recognizes substitute teacher classes.</li>
                 <li>You can now see what teacher you have on the activity.</li>
               </ul>
+              <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
             </v-container>
           </v-card>
         </v-col>

@@ -24,6 +24,9 @@
               color="warning"
           ></v-switch>
         </v-card-text>
+        <div class="mx-6">
+            <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
+        </div>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="saveSettings()">Save</v-btn>
