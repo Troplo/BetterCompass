@@ -24,7 +24,7 @@ const compassRouter = function(req) {
 
 app.get("/api/v1/weather", (req, res) => {
     try {
-        axios.get("http://ip-api.com/json/" + req.headers["CF-Connecting-IP"] || req.headers['X-FORWARDED-FOR'] || req.headers["X-Real-Ip"]).then((response1) => {
+        axios.get("http://ip-api.com/json/" + req.headers["CF-Connecting-IP"] || req.headers['X-FORWARDED-FOR'] || req.headers["X-Real-Ip"] || req.ip).then((response1) => {
             console.log(response1.data)
             axios.get("https://api.openweathermap.org/data/2.5/weather?lat=" + response1.data.lat + "&lon=" + response1.data.lon + "&appid=cc89e60155163ce2bbd7a7a5e3ca413b&units=metric")
                 .then(response2 => {
