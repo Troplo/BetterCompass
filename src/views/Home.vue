@@ -206,6 +206,8 @@
                 <li>The PWA app has been modified so the title-bar matches the background.</li>
                 <li>The calendar now recognizes substitute teacher classes.</li>
                 <li>You can now see what teacher you have on the activity.</li>
+                <li>The activity instance will now automatically set itself upon QuickSwitch.</li>
+                <li>You can now easily change between activity instances with arrows.</li>
               </ul>
               <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
             </v-container>

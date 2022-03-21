@@ -8,6 +8,10 @@
           v-model="selectedActivity"
           :items="activityFull.Instances"
           item-value="id"
+          append-outer-icon="mdi-arrow-right"
+          prepend-icon="mdi-arrow-left"
+          @click:append-outer="pushEvent(null, 'forward')"
+          @click:prepend="pushEvent(null, 'back')"
           item-text="dt"
           label="Activity Instances"
           @change="pushEvent"
@@ -118,7 +122,6 @@ export default {
   },
   data() {
     return {
-      selectedActivity: null,
       lp: "<p>No lesson plan has been uploaded yet.</p>",
     }
   },
@@ -129,24 +132,32 @@ export default {
       } else {
         return this.activity.managers[0].ManagerPhotoPath.replace('full', 'square') + '?forceInstance=' + this.$store.state.school.instance
       }
+    },
+    selectedActivity() {
+      return this.activity.id
     }
   },
   methods: {
     moment(date) {
       return moment(date);
     },
-    pushEvent(event) {
-      this.$router.push("/activity/" + event);
-      this.getActivity(event);
+    pushEvent(event, auto) {
+      if(auto === "forward") {
+        const eventObject = this.activityFull.Instances[this.activityFull.Instances.findIndex(x => x.id === this.activity.id) + 1]
+        this.$router.push("/activity/" + eventObject.id);
+        this.getActivity(eventObject.id)
+      } else if(auto === "back") {
+        const eventObject = this.activityFull.Instances[this.activityFull.Instances.findIndex(x => x.id === this.activity.id) - 1]
+        this.$router.push("/activity/" + eventObject.id);
+        this.getActivity(eventObject.id)
+      } else {
+        this.$router.push("/activity/" + event);
+        this.getActivity(event)
+      }
     }
   },
   mounted() {
     this.selectedActivity = this.activity.id;
-  },
-  watch: {
-    $route() {
-      this.selectedActivity = this.activity.id;
-    }
   }
 }
 </script>
