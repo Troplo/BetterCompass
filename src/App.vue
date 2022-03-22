@@ -47,7 +47,7 @@
           <span class="headline">BetterCompass QuickSwitcher (BETA)</span>
         </v-card-title>
         <v-container>
-          <v-autocomplete auto-select-first v-model="search" :items="$store.state.subjects" item-text="subjectLongName" label="Search" outlined autofocus return-object :search-input.sync="searchInput">
+          <v-autocomplete auto-select-first v-model="search" :items="$store.state.quickSwitchCache" item-text="subjectLongName" label="Search" outlined autofocus return-object :search-input.sync="searchInput">
           </v-autocomplete>
         </v-container>
       </v-card>
@@ -238,7 +238,10 @@ export default {
     })
     this.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
     this.axios.defaults.headers.common['compassSchoolId'] = localStorage.getItem('schoolId')
-    this.$store.dispatch("getUserInfo").catch(() => {
+    this.$store.dispatch("getUserInfo")
+        .then(() => {
+          this.$store.dispatch("updateQuickSwitch")
+        }).catch(() => {
       this.$router.push('/login')
     })
   },
@@ -250,6 +253,13 @@ export default {
       if(this.search) {
         if(this.search.id) {
           this.$router.push("/activity/activity/" + this.search.id)
+          this.$store.commit("setSearch", false)
+          this.search = null
+          this.$nextTick(() => {
+            this.searchInput = null
+          })
+        } else if(this.search.customType === 1) {
+          this.$router.push(this.search.route)
           this.$store.commit("setSearch", false)
           this.search = null
           this.$nextTick(() => {

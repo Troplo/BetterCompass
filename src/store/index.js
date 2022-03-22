@@ -63,17 +63,58 @@ export default new Vuex.Store({
     setSearch(state, value) {
       state.modals.search = value
     },
-    updateQuickSwitchCache(state, value, push) {
-      if(push) {
-        state.quickSwitchCache.push(value)
-      } else {
-        state.quickSwitchCache = value
-      }
+    updateQuickSwitchCache(state, value) {
+      state.quickSwitchCache.push(value)
     }
   },
   actions: {
-    quickSwitchCache(context) {
-      context.commit("updateQuickSwitchCache", [context.state.quickSwitchCache, true])
+    updateQuickSwitch(context) {
+      context.commit("updateQuickSwitchCache", {
+        subjectLongName: "Home",
+        customType: 1,
+        route: "/"
+      })
+      context.commit("updateQuickSwitchCache", {
+        subjectLongName: "Your Profile",
+        customType: 1,
+        route: "/user"
+      })
+      context.commit("updateQuickSwitchCache", {
+        subjectLongName: "Reports",
+        customType: 1,
+        route: "/user/reports"
+      })
+      context.commit("updateQuickSwitchCache", {
+        subjectLongName: "Events",
+        customType: 1,
+        route: "/user/events"
+      })
+      context.commit("updateQuickSwitchCache", {
+        subjectLongName: "School Resources",
+        customType: 1,
+        route: "/school/resources"
+      })
+      context.commit("updateQuickSwitchCache", {
+        subjectLongName: "Changelog",
+        customType: 1,
+        route: "/changelog"
+      })
+      context.commit("updateQuickSwitchCache", {
+        subjectLongName: "Learning Tasks",
+        customType: 1,
+        route: "/user/tasks"
+      })
+      Vue.axios.post("/Services/Subjects.svc/GetStandardClassesOfUserInAcademicGroup", {
+        userId: context.state.user.userId,
+        limit: 100,
+        start: 0,
+        page: 1,
+        academicGroupId: -1
+      }).then((res) => {
+        res.data.d.data.forEach((subject) => {
+          context.commit("updateQuickSwitchCache", subject)
+        })
+      })
     },
     getUserInfo(context) {
       Vue.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')

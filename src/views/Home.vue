@@ -248,8 +248,9 @@
                 <li>Added "Provide Feedback" button on the sidebar to report bugs/suggest features.</li>
                 <li>Added school events.</li>
                 <li>Removed parent options on User Profile page.</li>
-                <li>Add semester reports.</li>
+                <li>Added semester reports.</li>
                 <li>Remove unparsed JSON from chronicle.</li>
+                <li>Added actual routes to QuickSwitch, like User Profile, in addition to the existing subjects.</li>
               </ul>
               <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
             </v-container>
