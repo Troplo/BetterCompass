@@ -62,6 +62,16 @@ app.use('/download', createProxyMiddleware({
     },
 }));
 
+app.use('/Assets*', createProxyMiddleware({
+    target: "devices.compass.education",
+    router: compassRouter,
+    changeOrigin: true,
+    cookieDomainRewrite: process.env.HOSTNAME,
+    pathRewrite: {
+        [`^/json_placeholder`]: '',
+    },
+}));
+
 app.use(bodyParser.json({ limit: '5mb' }))
 app.use(bodyParser.urlencoded({ extended: true }))
 
