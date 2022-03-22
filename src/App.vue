@@ -53,12 +53,24 @@
       </v-card>
     </v-dialog>
     <Header></Header>
-    <v-main>
+    <v-main :class="scrollbarTheme">
       <router-view/>
     </v-main>
   </v-app>
 </template>
 <style>
+.v-btn {
+  text-transform: capitalize !important;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge add Firefox */
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none; /* Firefox */
+}
 .troplo-nav {
   font-family: 'Roboto', sans-serif;
 }
@@ -86,8 +98,8 @@
 }
 .theme--dark.v-sheet {
   overflow:auto !important;
-  background-color: #151515 !important;
-  border-color: #151515 !important;
+  background-color: #181818 !important;
+  border-color: #181818 !important;
   color: #ffffff;
 }
 .card {
@@ -122,26 +134,43 @@ div .theme--dark.v-calendar-daily .v-calendar-daily__day {
   border: 1px transparent !important;
 }
 
-/* Works on Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: black #151515;
+.light::-webkit-scrollbar {
+  width: 15px !important;
 }
 
-/* Works on Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 12px;
+.light::-webkit-scrollbar-track {
+  background: #e6e6e6!important;
+  border-left: 1px solid #dadada!important;
 }
 
-*::-webkit-scrollbar-track {
-  background: #0e0e0e;
+.light::-webkit-scrollbar-thumb {
+  background: #b0b0b0!important;
+  border: solid 3px #e6e6e6!important;
+  border-radius: 7px!important;
 }
 
-*::-webkit-scrollbar-thumb {
-  background-color: #151515;
-  border-radius: 20px;
-  border: 3px solid #151515;
+.light::-webkit-scrollbar-thumb:hover {
+  background: black!important;
 }
+
+::-webkit-scrollbar {
+  width: 15px!important;
+}
+
+::-webkit-scrollbar-track {
+  background: #151515!important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3e3e3e!important;
+  border: solid 3px #202020!important;
+  border-radius: 7px!important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: white!important;
+}
+
 .vuecal__event-time {
   margin: 3px 0;
   font-size: 12px;
@@ -161,6 +190,7 @@ export default {
     Header
   },
   data: () => ({
+    update: false,
     search: "",
     results: [],
     searchInput: null,
@@ -170,17 +200,12 @@ export default {
       learningTaskNotification: true
     }
   }),
+  computed: {
+    scrollbarTheme() {
+      return this.$vuetify.theme.dark ? 'dark' : 'light';
+    },
+  },
   methods: {
-    filterItems(needle, heystack) {
-      let query = needle.toLowerCase();
-      return heystack.filter(item => item.subjectLongName.toLowerCase().indexOf(query) >= 0);
-    },
-    doSearch(search) {
-      console.log(search)
-      if(search.length > 0) {
-        this.results = this.filterItems(search, this.$store.state.subjects)
-      }
-    },
     saveSettings() {
       localStorage.setItem('settings', JSON.stringify(this.settings))
       this.$store.commit('setSettings', this.settings)
@@ -211,8 +236,6 @@ export default {
       fqdn: localStorage.getItem("schoolFqdn"),
       instance: localStorage.getItem("schoolInstance")
     })
-    // set CompassApiKey header in axios
-    this.axios.defaults.headers.common['CompassApiKey'] = localStorage.getItem('apiKey')
     this.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
     this.axios.defaults.headers.common['compassSchoolId'] = localStorage.getItem('schoolId')
     this.$store.dispatch("getUserInfo").catch(() => {

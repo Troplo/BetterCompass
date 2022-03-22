@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "proxy": "lcp --proxyUrl https://bhs-vic.compass.education --port 3001 --proxyPartial /"
+    "start": "node .",
+    "serve": "node ."
   },
   "dependencies": {
     "axios": "^0.26.1",
@@ -16,6 +16,8 @@
     "http-proxy-middleware": "^2.0.0",
     "jade": "~1.11.0",
     "local-cors-proxy": "^1.1.0",
-    "morgan": "^1.10.0"
+    "mariadb": "^3.0.0",
+    "morgan": "^1.10.0",
+    "sequelize": "^6.17.0"
   }
 }

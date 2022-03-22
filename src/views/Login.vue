@@ -126,28 +126,22 @@ export default {
         username: this.username,
         schoolId: this.$store.state.school.id
       }).then((res) => {
-        localStorage.setItem("userId", res.data.d?.roles[0].userId)
-        this.axios.post("/services/mobile.svc/GetPersonalDetails", {
-          userId: res.data.d?.roles[0].userId
-        }).then((res) => {
-          localStorage.setItem("userId", res.data.d.userId)
-          this.$store.commit("setUser", res.data.d.data)
-        })
-      })
-      this.axios.post("/services/admin.svc/GetApiKey", {
-        password: this.password,
-        schoolId: this.$store.state.school.id,
-        sussiId: this.username
-      }).then((res) => {
-        if(res.data.d) {
-          this.loading = false
-          localStorage.setItem("apiKey", res.data.d)
-          this.$store.commit("setToken", res.data.d)
-          this.$router.push("/")
-        } else {
-          this.loading = false
+        if(!res.data.d.success) {
           this.$toast.error("Invalid username or password.")
+          this.loading = false
+        } else {
+          localStorage.setItem("userId", res.data.d?.roles[0].userId)
+          this.axios.post("/services/mobile.svc/GetPersonalDetails", {
+            userId: res.data.d?.roles[0].userId
+          }).then((res) => {
+            localStorage.setItem("userId", res.data.d.userId)
+            this.$store.commit("setUser", res.data.d.data)
+          }).catch(() => {
+            this.$toast.error("There was a validation error. Please refresh and login again.")
+          })
         }
+      }).catch(() => {
+        this.$toast.error("Something went wrong, perhaps Compass is down?")
       })
     }
   },

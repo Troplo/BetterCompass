@@ -84,6 +84,7 @@
                 </v-tab>
               </v-tabs>
               <v-calendar
+                  :class="scrollbarTheme"
                   ref="calendar"
                   v-model="focus"
                   :weekdays="weekday"
@@ -186,9 +187,10 @@
             </v-card>
           </v-card>
           <v-card
+              :class="scrollbarTheme"
               class="rounded-xl ma-3 text-center justify-center"
               elevation="7"
-              v-if="weather"
+              v-if="weather.name"
           >
             <v-toolbar>
               <v-spacer></v-spacer>
@@ -234,23 +236,20 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
+              <v-card-title>
+                22/03/2022
+              </v-card-title>
               <ul>
-                <li>Fixed the dark sidebar on light theme.</li>
-                <li>Removed white border around calendar.</li>
-                <li>Added calendar refresh button (which also jumps to today).</li>
-                <li>Added feedback tab to learning tasks.</li>
-                <li>Compass links in learning tasks will be replaced with BetterCompass equivalents.</li>
-                <li>Weekly schedule will exclude weekends.</li>
-                <li>"Your Profile" now won't crash if you load it as the initial route.</li>
-                <li>Learning task uploader now properly supports 2 or more upload types.</li>
-                <li>Extra chronicle info has been moved to a dialog.</li>
-                <li>The QuickSwitcher now clears the input automatically.</li>
-                <li>The PWA app has been modified so the title-bar matches the background.</li>
-                <li>The calendar now recognizes substitute teacher classes.</li>
-                <li>You can now see what teacher you have on the activity.</li>
-                <li>The activity instance will now automatically set itself upon QuickSwitch.</li>
-                <li>You can now easily change between activity instances with arrows.</li>
-                <li>There is now a weather widget built into BetterCompass. (Can be disabled in BetterCompass Settings)</li>
+                <li>Added activity resources.</li>
+                <li>Added school resources.</li>
+                <li>Fixed weather widget.</li>
+                <li>Updated dark theme color scheme.</li>
+                <li>Made light theme slightly more tolerable.</li>
+                <li>Added "Provide Feedback" button on the sidebar to report bugs/suggest features.</li>
+                <li>Added school events.</li>
+                <li>Removed parent options on User Profile page.</li>
+                <li>Add semester reports.</li>
+                <li>Remove unparsed JSON from chronicle.</li>
               </ul>
               <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
             </v-container>
@@ -287,17 +286,20 @@ export default {
       focus: moment().format(),
       news: [],
       user: {},
-      weather: null
+      weather: {}
     }
+  },
+  computed: {
+    scrollbarTheme() {
+      return this.$vuetify.theme.dark ? 'dark' : 'light';
+    },
   },
   methods: {
     getWeather() {
       if(this.$store.state.settings.weather) {
         this.axios.get("/api/v1/weather").then(res => {
           this.weather = res.data;
-        }).catch(error => {
-          console.log(error);
-        });
+        })
       }
     },
     getStatus(item) {
@@ -346,28 +348,10 @@ export default {
         if(this.overDueLearningTasks > 0 && this.$store.state.settings.learningTaskNotification) {
           this.learningTaskAlert = true
         }
-      }).catch((err) => {
-        console.log(err);
-      });
+      })
     },
     pushEvent(event) {
       this.$router.push("/activity/" + event.event.instanceId);
-    },
-    computeTextColor(event) {
-      const color = this.computeColor(event)
-      const r = parseInt(color.substr(0,2),16);
-      const g = parseInt(color.substr(2,2),16);
-      const b = parseInt(color.substr(4,2),16);
-      const yiq = ((r*299)+(g*587)+(b*114))/1000;
-      return (yiq >= 128) ? 'black' : 'white';
-      },
-    computeIntervalCount() {
-      return this.computeEvents.length + 2
-    },
-    computeFirstTime() {
-      if (this.computeEvents.length > 0) {
-        return moment(this.computeEvents[0].start).subtract(3, "hour").startOf("hour").format("HH:mm A");
-      }
     },
     computeColor(event) {
       if (event.activityType === 7 || event.color === "#f4dcdc") {

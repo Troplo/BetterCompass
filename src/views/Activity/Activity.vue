@@ -12,8 +12,8 @@
           <v-row align="center"
                  justify="center">
             <v-col>
-              <h1>{{ activity.SubjectName || activity.ActivityDisplayName }}</h1>
-              <p>{{ activity.ActivityDisplayName }}</p>
+              <h1 style="color: #ffffff;">{{ activity.SubjectName || activity.ActivityDisplayName }}</h1>
+              <p style="color: #ffffff;">{{ activity.ActivityDisplayName }}</p>
             </v-col>
           </v-row>
         </v-container>
@@ -132,9 +132,10 @@ export default {
   },
   mounted() {
     this.getActivity()
+    console.log(this.$route.params.id)
   },
   watch: {
-    $route() {
+    "$route.params.id"() {
       this.getActivity()
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="d-flex flex-column" flat min-height="380" tile>
+  <v-card class="d-flex flex-column" flat min-height="380" tile style="background-color: #151515 !important;">
     <confirm ref="confirm"></confirm>
     <v-card-text
       v-if="!path"
@@ -12,7 +12,7 @@
       >File: {{ path }}
     </v-card-text>
     <v-card-text v-else-if="dirs.length || files.length" class="grow">
-      <v-list v-if="dirs.length" subheader>
+      <v-list v-if="dirs.length" subheader style="background-color: #151515 !important;">
         <v-subheader>Folders</v-subheader>
         <v-list-item
           v-for="item in dirs"
@@ -161,6 +161,8 @@ export default {
       if(this.path === "/" || this.path === "//") {
         this.items = this.resources.children
       } else {
+        console.log(this.resources.children.length)
+        console.log(this.resources.children[this.resources.children.findIndex(x => x.id === this.path.replaceAll("/", ""))])
         this.items = this.resources.children[this.resources.children.findIndex(x => x.id === this.path.replace("/", ""))].children
       }
       this.$emit("loading", false)

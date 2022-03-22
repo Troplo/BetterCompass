@@ -133,8 +133,13 @@ export default {
         return this.activity.managers[0].ManagerPhotoPath.replace('full', 'square') + '?forceInstance=' + this.$store.state.school.instance
       }
     },
-    selectedActivity() {
-      return this.activity.id
+    selectedActivity: {
+      get() {
+        return this.activity.id
+      },
+      set() {
+
+      }
     }
   },
   methods: {

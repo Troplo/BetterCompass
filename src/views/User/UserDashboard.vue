@@ -28,7 +28,7 @@
               <v-col>
                 <p>
                   Name: <b>{{ $store.state.user.firstName }} {{ $store.state.user.lastName }}</b><br>
-                  Student ID (SussiID): <b>{{ $store.state.user.sussiId }}</b><br>
+                  Student ID (Username): <b>{{ $store.state.user.sussiId }}</b><br>
                   <template v-if="$store.state.parent">Parent ID (SussiID): <b>Configure parent linking in BetterCompass
                     settings.</b><br></template>
                   Email: <b>{{ $store.state.user.email }}</b><br>
@@ -43,6 +43,18 @@
                   </v-tooltip>
                   <br>
                   Today's Attendance:
+                  <v-chip-group>
+                    <v-tooltip top v-for="attendance in user.userTimeLinePeriods" :key="attendance.id">
+                      <template v-slot:activator="{ on }">
+                        <v-chip v-on="on" pill style="opacity: 1" fab :color="getAttendance(attendance.statusName).color">
+                          <v-icon>
+                            {{getAttendance(attendance.statusName).icon}}
+                          </v-icon>
+                        </v-chip>
+                      </template>
+                      <span>{{attendance.name}}: {{attendance.statusName}}</span>
+                    </v-tooltip>
+                  </v-chip-group>
                 </p>
               </v-col>
             </v-row>
@@ -65,7 +77,12 @@
               </v-toolbar>
               <v-container>
                 <div v-for="input in item.chronicleEntries[0].inputFields" :key="input.id">
-                  {{input.value}}
+                  <template v-if="JSONExtract(input.value).length">
+                    {{ getJSON(input.value) }}
+                  </template>
+                  <template v-else>
+                    {{input.value}}
+                  </template>
                 </div>
               </v-container>
             </v-card>
@@ -77,6 +94,8 @@
 </template>
 
 <script>
+import JSONExtract from "@/lib/jsonExtract";
+
 export default {
   name: "UserDashboard",
   props: ["user", "chronicle"],
@@ -86,8 +105,42 @@ export default {
       selectedChronicle: null
     }
   },
+  methods: {
+    getAttendance(attendanceStatus) {
+      if(attendanceStatus === "Present") {
+        return {
+          color: "green",
+          icon: "mdi-check"
+        }
+      } else if(attendanceStatus === "Not Present") {
+        return {
+          color: "red",
+          icon: "mdi-close"
+        }
+      } else if(attendanceStatus === "Late") {
+        return {
+          color: "orange",
+          icon: "mdi-clock"
+        }
+      } else {
+        return {
+          color: "grey",
+          icon: "mdi-help"
+        }
+      }
+    },
+    JSONExtract(str) {
+      return JSONExtract(str);
+    },
+    getJSON(json) {
+      const parsed = JSON.parse(json);
+      const indexed = parsed[parsed.findIndex(x => x.isChecked)]
+      if(indexed) {
+        return indexed.valueOption
+      }
+    }
+  },
   mounted() {
-
   }
 }
 </script>

@@ -1,5 +1,67 @@
 <template>
   <div id="header">
+    <v-dialog v-model="feedback.modal" width="700">
+      <v-card elevation="7">
+        <v-card-title>
+          <span class="text-h5">Provide Feedback</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" md="4" sm="6">
+                <v-text-field
+                    class="rounded-xl"
+                    v-model="feedback.route"
+                    label="Route"
+                    required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4" sm="6">
+                Rating:
+                <v-rating
+                    v-model="feedback.rating"
+                    background-color="grey darken-1"
+                    color="yellow darken-3"
+                    empty-icon="$ratingFull"
+                    hover
+                ></v-rating>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                    class="rounded-xl"
+                    v-model="feedback.text"
+                    label="Enter your Feedback"
+                    required
+                ></v-text-field>
+              </v-col>
+              <small
+              >Your feedback will be used to make
+                BetterCompass even better.</small
+              >
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+              class="rounded-xl"
+              color="blue darken-1"
+              text
+              @click="feedback.modal = false"
+          >
+            Close
+          </v-btn>
+          <v-btn
+              class="rounded-xl"
+              color="blue darken-1"
+              text
+              @click="submitFeedback()"
+          >
+            Submit
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-app-bar app v-if="$store.state.user">
       <v-app-bar-nav-icon
           @click.stop="drawer = !drawer"
@@ -183,6 +245,27 @@
                   </v-list-item>
                 </v-list-group>
               </v-list-group>
+              <v-list-item to="/user/events">
+                <v-list-item-icon>
+                  <v-icon>mdi-swim</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-title>Events</v-list-item-title>
+              </v-list-item>
+              <v-list-item to="/changelog">
+                <v-list-item-icon>
+                  <v-icon>mdi-git</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-title>Changelog</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="feedback.modal = true">
+                <v-list-item-icon>
+                  <v-icon>mdi-bug</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-title>Provide Feedback</v-list-item-title>
+              </v-list-item>
             </template>
             <template v-if="$store.state.site.release === 'dev'">
               <v-list-item
@@ -260,6 +343,13 @@ export default {
   name: "Header",
   data() {
     return {
+      feedback: {
+        modal: false,
+        route: "",
+        rating: 0,
+        text: ""
+      },
+      report: false,
       drawer: true,
       menus: {
         dropdownAuthenticated: [
@@ -327,13 +417,31 @@ export default {
   computed: {
     navColor() {
       if(this.$vuetify.theme.dark) {
-        return "#151515"
+        return "#181818"
       } else {
         return "#FFFFFF"
       }
     }
   },
   methods: {
+    submitFeedback() {
+      this.axios
+          .post("/api/v1/feedback", {
+            text: this.feedback.text,
+            starRating: this.feedback.rating,
+            route: this.feedback.route,
+            sussiId: this.$store.state.user.username
+          })
+          .then(() => {
+            this.feedback.text = "";
+            this.feedback.rating = 0;
+            this.feedback.modal = false
+            this.$toast.success("Thank you for making a BetterCompass.")
+          })
+          .catch(() => {
+            this.$toast.error("Something went wrong while submitting feedback, you should submit feedback about this.")
+          })
+    },
     handleClickDropdown(index) {
       this.menus.selected = index
       this.menus.dropdownAuthenticated[index].click.call(this)
@@ -351,8 +459,14 @@ export default {
     }
   },
   mounted() {
+    this.feedback.route = this.$route.path
     if(this.$vuetify.breakpoint.mobile) {
       this.drawer = false
+    }
+  },
+  watch: {
+    $route(to) {
+      this.feedback.route = to.path
     }
   }
 }

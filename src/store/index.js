@@ -76,7 +76,6 @@ export default new Vuex.Store({
       context.commit("updateQuickSwitchCache", [context.state.quickSwitchCache, true])
     },
     getUserInfo(context) {
-      Vue.axios.defaults.headers.common['CompassApiKey'] = localStorage.getItem('apiKey')
       Vue.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
       Vue.axios.defaults.headers.common['compassSchoolId'] = localStorage.getItem('schoolId')
       return new Promise((resolve, reject) => {

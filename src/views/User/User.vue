@@ -1,7 +1,7 @@
 <template>
   <div v-if="user">
     <v-container>
-      <v-card>
+      <v-card elevation="7" class="rounded-xl">
         <v-container>
           <h1>Student: {{ $store.state.user.reportName }} - {{ $store.state.user.formGroup }}
             ({{ $store.state.user.house }}) - Year {{ $store.state.user.yearLevel }}
@@ -26,17 +26,8 @@
             <v-tab to="analytics">
               Analytics
             </v-tab>
-            <v-tab to="analytics">
-              Conferences
-            </v-tab>
-            <v-tab to="analytics">
-              Contributions
-            </v-tab>
-            <v-tab to="analytics">
-              Payments
-            </v-tab>
-            <v-tab to="analytics">
-              Communications
+            <v-tab to="events">
+              Events
             </v-tab>
           </v-tabs>
           <v-container>

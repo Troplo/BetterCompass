@@ -26,9 +26,14 @@
                   <v-icon v-if="item.children.length">
                     {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
                   </v-icon>
-                  <v-icon v-else-if="item.content.filename">
-                    {{ files[item.content.filename.split('.').pop()] || "mdi-file-outline" }}
-                  </v-icon>
+                  <template v-else-if="item.content">
+                    <v-icon v-if="item.content.filename">
+                      {{ files[item.content.filename.split('.').pop()] || "mdi-file-outline" }}
+                    </v-icon>
+                    <v-icon v-else>
+                      mdi-file-outline
+                    </v-icon>
+                  </template>
                   <v-icon v-else>
                     mdi-file-outline
                   </v-icon>

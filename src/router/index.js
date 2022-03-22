@@ -91,9 +91,32 @@ const routes = [
         path: 'tasks',
         name: 'User Tasks',
         component: () => import(/* webpackChunkName: "userTasks" */ '../views/User/UserTasks')
+      },
+      {
+        path: 'events',
+        name: 'User Events',
+        component: () => import(/* webpackChunkName: "userEvents" */ '../views/User/UserEvents')
       }
     ],
-    component: () => import(/* webpackChunkName: "about" */ '../views/User/User.vue')
+    component: () => import(/* webpackChunkName: "user" */ '../views/User/User.vue')
+  },
+  {
+    path: '/school',
+    name: 'School',
+    redirect: "/school/resources",
+    children: [
+      {
+        path: 'resources',
+        name: 'School Resources',
+        component: () => import(/* webpackChunkName: "schoolResources" */ '../views/School/SchoolResources')
+      },
+    ],
+    component: () => import(/* webpackChunkName: "school" */ '../views/School/School')
+  },
+  {
+    path: '/changelog',
+    name: 'Changelog',
+    component: () => import(/* webpackChunkName: "changelog" */ '../views/Changelog.vue')
   },
   {
     path: '/about',

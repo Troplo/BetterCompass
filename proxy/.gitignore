@@ -56,14 +56,11 @@ tmp
 .DS_Store
 node_modules/
 dist/
-npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 # Config folder
-config/
 config/config.json
-*config.json*
 # Editor directories and files
 .idea
 *.suo
@@ -78,7 +75,6 @@ rendering/global/81df1ac4d303319a79db19f45c5c475c.png
 rendering/global/d24b3e361c4fc6263e0276f52ada9694.png
 rendering/marketplacecontent
 rendering/usercontent
-nodeinfo.json
 nodeinfo.json
 
 .env
