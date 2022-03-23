@@ -7,6 +7,20 @@
         </v-toolbar>
         <v-container>
           <v-card-title>
+            23/03/2022
+          </v-card-title>
+          <ul>
+            <li>Tasks, you can now, create, view, and edit normal Compass tasks.</li>
+            <li>Rich Notes, rich notes are an enhanced version of standard tasks that allow you to add descriptions, they cannot be viewed in normal Compass.</li>
+            <li>Class Notes, using rich notes, you can now create notes that are specific to a class. </li>
+            <li>You can now see your upcoming events on the dashboard.</li>
+            <li>You can now minimize header activities to only show learning tasks and your current school week (if your school supports it), enable in BetterCompass Settings.</li>
+            <li>Removed redundant day text and button from calendar on the daily schedule mode.</li>
+            <li>You can now download attachments from School News.</li>
+            <li>Lesson plans are now sanitized to avoid XSS (albeit an extremely unlikely occurrence), and other uglifying styles.</li>
+          </ul>
+
+          <v-card-title>
             22/03/2022
           </v-card-title>
           <ul>

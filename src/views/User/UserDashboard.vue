@@ -117,6 +117,11 @@ export default {
           color: "red",
           icon: "mdi-close"
         }
+      } else if(attendanceStatus === "Medical/Illness") {
+        return {
+          color: "red",
+          icon: "mdi-close"
+        }
       } else if(attendanceStatus === "Late") {
         return {
           color: "orange",

@@ -28,9 +28,6 @@
         <v-tab to="tasks">
           Learning Tasks
         </v-tab>
-        <v-tab to="sessions">
-          Sessions
-        </v-tab>
         <v-tab to="resources">
           Resources
         </v-tab>
@@ -76,16 +73,20 @@ export default {
   methods: {
     getLessonPlan() {
       this.lessonPlan = "<p>Loading...</p>";
-      this.axios.get(`/Services/FileAssets.svc/DownloadFile?sessionstate=readonly&id=${this.activity.lp.fileAssetId}&nodeId=${this.activity.lp.wnid}`).then((res) => {
-        // regex for //*.compass.education
+      if(this.activity.lp.fileAssetId) {
+        this.axios.get(`/Services/FileAssets.svc/DownloadFile?sessionstate=readonly&id=${this.activity.lp.fileAssetId}&nodeId=${this.activity.lp.wnid}`).then((res) => {
+          // regex for //*.compass.education
 
-        this.lessonPlan = res.data
-            .replaceAll(/https:(.*)\.compass\.education/g, "")
-            .replaceAll(`<img src="/Services/FileAssets.svc/DownloadFile?`, `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`)
-            .replaceAll(`<a href="/Services/FileAssets.svc/DownloadFile?`, `<a href="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`)
-      }).catch(() => {
+          this.lessonPlan = res.data
+              .replaceAll(/https:(.*)\.compass\.education/g, "")
+              .replaceAll(`<img src="/Services/FileAssets.svc/DownloadFile?`, `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`)
+              .replaceAll(`<a href="/Services/FileAssets.svc/DownloadFile?`, `<a href="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`)
+        }).catch(() => {
+          this.lessonPlan = "<p>The lesson plan failed to load, please retry soon.</p>";
+        })
+      } else {
         this.lessonPlan = "<p>No lesson plan has been uploaded yet.</p>";
-      })
+      }
     },
     getActivity() {
       this.loading = true
@@ -132,7 +133,6 @@ export default {
   },
   mounted() {
     this.getActivity()
-    console.log(this.$route.params.id)
   },
   watch: {
     "$route.params.id"() {

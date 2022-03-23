@@ -130,12 +130,13 @@ export default {
           this.$toast.error("Invalid username or password.")
           this.loading = false
         } else {
-          localStorage.setItem("userId", res.data.d?.roles[0].userId)
+          localStorage.setItem("userId", res.data.d?.roles[0].id)
           this.axios.post("/services/mobile.svc/GetPersonalDetails", {
             userId: res.data.d?.roles[0].userId
           }).then((res) => {
-            localStorage.setItem("userId", res.data.d.userId)
+            localStorage.setItem("userId", res.data.d.id)
             this.$store.commit("setUser", res.data.d.data)
+            this.$router.push("/")
           }).catch(() => {
             this.$toast.error("There was a validation error. Please refresh and login again.")
           })

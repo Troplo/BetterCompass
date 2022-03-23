@@ -36,44 +36,34 @@ app.use('/Services', createProxyMiddleware({
     target: "devices.compass.education",
     router: compassRouter,
     changeOrigin: true,
-    cookieDomainRewrite: process.env.HOSTNAME,
-    pathRewrite: {
-        [`^/json_placeholder`]: '',
-    },
+    cookieDomainRewrite: process.env.HOSTNAME
 }));
 
 app.use('/services', createProxyMiddleware({
     target: "devices.compass.education",
     router: compassRouter,
     changeOrigin: true,
-    cookieDomainRewrite: process.env.HOSTNAME,
-    pathRewrite: {
-        [`^/json_placeholder`]: '',
-    },
+    cookieDomainRewrite: process.env.HOSTNAME
 }));
 
 app.use('/download', createProxyMiddleware({
     target: "devices.compass.education",
     router: compassRouter,
     changeOrigin: true,
-    cookieDomainRewrite: process.env.HOSTNAME,
-    pathRewrite: {
-        [`^/json_placeholder`]: '',
-    },
+    cookieDomainRewrite: process.env.HOSTNAME
 }));
 
 app.use('/Assets*', createProxyMiddleware({
     target: "devices.compass.education",
     router: compassRouter,
     changeOrigin: true,
-    cookieDomainRewrite: process.env.HOSTNAME,
-    pathRewrite: {
-        [`^/json_placeholder`]: '',
-    },
+    cookieDomainRewrite: process.env.HOSTNAME
 }));
 
 app.use(bodyParser.json({ limit: '5mb' }))
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use("/api/v1/user", require("./routes/user.js"))
 
 app.post("/api/v1/feedback", async (req, res) => {
     try {
@@ -108,6 +98,8 @@ app.get("/api/v1/weather", (req, res) => {
                 .catch(error => {
                     res.send(error.response.data)
                 })
+        }).catch(() => {
+            res.json({success: false})
         })
     } catch (e) {
         res.status(500).send(e)

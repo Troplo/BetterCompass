@@ -47,7 +47,7 @@
                     </v-card>
                     <v-card elevation="3" class="ma-2">
                       <v-container>
-                        <html v-html="selectedTask.description || '<p>There is no task description set.</p>'"></html>
+                        <html v-html="cleanLessonPlan || '<p>There is no task description set.</p>'"></html>
                       </v-container>
                     </v-card>
                     <template v-if="selectedTask.attachments">
@@ -295,37 +295,47 @@
 
     </v-dialog>
     <v-container>
-      <v-data-table
-          :headers="headers"
-          :items="tasks"
-          :items-per-page="20"
-          class="elevation-3"
-          @click:row="taskDialog"
-          style="cursor: pointer"
-      >
-        <template v-slot:item.tags="{ item }">
-          <v-chip-group column>
-            <v-chip color="red" v-if="item.important">
-              <v-icon>mdi-alert-octagon-outline </v-icon> Important
-            </v-chip>
-          </v-chip-group>
-        </template>
-        <template v-slot:item.status="{ item }">
-          <v-icon v-if="getStatus(item).status === 'pending'">
-            mdi-circle-outline
-          </v-icon>
-          <v-icon v-if="getStatus(item).status === 'submitted'" color="green">
-            mdi-check-circle-outline
-          </v-icon>
-          <v-icon v-if="getStatus(item).status === 'submittedLate'" color="orange">
-            mdi-check-circle-outline
-          </v-icon>
-          <v-icon v-if="getStatus(item).status === 'pendingLate'" color="red">
-            mdi-alert-circle-outline
-          </v-icon>
-          {{getStatus(item).text}}
-        </template>
-      </v-data-table>
+      <v-card elevation="7" class="rounded-xl">
+        <v-toolbar>
+          <v-toolbar-title>
+            Learning Tasks
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-overlay :value="loading" absolute>
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
+        <v-data-table
+            :headers="headers"
+            :items="tasks"
+            :items-per-page="20"
+            class="elevation-3"
+            @click:row="taskDialog"
+            style="cursor: pointer"
+        >
+          <template v-slot:item.tags="{ item }">
+            <v-chip-group column>
+              <v-chip color="red" v-if="item.important">
+                <v-icon>mdi-alert-octagon-outline </v-icon> Important
+              </v-chip>
+            </v-chip-group>
+          </template>
+          <template v-slot:item.status="{ item }">
+            <v-icon v-if="getStatus(item).status === 'pending'">
+              mdi-circle-outline
+            </v-icon>
+            <v-icon v-if="getStatus(item).status === 'submitted'" color="green">
+              mdi-check-circle-outline
+            </v-icon>
+            <v-icon v-if="getStatus(item).status === 'submittedLate'" color="orange">
+              mdi-check-circle-outline
+            </v-icon>
+            <v-icon v-if="getStatus(item).status === 'pendingLate'" color="red">
+              mdi-alert-circle-outline
+            </v-icon>
+            {{getStatus(item).text}}
+          </template>
+        </v-data-table>
+      </v-card>
     </v-container>
   </div>
 </template>
@@ -386,6 +396,11 @@ export default {
         { text: 'Status', value: 'status' }
       ],
     }
+  },
+  computed: {
+    cleanLessonPlan() {
+      return this.$sanitize(this.selectedTask.description);
+    },
   },
   methods: {
     sendFeedback() {

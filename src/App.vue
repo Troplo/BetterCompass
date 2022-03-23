@@ -7,6 +7,7 @@
       <v-card>
         <v-card-title>
           <span class="headline">BetterCompass Settings</span>
+          <span class="subtitle-1">Some settings may require a refresh to take effect.</span>
         </v-card-title>
         <v-card-text>
           <v-switch
@@ -32,6 +33,32 @@
               color="info"
           ></v-switch>
         </v-card-text>
+        <v-card-text>
+          <v-switch
+              v-model="settings.minimizeHeaderEvents"
+              inset
+              label="Minimize header events (only shows current week, and due learning tasks)"
+              color="info"
+          ></v-switch>
+        </v-card-text>
+       <!-- <v-card-text>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <div
+                  v-on="on"
+                  v-bind="attrs">
+                <v-switch
+                    v-model="settings.settingsSync"
+                    inset
+                    label="BetterSync"
+                ></v-switch>
+              </div>
+            </template>
+            <span>
+              This will save your settings to your BetterCompass account.
+          </span>
+          </v-tooltip>
+        </v-card-text>-->
         <div class="mx-6">
             <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
         </div>
@@ -113,6 +140,14 @@
 .v-calendar-daily_head-day {
   border-right: 1px transparent !important;
 
+}
+
+.day .v-calendar-daily_head-weekday {
+  visibility: hidden !important
+}
+
+.day .v-calendar-daily_head-day-label {
+  display: none !important
 }
 
 div .theme--dark.v-calendar-events .v-event-timed {
@@ -197,8 +232,15 @@ export default {
     settings: {
       weather: true,
       dark: true,
-      learningTaskNotification: true
-    }
+      learningTaskNotification: true,
+      minimizeHeaderEvents: false
+    },
+    settingDefaults: {
+      weather: true,
+      dark: true,
+      learningTaskNotification: true,
+      minimizeHeaderEvents: false
+    },
   }),
   computed: {
     scrollbarTheme() {
@@ -206,6 +248,13 @@ export default {
     },
   },
   methods: {
+    validate(value, defaultValue) {
+      if(value === undefined || value === null) {
+        return defaultValue
+      } else {
+        return value
+      }
+    },
     saveSettings() {
       localStorage.setItem('settings', JSON.stringify(this.settings))
       this.$store.commit('setSettings', this.settings)
@@ -218,17 +267,14 @@ export default {
     if(!JSON.parse(localStorage.getItem("settings"))) {
       localStorage.setItem("settings", JSON.stringify(this.settings))
     }
-    this.settings = JSON.parse(localStorage.getItem("settings"))
-    if(JSON.parse(localStorage.getItem("settings")).weather === null) {
-      localStorage.setItem("settings", JSON.stringify({
-        weather: true,
-        dark: this.settings.dark,
-        learningTaskNotification: this.settings.learningTaskNotification
-      }))
-      this.settings = JSON.parse(localStorage.getItem("settings"))
+    this.settings = {
+      dark: this.validate(JSON.parse(localStorage.getItem("settings")).dark, this.settingDefaults.dark),
+      weather: this.validate(JSON.parse(localStorage.getItem("settings")).weather, this.settingDefaults.weather),
+      learningTaskNotification: this.validate(JSON.parse(localStorage.getItem("settings")).learningTaskNotification, this.settingDefaults.learningTaskNotification),
+      minimizeHeaderEvents: this.validate(JSON.parse(localStorage.getItem("settings")).minimizeHeaderEvents, this.settingDefaults.minimizeHeaderEvents)
     }
-    this.settings = JSON.parse(localStorage.getItem("settings"))
-    this.$store.commit("setSettings", JSON.parse(localStorage.getItem("settings")))
+    this.saveSettings()
+    this.$store.commit("setSettings", this.settings)
     this.$vuetify.theme = {dark: this.$store.state.settings.dark}
     this.$store.commit("setSchool", {
       name: localStorage.getItem("schoolName"),

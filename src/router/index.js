@@ -25,32 +25,32 @@ const routes = [
     children: [
       {
         path: 'dashboard',
-        name: 'ActivityDashboard',
+        name: 'Activity Dashboard',
         component: () => import(/* webpackChunkName: "activityDashboard" */ '../views/Activity/ActivityDashboard')
       },
       {
         path: 'roll',
-        name: 'ActivityRoll',
+        name: 'Activity Roll',
         component: () => import(/* webpackChunkName: "activityRoll" */ '../views/Activity/ActivityRoll')
       },
       {
         path: 'schedule',
-        name: 'ActivitySchedule',
+        name: 'Activity Schedule',
         component: () => import(/* webpackChunkName: "activitySchedule" */ '../views/Activity/ActivitySchedule')
       },
       {
         path: 'sessions',
-        name: 'ActivitySessions',
+        name: 'Activity Sessions',
         component: () => import(/* webpackChunkName: "activitySessions" */ '../views/Activity/ActivitySessions')
       },
       {
         path: 'settings',
-        name: 'ActivitySettings',
+        name: 'Activity Settings',
         component: () => import(/* webpackChunkName: "activitySettings" */ '../views/Activity/ActivitySettings')
       },
       {
         path: 'tasks',
-        name: 'ActivityTasks',
+        name: 'Activity Tasks',
         component: () => import(/* webpackChunkName: "activityTasks" */ '../views/Activity/ActivityTasks')
       },
       {

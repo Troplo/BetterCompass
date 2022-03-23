@@ -15,6 +15,7 @@ export default new Vuex.Store({
       loading: true
     },
     user: null,
+    bcUser: null,
     parent: null,
     upcomingEvents: [],
     alerts: [],
@@ -30,6 +31,9 @@ export default new Vuex.Store({
     quickSwitchCache: []
   },
   mutations: {
+    setBetterCompassUser(state, user) {
+      state.bcUser = user
+    },
     setUser(state, user) {
       state.user = user
     },
@@ -119,6 +123,7 @@ export default new Vuex.Store({
     getUserInfo(context) {
       Vue.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
       Vue.axios.defaults.headers.common['compassSchoolId'] = localStorage.getItem('schoolId')
+      Vue.axios.defaults.headers.common['compassUserId'] = localStorage.getItem('userId')
       return new Promise((resolve, reject) => {
         Vue.axios.post("/services/mobile.svc/GetPersonalDetails", {
           userId: localStorage.getItem("userId")

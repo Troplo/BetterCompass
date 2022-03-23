@@ -48,7 +48,7 @@
     <v-overlay :value="loading" absolute>
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <v-card>
+    <v-card elevation="7" class="rounded-xl">
       <v-toolbar>
         <v-toolbar-title>Upcoming Events</v-toolbar-title>
       </v-toolbar>

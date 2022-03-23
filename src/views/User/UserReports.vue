@@ -3,7 +3,6 @@
     <v-overlay :value="loading" absolute>
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <v-container>
       <v-card class="rounded-xl">
         <v-toolbar>
           <v-toolbar-title>
@@ -32,7 +31,6 @@
           </template>
         </v-data-table>
       </v-card>
-    </v-container>
   </div>
 </template>
 

@@ -294,7 +294,12 @@
       </v-card>
 
     </v-dialog>
-    <v-container>
+    <v-card elevation="7" class="rounded-xl">
+      <v-toolbar>
+        <v-toolbar-title>
+          Learning Tasks
+        </v-toolbar-title>
+      </v-toolbar>
       <v-overlay :value="loading" absolute>
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
@@ -329,7 +334,7 @@
           {{getStatus(item).text}}
         </template>
       </v-data-table>
-    </v-container>
+    </v-card>
   </div>
 </template>
 
