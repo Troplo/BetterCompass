@@ -484,6 +484,7 @@ export default {
           id: null,
           wikiNodeId: task.rubricWikiNodeIds[0]
         }).then((res) => {
+          this.loading = false
           this.selectedTask.rubric = res.data.d
           this.dialog = true;
         })
