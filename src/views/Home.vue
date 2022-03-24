@@ -341,17 +341,12 @@
             </v-toolbar>
             <v-container>
               <v-card-title>
-                23/03/2022
+                24/03/2022
               </v-card-title>
               <ul>
-                <li>Tasks, you can now, create, view, and edit normal Compass tasks.</li>
-                <li>Rich Notes, rich notes are an enhanced version of standard tasks that allow you to add descriptions, they cannot be viewed in normal Compass.</li>
-                <li>Class Notes, using rich notes, you can now create notes that are specific to a class. </li>
-                <li>You can now see your upcoming events on the dashboard.</li>
-                <li>You can now minimize header activities to only show learning tasks and your current school week (if your school supports it), enable in BetterCompass Settings.</li>
-                <li>Removed redundant day text and button from calendar on the daily schedule mode.</li>
-                <li>You can now download attachments from School News.</li>
-                <li>Lesson plans are now sanitized to avoid XSS (albeit an extremely unlikely occurrence), and other uglifying styles.</li>
+                <li>Fixed major issue where the main thread would freeze from 4 seconds to crashing the entire browser when loading BetterCompass. More details can be found on <a href="https://github.com/vuetifyjs/vuetify/issues/14864"> this issue</a>.</li>
+                <li>You can now press ENTER to submit the login form.</li>
+                <li>Relief/substitute teachers no longer show unparsed HTML code on the calendar.</li>
               </ul>
               <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
             </v-container>
@@ -475,6 +470,15 @@ export default {
     },
   },
   methods: {
+    diffMinutes(min, max) {
+      const Y = (max.year - min.year) * 525600
+      const M = (max.month - min.month) * 43800
+      const D = (max.day - min.day) * 1440
+      const h = (max.hour - min.hour) * 60
+      const m = (max.minute - min.minute)
+
+      return Y + M + D + h + m
+    },
     editTask(task) {
       if(task) {
         this.task = {
@@ -678,7 +682,11 @@ export default {
       })
     },
     pushEvent(event) {
-      this.$router.push("/activity/" + event.event.instanceId);
+      if(event.event.activityType === 10) {
+        this.$router.push("/user/tasks")
+      } else {
+        this.$router.push("/activity/" + event.event.instanceId);
+      }
     },
     computeColor(event) {
       if(event.color === "#003300") {
@@ -710,7 +718,13 @@ export default {
       if(!subject) {
         return event.longTitleWithoutTime
       } else {
-        return `${subject.subjectLongName} - (${event.longTitleWithoutTime})`
+        // if statement, check if longTitleWithoutTime has /<strike>.*<\/strike>&nbsp;/
+        // if so, remove it
+        if(/<strike>.*<\/strike>&nbsp;/.test(event.longTitleWithoutTime)) {
+          return `${subject.subjectLongName} - (RELIEF: ${event.longTitleWithoutTime.replace(/<strike>.*<\/strike>&nbsp;/, "")})`
+        } else {
+          return `${subject.subjectLongName} - (${event.longTitleWithoutTime})`
+        }
       }
     },
     fetchEvents() {

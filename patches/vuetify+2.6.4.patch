@@ -1,0 +1,26 @@
+diff --git a/node_modules/vuetify/src/components/VNavigationDrawer/VNavigationDrawer.sass b/node_modules/vuetify/src/components/VNavigationDrawer/VNavigationDrawer.sass
+index ee4419a..6d1ba3d 100644
+--- a/node_modules/vuetify/src/components/VNavigationDrawer/VNavigationDrawer.sass
++++ b/node_modules/vuetify/src/components/VNavigationDrawer/VNavigationDrawer.sass
+@@ -9,7 +9,7 @@
+       background-color: map-get($material, 'dividers')
+ 
+   .v-divider
+-    border-color: map-get($material, 'dividers')
++    width: 0
+ 
+ // Block
+ .v-navigation-drawer
+diff --git a/node_modules/vuetify/src/styles/settings/_dark.scss b/node_modules/vuetify/src/styles/settings/_dark.scss
+index 753d70d..12980cc 100644
+--- a/node_modules/vuetify/src/styles/settings/_dark.scss
++++ b/node_modules/vuetify/src/styles/settings/_dark.scss
+@@ -6,7 +6,7 @@ $material-dark-elevation-colors: () !default;
+ $material-dark-elevation-colors: map-deep-merge(
+   (
+     '0': #000000,
+-    '1': #1E1E1E,
++    '1': #151515,
+     '2': #222222,
+     '3': #252525,
+     '4': #272727,

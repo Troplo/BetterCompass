@@ -86,8 +86,8 @@
         <template v-slot:item="{ item }">
           <span v-html="item.dt"></span>&nbsp;
           <!-- check if the event is older than now -->
-          <v-chip v-if="new Date(item.fn) < new Date()" color="red" outlined small>Previous Session</v-chip>
-          <v-chip v-if="new Date(item.fn) > new Date()" color="success" outlined small>Upcoming Session</v-chip>
+          <v-chip v-if="new Date(item.fn) < new Date()" color="red" outlined small>Previous</v-chip>
+          <v-chip v-if="new Date(item.fn) > new Date()" color="success" outlined small>Upcoming</v-chip>
         </template>
       </v-select>
       <v-card class="rounded-xl ma-3" elevation="7">

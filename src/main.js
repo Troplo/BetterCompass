@@ -9,7 +9,6 @@ import Toast from "vue-toastification"
 import "vue-toastification/dist/index.css"
 import './registerServiceWorker'
 import VueSanitize from "vue-sanitize";
-
 Vue.use(VueSanitize, {
   allowedTags: [
     "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4",

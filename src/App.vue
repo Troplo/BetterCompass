@@ -263,6 +263,13 @@ export default {
     }
   },
   mounted() {
+    const observer = new PerformanceObserver((list) => {
+      console.log('WARN: Long Task detected!');
+      const entries = list.getEntries();
+      console.log(entries);
+    });
+
+    observer.observe({entryTypes: ['longtask']});
     document.title = this.$route.name + " - BetterCompass"
     if(!JSON.parse(localStorage.getItem("settings"))) {
       localStorage.setItem("settings", JSON.stringify(this.settings))

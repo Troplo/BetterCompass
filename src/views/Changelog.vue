@@ -7,6 +7,15 @@
         </v-toolbar>
         <v-container>
           <v-card-title>
+            24/03/2022
+          </v-card-title>
+          <ul>
+            <li>Fixed major issue where the main thread would freeze from 4 seconds to crashing the entire browser when loading BetterCompass. More details can be found on <a href="https://github.com/vuetifyjs/vuetify/issues/14864"> this issue</a>.</li>
+            <li>You can now press ENTER to submit the login form.</li>
+            <li>Relief/substitute teachers no longer show unparsed HTML code on the calendar.</li>
+          </ul>
+
+          <v-card-title>
             23/03/2022
           </v-card-title>
           <ul>

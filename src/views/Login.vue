@@ -5,11 +5,12 @@
         <div :class="{innerLogin: !$vuetify.breakpoint.mobile}">
           <v-card class="rounded-xl" elevation="7" width="700">
             <v-container>
-              <v-form ref="form" class="pa-4 pt-6" @keyup.enter="doLogin">
+              <v-form ref="form" class="pa-4 pt-6">
                 <p class="text-center text-h4">
                   Login to <span class="troplo-title">BetterCompass</span>
                 </p>
                 <v-autocomplete
+                    @keyup.enter="doLogin()"
                     v-model="searchValue"
                     :items="schools"
                     :loading="loading"
@@ -19,6 +20,7 @@
                     placeholder="Start typing to Search"
                 ></v-autocomplete>
                 <v-text-field
+                    @keyup.enter="doLogin()"
                     class="rounded-xl"
                     v-model="username"
                     label="Username"
@@ -26,6 +28,7 @@
                     type="email"
                 ></v-text-field>
                 <v-text-field
+                    @keyup.enter="doLogin()"
                     class="rounded-xl"
                     v-model="password"
                     color="blue accent-7"
