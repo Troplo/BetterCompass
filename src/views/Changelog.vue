@@ -7,6 +7,23 @@
         </v-toolbar>
         <v-container>
           <v-card-title>
+            25/03/2022 - 27/03/2022
+          </v-card-title>
+          <ul>
+            <li>Themes, there are now a few theme presets to choose from, some include Classic, Grey, and AMOLED (Dark)</li>
+            <li>You can now make your own themes by changing the defined colors to your liking</li>
+            <li>You can now choose the accent/primary color of your choosing without creating an entire new theme.</li>
+            <li>Themes will synchronize throughout all devices, including your preferred theme.</li>
+            <li>Calendar Auto Jumping, the calendar will now skip to Monday if on a weekend (can be disabled in Settings).</li>
+            <li>Significantly reduced bundle size.</li>
+            <li>Settings now has its own dedicated page as a User Profile tab.</li>
+            <li>All ugly styles are removed from lesson plans, including in Resources.</li>
+            <li>The calendar is now much faster by preloading a week before, and in advance which will defeat the need for loading.</li>
+            <li>There is now a banner shown when there is a BetterCompass update available.</li>
+            <li>Settings now synchronize throughout all devices.</li>
+          </ul>
+
+          <v-card-title>
             24/03/2022
           </v-card-title>
           <ul>

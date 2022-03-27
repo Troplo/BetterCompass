@@ -10,7 +10,20 @@ import "vue-toastification/dist/index.css"
 import './registerServiceWorker'
 import VueSanitize from "vue-sanitize";
 import './plugins/dayjs';
+import ApolloClient, {InMemoryCache} from 'apollo-boost'
+import VueApollo from 'vue-apollo'
+const cache = new InMemoryCache()
 
+const apollo = new ApolloClient({
+  uri: '/graphql',
+  headers: {
+    CompassAPIKey: localStorage.getItem("apiKey"),
+    compassInstance: localStorage.getItem("schoolInstance"),
+  },
+  cache,
+})
+
+Vue.use(VueApollo)
 Vue.use(VueSanitize, {
   allowedTags: [
     "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4",
@@ -52,10 +65,13 @@ Vue.use(require('vue-shortkey'))
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.use(Toast)
-
+const apolloProvider = new VueApollo({
+  defaultClient: apollo,
+})
 new Vue({
   router,
   store,
   vuetify,
+  apolloProvider,
   render: h => h(App)
 }).$mount('#app')

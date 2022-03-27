@@ -34,6 +34,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "activityRoll" */ '../views/Activity/ActivityRoll')
       },
       {
+        path: 'discussions',
+        name: 'Activity Discussions',
+        component: () => import(/* webpackChunkName: "activityDiscussions" */ '../views/Activity/ActivityDiscussions')
+      },
+      {
         path: 'schedule',
         name: 'Activity Schedule',
         component: () => import(/* webpackChunkName: "activitySchedule" */ '../views/Activity/ActivitySchedule')

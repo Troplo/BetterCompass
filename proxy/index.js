@@ -65,6 +65,13 @@ app.use('/Assets*', createProxyMiddleware({
     cookieDomainRewrite: process.env.HOSTNAME
 }));
 
+app.use('/graphql', createProxyMiddleware({
+    target: "devices.compass.education",
+    router: compassRouter,
+    changeOrigin: true,
+    cookieDomainRewrite: process.env.HOSTNAME
+}));
+
 app.use(bodyParser.json({ limit: '5mb' }))
 app.use(bodyParser.urlencoded({ extended: true }))
 

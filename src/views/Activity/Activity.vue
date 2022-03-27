@@ -44,6 +44,19 @@
           </span>
           </v-tooltip>
         </v-tab>
+        <v-tab to="discussions">
+          Discussions
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on">
+                <v-icon>mdi-information</v-icon>
+              </v-btn>
+            </template>
+            <span>
+            This is a BetterCompass exclusive feature until it gets added officially by Compass.
+          </span>
+          </v-tooltip>
+        </v-tab>
       </v-tabs>
       <v-container v-if="!activity.RunningStatus">
         <v-alert type="info" class="mx-5">
