@@ -17,7 +17,8 @@ module.exports = function (req, res, next) {
         req.compassUser = response.data.d.data
         const user = await User.findOne({
           where: {
-            compassUserId: response.data.d.data.userId
+            sussiId: req.compassUser.sussiId,
+            instance: req.header("compassInstance") || req.query.forceInstance || "devices"
           },
           include: [{
             model: Theme,
