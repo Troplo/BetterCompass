@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog v-model="taskDialog" max-width="600px">
-      <v-card elevation="7">
+      <v-card color="card" elevation="7">
         <v-card-title>
           <span class="headline">{{ task.editing ? "Edit" : "Add" }} Task</span>
         </v-card-title>
@@ -90,7 +90,7 @@
           <v-chip v-if="new Date(item.fn) > new Date()" color="success" outlined small>Upcoming</v-chip>
         </template>
       </v-select>
-      <v-card class="rounded-xl ma-3" elevation="7">
+      <v-card color="card" class="rounded-xl ma-3" elevation="7">
         <v-container>
           <v-row>
             <v-col>
@@ -120,8 +120,8 @@
       </v-card>
       <v-row>
         <v-col sm="7">
-          <v-card class="rounded-xl ma-3" elevation="7">
-            <v-toolbar>
+          <v-card color="card" class="rounded-xl ma-3" elevation="7">
+            <v-toolbar color="toolbar">
               <v-spacer></v-spacer>
               <v-toolbar-title>Lesson Plan</v-toolbar-title>
               <v-spacer></v-spacer>
@@ -132,25 +132,25 @@
           </v-card>
         </v-col>
         <v-col style="white-space: pre-line; overflow-wrap: anywhere" sm="5">
-          <v-card class="rounded-xl ma-3" elevation="7">
+          <v-card color="card" class="rounded-xl ma-3" elevation="7">
             <v-overlay :value="loading.tasks" absolute>
               <v-progress-circular indeterminate size="64"></v-progress-circular>
             </v-overlay>
-            <v-toolbar>
+            <v-toolbar color="toolbar">
               <v-btn text fab disabled></v-btn>
               <v-spacer></v-spacer>
               <v-toolbar-title>Personal Class Tasks/Notes</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn text fab @click="editTask()"><v-icon>mdi-plus</v-icon></v-btn>
             </v-toolbar>
-            <v-data-table :headers="taskHeaders" :items="computeTasks" :expanded.sync="expanded" show-expand>
+            <v-data-table :headers="taskHeaders" :items="computeTasks" :expanded.sync="expanded" show-expand :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
               <template v-slot:item.status="{ item }">
                 <v-switch inset v-model="item.status" @click="setTaskStatus(item)">
 
                 </v-switch>
               </template>
               <template v-slot:item.dueDate="{ item }">
-                <span>{{item.dueDate ? moment(item.dueDate).format("dddd, MMMM Do YYYY") : "None"}}</span>
+                <span>{{item.dueDate ? dayjs(item.dueDate).format("dddd, MMMM Do YYYY") : "None"}}</span>
               </template>
               <template v-slot:item.tags="{ item }">
                 <v-chip v-if="item.richNote">
@@ -173,14 +173,14 @@
               </template>
             </v-data-table>
           </v-card>
-          <v-card class="rounded-xl ma-3" elevation="7">
-            <v-toolbar>
+          <v-card color="card" class="rounded-xl ma-3" elevation="7">
+            <v-toolbar color="toolbar">
               <v-spacer></v-spacer>
               <v-toolbar-title>Class News</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
-              <v-card v-for="item in news" :key="item.id">
+              <v-card color="card" v-for="item in news" :key="item.id">
                 <v-list-item two-line>
                   <v-list-item-content>
                     <v-list-item-title class="text-h5">
@@ -195,7 +195,7 @@
                     <v-list-item-title class="text-h6">
                       {{item.Title}}
                     </v-list-item-title>
-                    <v-list-item-subtitle>{{moment(item.PostDateTime).format("hh:mm A, dddd, MMMM Do YYYY")}}</v-list-item-subtitle><br>
+                    <v-list-item-subtitle>{{$date(item.PostDateTime).format("hh:mm A, dddd, MMMM Do YYYY")}}</v-list-item-subtitle><br>
                     <p style="white-space: pre-line !important; overflow-wrap: anywhere !important; display: inline-block" v-html="item.Content1"></p>
                     <v-chip v-for="download in item.Attachments" :key="download.id" color="indigo" :href="download.UiLink + '&forceInstance=' + $store.state.school.instance">
                       <v-icon>mdi-download</v-icon>
@@ -213,7 +213,7 @@
 </template>
 
 <script>
-import moment from "moment";
+import dayjs from "dayjs";
 
 export default {
   name: "ActivityDashboard",
@@ -466,8 +466,8 @@ export default {
         this.tasks = res.data.d
       })
     },
-    moment(date) {
-      return moment(date);
+    dayjs(date) {
+      return dayjs(date);
     },
     pushEvent(event, auto) {
       if(auto === "forward") {

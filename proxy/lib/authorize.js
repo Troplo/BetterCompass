@@ -1,67 +1,62 @@
-const { User } = require("../models")
+const { User, Theme } = require("../models")
 const axios = require("axios");
 
 module.exports = function (req, res, next) {
   try {
-    const compassRouter = function(req) {
-      const instance = req.header("compassInstance") || req.query.forceInstance || "devices"
-      console.log("Instance: " + instance)
-      // this is to avoid the ability to proxy non Compass sites through the proxy.
-      if(instance.match(/^[a-zA-Z0-9-]+$/)) {
-        return "https://" + instance + ".compass.education"
-      } else {
-        console.log("Test failed: " + "https://" + instance + ".compass.education")
-        return "https://devices.compass.education"
+    axios.post("http://localhost:23994/services/mobile.svc/GetExtendedUser", {
+      userId: req.header("compassUserId")
+    }, {
+      withCredentials: true,
+      headers: {
+        "Cookie": req.headers.cookie,
+        "compassInstance": req.header("compassInstance") || req.query.forceInstance || "devices",
+        "compassSchoolId": req.header("compassSchoolId")
       }
-    }
-    if(!req.cookies["cpssid_" + req.header("compassSchoolId")]) {
-      res.status(401).json({
-        errors: [{
-          message: "Unauthorized"
-        }]
-      })
-    } else {
-      console.log( req.header("compassUserId"))
-      console.log(req.cookies)
-      axios.post(compassRouter(req) + "/services/mobile.svc/GetPersonalDetails", {
-        userId: req.header("compassUserId")
-      }, { headers: {
-        Cookie: req.cookies
-        } }  ).then(async (response) => {
-        if (response.data.d) {
-          req.compassUser = response.data.d
-          const user = await User.findOne({
-            where: {
-              compassUserId: req.body.compassUserId
-            }
-          })
-          if (user) {
-            req.user = user
-            next()
-          } else {
-            res.status(401).json({
-              errors: [{
-                message: "User is not opted into BetterCompass Accounts."
-              }]
-            })
-          }
-          next()
-        } else {
-          res.status(401).json({
-            errors: [{
-              message: "Unauthorized"
-            }]
-          })
-        }
-      }).catch((e) => {
-        console.log(e.response.data)
-        res.status(401).json({
-          errors: [{
-            message: "Unauthorized"
+    }).then(async (response) => {
+      if (response.data.d.data) {
+        req.compassUser = response.data.d.data
+        const user = await User.findOne({
+          where: {
+            compassUserId: response.data.d.data.userId
+          },
+          include: [{
+            model: Theme,
+            as: "themeObject"
           }]
         })
+        if (user) {
+          req.user = user
+          next()
+        } else {
+          req.compassUser = response.data.d.data
+          console.log("Creating account for user: " + req.compassUser.userId, req.compassUser.sussiId)
+          req.user = await User.create({
+            sussiId: response.data.d.data.sussiId,
+            compassUserId: response.data.d.data.userId,
+            displayCode: response.data.d.data.displayCode,
+            instance: req.header("compassInstance") || req.query.forceInstance || "unknown",
+            settings: {},
+            compassUserHash: response.data.d.data.userHash,
+            theme: "dark",
+            settingsSync: true,
+          })
+          next()
+        }
+      } else {
+        res.status(401).json({
+          errors: [{
+            message: "You need to be logged in."
+          }]
+        })
+      }
+    }).catch((e) => {
+      console.log(e?.response?.data)
+      res.status(500).json({
+        errors: [{
+          message: "Something went wrong."
+        }]
       })
-    }
+    })
   } catch (e) {
     console.log(e)
   }

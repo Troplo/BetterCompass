@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog v-model="upload.dialog" max-width="500px" class="rounded-xl">
-      <v-card>
+      <v-card color="card">
         <v-card-title class="headline">
           <span class="title">{{ upload.title }}</span>
         </v-card-title>
@@ -23,35 +23,35 @@
     </v-dialog>
     <v-dialog v-model="dialog" max-width="1200px" class="rounded-xl">
 
-      <v-card>
+      <v-card color="card">
         <v-card-title>
           {{selectedTask.name}}
         </v-card-title>
         <v-container>
-          <v-tabs>
+          <v-tabs background-color="card">
             <v-tab>
               Details
             </v-tab>
             <v-tab>
               Feedback
             </v-tab>
-            <v-tab-item>
+            <v-tab-item :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
                 <v-row>
                   <v-col>
-                    <v-card elevation="3" class="ma-2">
+                    <v-card color="card" elevation="3" class="ma-2">
                       <v-container>
                         Name: <b>{{selectedTask.name}}</b><br>
-                        <template v-if="selectedTask.dueDateTimestamp">Due Date: <b>{{moment(selectedTask.dueDateTimestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</b></template><br>
+                        <template v-if="selectedTask.dueDateTimestamp">Due Date: <b>{{$date(selectedTask.dueDateTimestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</b></template><br>
                         Online Submission Enabled: <b>{{selectedTask.submissionItems ? "Yes" : "No"}}</b><br>
                       </v-container>
                     </v-card>
-                    <v-card elevation="3" class="ma-2">
+                    <v-card color="card" elevation="3" class="ma-2">
                       <v-container>
                         <html v-html="cleanLessonPlan || '<p>There is no task description set.</p>'"></html>
                       </v-container>
                     </v-card>
                     <template v-if="selectedTask.attachments">
-                      <v-card elevation="3" v-for="attachment in selectedTask.attachments" :key="attachment.id" class="ma-2">
+                      <v-card color="card" elevation="3" v-for="attachment in selectedTask.attachments" :key="attachment.id" class="ma-2">
                         <v-container>
                           <v-row>
                             <v-col>
@@ -71,7 +71,7 @@
                     </template>
                   </v-col>
                   <v-col v-if="selectedTask.submissionItems">
-                    <v-card elevation="3" v-for="submission in selectedTask.submissionItems" :key="submission.id" class="ma-2">
+                    <v-card color="card" elevation="3" v-for="submission in selectedTask.submissionItems" :key="submission.id" class="ma-2">
                       <v-toolbar :color="getSubmissionStatus(submission).color">
                         <v-toolbar-title>
                           <v-icon v-if="getSubmissionStatus(submission).status === 'pending'">
@@ -111,7 +111,7 @@
                           </v-list>
                         </v-menu>
                       </v-toolbar>
-                      <v-simple-table>
+                      <v-simple-table :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
                         <template v-slot:default>
                           <thead>
                           <tr>
@@ -133,7 +133,7 @@
                           >
                             <template v-if="userSubmission.taskSubmissionItemId === submission.id">
                               <td style="white-space: pre-line; overflow-wrap: anywhere">{{ userSubmission.fileName }}</td>
-                              <td>{{moment(userSubmission.timestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</td>
+                              <td>{{$date(userSubmission.timestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</td>
                               <td>
                                 <v-card-actions>
                                   <v-btn text fab small rounded target="_blank" :href="userSubmission.fileName" v-if="userSubmission.submissionFileType === 4">
@@ -167,11 +167,11 @@
                   </v-col>
                 </v-row>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
               <v-row>
                 <v-col sm="7" v-if="selectedTask.gradingItems.length || selectedTask.rubric">
-                  <v-card elevation="3" class="ma-2" v-if="selectedTask.gradingItems.length">
-                    <v-toolbar>
+                  <v-card color="card" elevation="3" class="ma-2" v-if="selectedTask.gradingItems.length">
+                    <v-toolbar color="toolbar">
                       <v-toolbar-title>
                         Grading Items
                       </v-toolbar-title>
@@ -180,7 +180,7 @@
                       <v-card-text>
                         Any assessment results provided below are raw scores and may change during school or state based statistical assessment moderation. The statistical, state based, moderation process is used to ensure that schools’ assessments are comparable throughout the state. It involves adjusting each schools’ coursework scores for that study to match the level and spread of the combined examination and GAT scores for the students in that school doing that study. For more information on assessment moderation, please contact the school.
                       </v-card-text>
-                      <v-simple-table>
+                      <v-simple-table :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
                         <template v-slot:default>
                           <thead>
                           <tr>
@@ -198,15 +198,15 @@
                               :key="gradingItem.id"
                           >
                             <td style="white-space: pre-line; overflow-wrap: anywhere">{{ gradingItem.name }}</td>
-                            <td>{{ selectedTask.students[0].results[index].result }}</td>
+                            <td>{{ selectedTask.students[0].results[index].result }}/5</td>
                           </tr>
                           </tbody>
                         </template>
                       </v-simple-table>
                     </v-container>
                   </v-card>
-                  <v-card elevation="3" class="ma-2" v-if="selectedTask.rubric">
-                    <v-toolbar>
+                  <v-card color="card" elevation="3" class="ma-2" v-if="selectedTask.rubric">
+                    <v-toolbar color="toolbar">
                       <v-toolbar-title>
                         Rubric
                       </v-toolbar-title>
@@ -258,14 +258,14 @@
                   </v-card>
                 </v-col>
                 <v-col>
-                  <v-card class="ma-2">
-                    <v-toolbar>
+                  <v-card color="card" class="ma-2">
+                    <v-toolbar color="toolbar">
                       <v-toolbar-title>
                         Feedback Chat
                       </v-toolbar-title>
                     </v-toolbar>
                     <v-container>
-                      <v-card class="mt-2" v-for="feedback in selectedTask.students[0].comments" :key="feedback.id">
+                      <v-card color="card" class="mt-2" v-for="feedback in selectedTask.students[0].comments" :key="feedback.id">
                         <v-container>
                           <v-list-item-title>
                             <b>{{ feedback.userNamePoster }}</b>
@@ -273,7 +273,7 @@
                           <v-list-item-content>
                             {{ feedback.comment }}
                           </v-list-item-content>
-                          <small>{{ moment(feedback.timestamp).format("dddd, MMMM Do YYYY") }}</small>
+                          <small>{{ $date(feedback.timestamp).format("dddd, MMMM Do YYYY") }}</small>
                         </v-container>
                       </v-card>
                       <v-text-field
@@ -295,8 +295,8 @@
 
     </v-dialog>
     <v-container>
-      <v-card elevation="7" class="rounded-xl">
-        <v-toolbar>
+      <v-card color="card" elevation="7" class="rounded-xl">
+        <v-toolbar color="toolbar">
           <v-toolbar-title>
             Learning Tasks
           </v-toolbar-title>
@@ -311,6 +311,7 @@
             class="elevation-3"
             @click:row="taskDialog"
             style="cursor: pointer"
+            :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card"
         >
           <template v-slot:item.tags="{ item }">
             <v-chip-group column>
@@ -341,7 +342,7 @@
 </template>
 
 <script>
-import moment from "moment";
+import dayjs from "dayjs";
 
 export default {
   name: "ActivityTasks",
@@ -418,10 +419,13 @@ export default {
       })
     },
     deleteSubmission(submission) {
-      this.axios.post("/Services/FileAsset.svc/DeleteFile", {
-        fileAssetId: submission.taskSubmissionItemId
+      this.axios.post("/Services/LearningTasks.svc/DeleteTaskStudentSubmission", {
+        learningTaskId: this.selectedTask.id,
+        taskStudentSubmissionId: submission.id
       }).then(() => {
         this.getLearningTasks()
+      }).catch(() => {
+        this.$toast.error("You do not have permission to do this action.")
       })
     },
     uploadFile() {
@@ -429,12 +433,6 @@ export default {
       const formData = new FormData()
       formData.append('fileuploadfield-1504-inputEl', this.upload.file, this.upload.file.name)
       formData.append('FileUploadType', this.upload.type)
-      /*         fileId: f.result.fileId || f.result.OutputFileId,
-                    fileName: f.result.fileName || f.result.file,
-                    resizedFileId: f.result.resizedFileId || "",
-                    displayName: u,
-                    schoolId: f.result.schoolId || "",
-                    wikiNodeType: Compass.enums.WikiNodeType.File,*/
 
       this.axios.post("/Services/FileUpload/FileUploadHandler", formData).then(res => {
         this.axios.post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
@@ -452,26 +450,13 @@ export default {
           this.upload.loading = false
           this.getLearningTasks()
         })
-        //fileId: "3187570e-049b-4cc9-9a0e-ba402a88ff03"
-        //fileName: "ignore.txt"
-        //submissionFileType: 1
-        //submitterBaseRole: 1
-        //taskStudentId: 542298
-        //taskSubmissionItemId: 22280
-
-        //fileId: "3187570e-049b-4cc9-9a0e-ba402a88ff03"
-        //fileName: "ignore.txt"
-        //message: null
-        //resizedFileId: null
-        //schoolId: "bhs.vic.edu.au"
-        // success: true
       }).catch(error => {
         this.upload.loading = false
         console.log(error)
       })
     },
-    moment(date) {
-      return moment(date);
+    dayjs(date) {
+      return dayjs(date);
     },
     taskDialog(task) {
       this.selectedTask = null

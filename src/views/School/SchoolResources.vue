@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-container>
-      <v-card elevation="7" class="rounded-xl">
-        <v-toolbar>
+      <v-card color="card" elevation="7" class="rounded-xl">
+        <v-toolbar color="toolbar">
           <v-toolbar-title>
             Resources
           </v-toolbar-title>

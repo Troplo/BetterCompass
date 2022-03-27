@@ -18,8 +18,8 @@
           </v-row>
         </v-container>
       </v-img>
-      <v-tabs>
-        <v-tab to="dashboard">
+      <v-tabs background-color="card">
+        <v-tab to="dashboard" color="card">
           Dashboard
         </v-tab>
         <v-tab to="schedule">

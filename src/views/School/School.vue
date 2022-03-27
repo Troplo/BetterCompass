@@ -18,7 +18,7 @@
           </v-row>
         </v-container>
       </v-img>
-      <v-tabs>
+      <v-tabs background-color="card">
         <v-tab to="resources">
           Resources
         </v-tab>

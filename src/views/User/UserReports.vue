@@ -3,13 +3,13 @@
     <v-overlay :value="loading" absolute>
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-      <v-card class="rounded-xl">
-        <v-toolbar>
+      <v-card color="card" class="rounded-xl">
+        <v-toolbar color="toolbar">
           <v-toolbar-title>
             Reports
           </v-toolbar-title>
         </v-toolbar>
-        <v-data-table :items="reports" :headers="headers.reports">
+        <v-data-table :items="reports" :headers="headers.reports" :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
           <template v-slot:item.actions="{ item }">
             <v-btn icon :href="item.l + '&forceInstance=' + $store.state.school.instance">
               <v-icon>mdi-download</v-icon>
@@ -17,13 +17,13 @@
           </template>
         </v-data-table>
       </v-card>
-      <v-card class="rounded-xl mt-4" v-if="false">
-        <v-toolbar>
+      <v-card color="card" class="rounded-xl mt-4" v-if="false">
+        <v-toolbar color="toolbar">
           <v-toolbar-title>
             Progress Reports
           </v-toolbar-title>
         </v-toolbar>
-        <v-data-table :items="reports" :headers="headers.progress">
+        <v-data-table :items="reports" :headers="headers.progress" :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
           <template v-slot:item.actions="{ item }">
             <v-btn icon :href="item.l + '&forceInstance=' + $store.state.school.instance">
               <v-icon>mdi-download</v-icon>

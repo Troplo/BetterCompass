@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog v-model="chronicleInfo" v-if="chronicleInfo" max-width="600px">
-      <v-card>
+      <v-card color="card">
         <v-card-title>
           <span class="headline">{{ selectedChronicle.chronicleEntries[0].templateName }}</span>
         </v-card-title>
@@ -15,8 +15,8 @@
     </v-dialog>
     <v-row>
       <v-col>
-        <v-card elevation="3" class="rounded-xl">
-          <v-toolbar>
+        <v-card color="card" elevation="7" class="rounded-xl">
+          <v-toolbar color="toolbar">
             <v-toolbar-title>Account</v-toolbar-title>
           </v-toolbar>
           <v-container>
@@ -62,13 +62,13 @@
         </v-card>
       </v-col>
       <v-col>
-        <v-card class="rounded-xl">
-          <v-toolbar>
+        <v-card color="card" class="rounded-xl" elevation="7">
+          <v-toolbar color="toolbar">
             <v-toolbar-title>Chronicle</v-toolbar-title>
           </v-toolbar>
           <v-container>
-            <v-card v-for="item in chronicle.items" :key="item.id" class="mb-3">
-              <v-toolbar>
+            <v-card color="card" v-for="item in chronicle.items" :key="item.id" class="mb-3">
+              <v-toolbar color="toolbar">
                 <v-toolbar-title>{{ item.chronicleEntries[0].templateName }}
                   <div class="subheading subtitle-1">Recorded by: {{item.chronicleEntries[0].userNameCreated}}</div>
                 </v-toolbar-title>

@@ -1,7 +1,7 @@
 <template>
   <div class="home" v-if="$store.state.user">
     <v-dialog v-model="taskDialog" max-width="600px">
-      <v-card elevation="7">
+      <v-card color="card" elevation="7">
         <v-card-title>
           <span class="headline">{{ task.editing ? "Edit" : "Add" }} Task</span>
         </v-card-title>
@@ -23,9 +23,9 @@
           </span>
           </v-tooltip>
           <v-text-field
-            v-model="task.taskName"
-            label="Name"
-            required
+              v-model="task.taskName"
+              label="Name"
+              required
           ></v-text-field>
           <v-textarea
               v-model="task.rich.description"
@@ -86,11 +86,11 @@
           >
             {{overDueLearningTasks}} overdue learning tasks.
           </v-alert>
-          <v-card class="rounded-xl ma-3" elevation="7">
+          <v-card color="card" class="rounded-xl ma-3" elevation="7">
             <v-overlay :value="loading.calendar" absolute>
               <v-progress-circular indeterminate size="64"></v-progress-circular>
             </v-overlay>
-            <v-toolbar>
+            <v-toolbar color="toolbar">
               <v-btn text small fab @click="changeDay('subtract')">
                 <v-icon>mdi-arrow-left</v-icon>
               </v-btn>
@@ -109,6 +109,7 @@
                 </template>
                 <v-date-picker
                     v-model="focus"
+                    @change="fetchEvents(false, true)"
                     no-title
                     scrollable
                     color="info"
@@ -124,32 +125,34 @@
                 </v-date-picker>
               </v-menu>
               <v-spacer></v-spacer>
-              <v-toolbar-title>{{ moment(focus).format("dddd, MMMM Do YYYY") }}</v-toolbar-title>
+              <v-toolbar-title>{{ $date(focus).format("dddd, MMMM Do YYYY") }}</v-toolbar-title>
               <v-spacer></v-spacer>
               &nbsp;
-              <v-btn text small fab @click="focus = moment().toISOString(); fetchEvents()">
+              <v-btn text small fab @click="focus = dayjs().toISOString(); fetchEvents(false, true)">
                 <v-icon>mdi-refresh</v-icon>
               </v-btn>
               <v-btn text small fab @click="changeDay('add')">
                 <v-icon>mdi-arrow-right</v-icon>
               </v-btn>
             </v-toolbar>
-            <v-sheet   style="position: sticky">
+            <v-card color="card" style="position: sticky" :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
               <v-tabs
+                  background-color="card"
                   fixed-tabs
                   v-model="tab"
               >
-                <v-tab @click="type = 'day'" value="day">
+                <v-tab @click="type = 'day'" value="day" :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
                   Daily Schedule
                 </v-tab>
-                <v-tab @click="type = 'week'" value="week">
+                <v-tab @click="type = 'week'" value="week" :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
                   Weekly Schedule
                 </v-tab>
-                <v-tab @click="type = 'month'" value="month" v-if="false">
+                <v-tab @click="type = 'month'" value="month" v-if="false" :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
                   Monthly Schedule
                 </v-tab>
               </v-tabs>
               <v-calendar
+                  :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card"
                   :class="type"
                   ref="calendar"
                   v-model="focus"
@@ -163,31 +166,31 @@
                   :interval-count="11"
                   :interval-height="60"
                   :event-color="computeColor"
-                  @change="fetchEvents"
+                  @change="fetchEvents(false, false)"
                   @click:event="pushEvent"
               >
               </v-calendar>
-            </v-sheet>
+            </v-card>
           </v-card>
-          <v-card class="rounded-xl ma-3" elevation="7">
+          <v-card color="card" class="rounded-xl ma-3" elevation="7">
             <v-overlay :value="loading.tasks" absolute>
               <v-progress-circular indeterminate size="64"></v-progress-circular>
             </v-overlay>
-              <v-toolbar>
-                <v-btn text fab disabled></v-btn>
-                <v-spacer></v-spacer>
-                <v-toolbar-title>My Tasks</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn text fab @click="editTask()"><v-icon>mdi-plus</v-icon></v-btn>
-              </v-toolbar>
-            <v-data-table :headers="taskHeaders" :items="computeTasks" :expanded.sync="expanded" show-expand>
+            <v-toolbar color="toolbar">
+              <v-btn text fab disabled></v-btn>
+              <v-spacer></v-spacer>
+              <v-toolbar-title>My Tasks</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn text fab @click="editTask()"><v-icon>mdi-plus</v-icon></v-btn>
+            </v-toolbar>
+            <v-data-table :headers="taskHeaders" :items="computeTasks" :expanded.sync="expanded" show-expand :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card">
               <template v-slot:item.status="{ item }">
                 <v-switch inset v-model="item.status" @click="setTaskStatus(item)">
 
                 </v-switch>
               </template>
               <template v-slot:item.dueDate="{ item }">
-                <span>{{item.dueDate ? moment(item.dueDate).format("dddd, MMMM Do YYYY") : "None"}}</span>
+                <span>{{item.dueDate ? $date(item.dueDate).format("dddd, MMMM Do YYYY") : "None"}}</span>
               </template>
               <template v-slot:item.tags="{ item }">
                 <v-chip v-if="item.richNote">
@@ -210,12 +213,12 @@
               </template>
             </v-data-table>
           </v-card>
-          <v-card class="rounded-xl ma-3" elevation="7">
-              <v-toolbar>
-                <v-spacer></v-spacer>
-                <v-toolbar-title>Upcoming Events</v-toolbar-title>
-                <v-spacer></v-spacer>
-              </v-toolbar>
+          <v-card color="card" class="rounded-xl ma-3" elevation="7">
+            <v-toolbar color="toolbar">
+              <v-spacer></v-spacer>
+              <v-toolbar-title>Upcoming Events</v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-toolbar>
             <v-container>
               <v-card
                   v-for="item in $store.state.upcomingEvents"
@@ -224,6 +227,7 @@
                   dense
                   elevation="3"
                   text
+                  color="card"
               >
                 <v-container>
                   <router-link style="text-decoration: none" to="/user/events">{{item.LinkText}}</router-link><br>
@@ -232,13 +236,13 @@
               </v-card>
             </v-container>
           </v-card>
-      </v-col>
+        </v-col>
         <v-col>
           <v-alert v-for="alert in alerts" :key="alert.id" type="info" class="rounded-xl ma-3">
             {{ alert.Body }}
           </v-alert>
-          <v-card class="rounded-xl ma-3" elevation="7">
-            <v-toolbar>
+          <v-card color="card" class="rounded-xl ma-3" elevation="7">
+            <v-toolbar color="toolbar">
               <v-spacer></v-spacer>
               <v-toolbar-title>{{ $store.state.school.name }} News</v-toolbar-title>
               <v-spacer></v-spacer>
@@ -250,6 +254,7 @@
                 dense
                 elevation="3"
                 text
+                color="card"
             >
               <v-container class="text-center align-center justify-center">
                 <div>
@@ -284,7 +289,7 @@
                   </v-card-actions>
 
                   <small>{{
-                      moment(item.PostDateTime).format("dddd, MMMM Do YYYY, hh:mm A")
+                      dayjs(item.PostDateTime).format("dddd, MMMM Do YYYY, hh:mm A")
                     }}</small>
                 </div>
               </v-container>
@@ -296,7 +301,7 @@
               elevation="7"
               v-if="weather.name"
           >
-            <v-toolbar>
+            <v-toolbar color="toolbar">
               <v-spacer></v-spacer>
               <v-toolbar-title>
                 Weather
@@ -308,7 +313,7 @@
                 <v-list-item-title class="text-h5">
                   {{weather.name}}
                 </v-list-item-title>
-                <v-list-item-subtitle>{{ moment().format("dddd, MMMM Do YYYY") }}, {{weather.weather[0].main}}: {{weather.weather[0].description}}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $date().format("dddd, MMMM Do YYYY") }}, {{weather.weather[0].main}}: {{weather.weather[0].description}}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
@@ -333,20 +338,28 @@
                 {{ weather.main.humidity }}% humidity</v-list-item-subtitle>
             </v-list-item>
           </v-card>
-          <v-card class="rounded-xl ma-3" elevation="7">
-            <v-toolbar>
+          <v-card color="card" class="rounded-xl ma-3" elevation="7">
+            <v-toolbar color="toolbar">
               <v-spacer></v-spacer>
               <v-toolbar-title>What's new in BetterCompass?</v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
               <v-card-title>
-                24/03/2022
+                25/03/2022 - 27/03/2022
               </v-card-title>
               <ul>
-                <li>Fixed major issue where the main thread would freeze from 4 seconds to crashing the entire browser when loading BetterCompass. More details can be found on <a href="https://github.com/vuetifyjs/vuetify/issues/14864"> this issue</a>.</li>
-                <li>You can now press ENTER to submit the login form.</li>
-                <li>Relief/substitute teachers no longer show unparsed HTML code on the calendar.</li>
+                <li>Themes, there are now a few theme presets to choose from, some include Classic, Grey, and AMOLED (Dark)</li>
+                <li>You can now make your own themes by changing the defined colors to your liking</li>
+                <li>You can now choose the accent/primary color of your choosing without creating an entire new theme.</li>
+                <li>Themes will synchronize throughout all devices, including your preferred theme.</li>
+                <li>Calendar Auto Jumping, the calendar will now skip to Monday if on a weekend (can be disabled in Settings).</li>
+                <li>Significantly reduced bundle size.</li>
+                <li>Settings now has its own dedicated page as a User Profile tab.</li>
+                <li>All ugly styles are removed from lesson plans, including in Resources.</li>
+                <li>The calendar is now much faster by preloading a week before, and in advance which will defeat the need for loading.</li>
+                <li>There is now a banner shown when there is a BetterCompass update available.</li>
+                <li>Settings now synchronize throughout all devices.</li>
               </ul>
               <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
             </v-container>
@@ -358,7 +371,7 @@
 </template>
 
 <script>
-import moment from "moment";
+import dayjs from "dayjs";
 
 export default {
   name: 'Home',
@@ -422,7 +435,7 @@ export default {
       weekday: [1, 2, 3, 4, 5],
       value: '',
       events: [],
-      focus: moment().format(),
+      focus: dayjs().format(),
       news: [],
       user: {},
       weather: {}
@@ -439,16 +452,17 @@ export default {
           richNote = false
         }
         if(richNote) {
-          tasks.push({
-            richNote: richNote.richNote,
-            richNoteVersion: richNote.richNoteVersion,
-            taskName: richNote?.taskName,
-            description: richNote?.description,
-            activityId: richNote?.activityId,
-            dueDate: task.dueDate,
-            status: richNote?.status,
-            id: task.id
-          });
+          if(!richNote.hidden)
+            tasks.push({
+              richNote: richNote.richNote,
+              richNoteVersion: richNote.richNoteVersion,
+              taskName: richNote?.taskName,
+              description: richNote?.description,
+              activityId: richNote?.activityId,
+              dueDate: task.dueDate,
+              status: richNote?.status,
+              id: task.id
+            });
         } else {
           tasks.push(task);
         }
@@ -456,7 +470,7 @@ export default {
       return tasks;
     },
     computeEvents() {
-      if(this.$store.state.settings.minimizeHeaderEvents) {
+      if(this.$store.state.bcUser.minimizeHeaderEvents) {
         // only show timed events, or events that have a color of #003300
         return this.events.filter(event => {
           return event.timed || event.color === '#003300' || event.color === "#FFBB5B"
@@ -489,7 +503,7 @@ export default {
           },
           editing: true,
           taskName: task.taskName,
-          dueDate: moment(task.dueDate).format("YYYY-MM-DD"),
+          dueDate: dayjs(task.dueDate).format("YYYY-MM-DD"),
           id: task.id,
           status: task.status,
         }
@@ -627,7 +641,7 @@ export default {
       })
     },
     getWeather() {
-      if(this.$store.state.settings.weather) {
+      if(this.$store.state.bcUser.weather) {
         this.axios.get("/api/v1/weather").then(res => {
           this.weather = res.data;
         })
@@ -676,7 +690,7 @@ export default {
             this.overDueLearningTasks++
           }
         })
-        if(this.overDueLearningTasks > 0 && this.$store.state.settings.learningTaskNotification) {
+        if(this.overDueLearningTasks > 0 && this.$store.state.bcUser.learningTaskNotification) {
           this.learningTaskAlert = true
         }
       })
@@ -690,28 +704,28 @@ export default {
     },
     computeColor(event) {
       if(event.color === "#003300") {
-        return "success"
+        return this.$vuetify.theme.themes[this.$store.state.bcUser.theme || "dark"].calendarActivityType8
       } else if (event.activityType === 7 || event.color === "#f4dcdc") {
-        return "red"
+        return this.$vuetify.theme.themes[this.$store.state.bcUser.theme || "dark"].calendarActivityType7
       } else if (event.color === "#dce6f4") {
-        return "indigo"
+        return this.$vuetify.theme.themes[this.$store.state.bcUser.theme || "dark"].calendarNormalActivity
       } else if(event.activityType === 10) {
-        return "orange"
+        return this.$vuetify.theme.themes[this.$store.state.bcUser.theme || "dark"].calendarActivityType10
       } else {
-        return "indigo"
+        return this.$vuetify.theme.themes[this.$store.state.bcUser.theme || "dark"].calendarNormalActivity
       }
     },
     changeDay(type) {
       if (type === "add") {
-        //this.focus = moment(this.focus).add(1, "day").format();
+        //this.focus = dayjs(this.focus).add(1, "day").format();
         this.$refs.calendar.next();
       } else if (type === "subtract") {
-        //this.focus = moment(this.focus).subtract(1, "day").format();
+        //this.focus = dayjs(this.focus).subtract(1, "day").format();
         this.$refs.calendar.prev();
       }
     },
-    moment(date) {
-      return moment(date);
+    dayjs(date) {
+      return dayjs(date);
     },
     subjectName(event) {
       const subject = this.$store.state.subjects[this.$store.state.subjects.findIndex(x => x.name === event.title)]
@@ -727,18 +741,29 @@ export default {
         }
       }
     },
-    fetchEvents() {
-      this.loading.calendar = true;
+    fetchEvents(init, load) {
+      if(init) {
+        if(dayjs().day() === 0) {
+          this.$refs.calendar.next();
+        } else if(dayjs().day() === 6) {
+          this.$refs.calendar.next();
+          this.$refs.calendar.next();
+        }
+        this.loading.calendar = true;
+      }
+      if(load) {
+        this.loading.calendar = true;
+      }
       this.axios.post("/Services/Calendar.svc/GetCalendarEventsByUser", {
         activityId: null,
-        endDate: moment(this.focus).add(this.type === "day" ? 0 : 6, "day").format("YYYY-MM-DD"),
+        endDate: dayjs(this.focus).add(7, "day").format("YYYY-MM-DD"),
         homePage: true,
         limit: 25,
         locationId: null,
         page: 1,
         staffIds: null,
         start: 0,
-        startDate: moment(this.focus).subtract(this.type === "day" ? 0 : 6, "day").format("YYYY-MM-DD"),
+        startDate: dayjs(this.focus).subtract(7, "day").format("YYYY-MM-DD"),
         userId: this.$store.state.user?.userId || localStorage.getItem("userId")
       }).then((res) => {
         // map events
@@ -775,7 +800,6 @@ export default {
   },
   mounted() {
     this.getTasks()
-    this.getWeather()
     if(!localStorage.getItem("calendarType")) {
       localStorage.setItem("calendarType", "day")
     }
@@ -783,7 +807,8 @@ export default {
     this.tab = localStorage.getItem("calendarType") === "day" ? 0 : 1;
     this.$store.dispatch("getUserInfo").then((res) => {
       this.user = res
-      this.fetchEvents();
+      this.fetchEvents(true, false);
+      this.getWeather()
       this.getNews()
       this.getAlerts()
       this.getLearningTasks()
@@ -791,16 +816,14 @@ export default {
   },
   watch: {
     type() {
-      this.fetchEvents();
+      this.fetchEvents(true, false);
       localStorage.setItem("calendarType", this.type);
     },
     learningTaskAlert() {
       if(!this.learningTaskAlert) {
-        const settings = {
-          learningTaskNotification: false,
-          dark: this.$store.state.settings.dark
-        }
-        localStorage.setItem('settings', JSON.stringify(settings))
+        this.$store.dispatch("saveOnlineSettings", {
+          learningTaskNotification: false
+        })
       }
     }
   }

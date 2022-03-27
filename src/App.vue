@@ -1,75 +1,29 @@
 <template>
-  <v-app>
+  <v-app :style="'background-color: ' +   $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].bg">
     <v-overlay :value="$store.state.site.loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <v-dialog v-model="$store.state.modals.settings" max-width="500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">BetterCompass Settings</span>
-          <span class="subtitle-1">Some settings may require a refresh to take effect.</span>
-        </v-card-title>
-        <v-card-text>
-          <v-switch
-            v-model="settings.dark"
-            inset
-            label="Dark theme"
-            color="info"
-            ></v-switch>
-        </v-card-text>
-        <v-card-text>
-          <v-switch
-              v-model="settings.learningTaskNotification"
-              inset
-              label="Show overdue learning task warning"
-              color="warning"
-          ></v-switch>
-        </v-card-text>
-        <v-card-text>
-          <v-switch
-              v-model="settings.weather"
-              inset
-              label="Show weather widget"
-              color="info"
-          ></v-switch>
-        </v-card-text>
-        <v-card-text>
-          <v-switch
-              v-model="settings.minimizeHeaderEvents"
-              inset
-              label="Minimize header events (only shows current week, and due learning tasks)"
-              color="info"
-          ></v-switch>
-        </v-card-text>
-       <!-- <v-card-text>
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <div
-                  v-on="on"
-                  v-bind="attrs">
-                <v-switch
-                    v-model="settings.settingsSync"
-                    inset
-                    label="BetterSync"
-                ></v-switch>
-              </div>
-            </template>
-            <span>
-              This will save your settings to your BetterCompass account.
-          </span>
-          </v-tooltip>
-        </v-card-text>-->
-        <div class="mx-6">
-            <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
-        </div>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="saveSettings()">Save</v-btn>
-        </v-card-actions>
+    <!--<v-overlay :value="!$store.state.online && !$store.state.bcUser.cache">
+      <v-card color="card">
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            You are offline.
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-container>
+          <v-card-text>
+            <p>
+              You are currently offline. Please check your internet connection and try again, or Compass is experiencing issues.
+              <br>
+              If you would like to mitigate this message in the future, enable the "Offline Caching" option in BetterCompass Settings.
+            </p>
+            <v-btn @click="retryConnection" :loading="connectionLoading">Retry</v-btn>
+          </v-card-text>
+        </v-container>
       </v-card>
-    </v-dialog>
+    </v-overlay>-->
     <v-dialog v-model="$store.state.modals.search" max-width="600px">
-      <v-card>
+      <v-card color="card">
         <v-card-title>
           <span class="headline">BetterCompass QuickSwitcher (BETA)</span>
         </v-card-title>
@@ -80,8 +34,23 @@
       </v-card>
     </v-dialog>
     <Header></Header>
-    <v-main :class="scrollbarTheme">
-      <router-view/>
+    <v-main>
+      <v-container v-if="$store.state.site.latestVersion > $store.state.versioning.version">
+        <v-alert class="mx-4" type="info">
+          There is a BetterCompass update available. Please CTRL+R / ⌘+R to force update. (You are on version {{ $store.state.versioning.version }}, and the latest version is {{ $store.state.site.latestVersion }})
+        </v-alert>
+      </v-container>
+      <v-container v-if="$store.state.site.notification">
+        <v-alert class="mx-4" type="info">
+          {{$store.state.site.notification}}
+        </v-alert>
+      </v-container>
+      <!--<v-container v-if="!$store.state.online">
+        <v-alert class="mx-4" type="warning">
+          You are currently offline, BetterCompass functionality will be limited.
+        </v-alert>
+      </v-container>-->
+      <router-view :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].bg"/>
     </v-main>
   </v-app>
 </template>
@@ -125,17 +94,11 @@
 }
 .theme--dark.v-sheet {
   overflow:auto !important;
-  background-color: #181818 !important;
-  border-color: #181818 !important;
   color: #ffffff;
 }
 .card {
   overflow: hidden;
 }
-.theme--dark.v-card {
-  background-color: #151515 !important;
-}
-
 
 .v-calendar-daily_head-day {
   border-right: 1px transparent !important;
@@ -161,7 +124,6 @@ div .theme--dark.v-calendar-events .v-event-timed {
 }
 
 div .theme--dark.v-calendar-daily {
-  background-color: #151515 !important;
   border: 1px transparent !important;
 }
 
@@ -225,29 +187,19 @@ export default {
     Header
   },
   data: () => ({
+    connectionLoading: false,
     update: false,
     search: "",
     results: [],
     searchInput: null,
-    settings: {
-      weather: true,
-      dark: true,
-      learningTaskNotification: true,
-      minimizeHeaderEvents: false
-    },
-    settingDefaults: {
-      weather: true,
-      dark: true,
-      learningTaskNotification: true,
-      minimizeHeaderEvents: false
-    },
   }),
-  computed: {
-    scrollbarTheme() {
-      return this.$vuetify.theme.dark ? 'dark' : 'light';
-    },
-  },
   methods: {
+    retryConnection() {
+      this.connectionLoading = true
+      this.$store.dispatch("getState").finally(() => {
+        this.connectionLoading = false
+      })
+    },
     validate(value, defaultValue) {
       if(value === undefined || value === null) {
         return defaultValue
@@ -255,34 +207,14 @@ export default {
         return value
       }
     },
-    saveSettings() {
-      localStorage.setItem('settings', JSON.stringify(this.settings))
-      this.$store.commit('setSettings', this.settings)
-      this.$store.commit("showSettings", false)
-      this.$vuetify.theme = {dark: this.$store.state.settings.dark}
-    }
   },
   mounted() {
-    const observer = new PerformanceObserver((list) => {
-      console.log('WARN: Long Task detected!');
-      const entries = list.getEntries();
-      console.log(entries);
-    });
-
-    observer.observe({entryTypes: ['longtask']});
     document.title = this.$route.name + " - BetterCompass"
-    if(!JSON.parse(localStorage.getItem("settings"))) {
-      localStorage.setItem("settings", JSON.stringify(this.settings))
-    }
-    this.settings = {
-      dark: this.validate(JSON.parse(localStorage.getItem("settings")).dark, this.settingDefaults.dark),
-      weather: this.validate(JSON.parse(localStorage.getItem("settings")).weather, this.settingDefaults.weather),
-      learningTaskNotification: this.validate(JSON.parse(localStorage.getItem("settings")).learningTaskNotification, this.settingDefaults.learningTaskNotification),
-      minimizeHeaderEvents: this.validate(JSON.parse(localStorage.getItem("settings")).minimizeHeaderEvents, this.settingDefaults.minimizeHeaderEvents)
-    }
-    this.saveSettings()
     this.$store.commit("setSettings", this.settings)
-    this.$vuetify.theme = {dark: this.$store.state.settings.dark}
+    if(localStorage.getItem("settings")) {
+      localStorage.removeItem("settings")
+    }
+    this.$vuetify.theme.dark = this.$store.state.bcUser?.theme === "dark" || true
     this.$store.commit("setSchool", {
       name: localStorage.getItem("schoolName"),
       id: localStorage.getItem("schoolId"),
@@ -291,10 +223,12 @@ export default {
     })
     this.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
     this.axios.defaults.headers.common['compassSchoolId'] = localStorage.getItem('schoolId')
+    this.$store.dispatch("getState")
     this.$store.dispatch("getUserInfo")
         .then(() => {
           this.$store.dispatch("updateQuickSwitch")
-        }).catch(() => {
+        }).catch((e) => {
+          console.log(e)
       this.$router.push('/login')
     })
   },

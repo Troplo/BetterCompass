@@ -96,7 +96,12 @@ const routes = [
         path: 'events',
         name: 'User Events',
         component: () => import(/* webpackChunkName: "userEvents" */ '../views/User/UserEvents')
-      }
+      },
+      {
+        path: 'settings',
+        name: 'BetterCompass Settings',
+        component: () => import(/* webpackChunkName: "userSettings" */ '../views/User/UserSettings')
+      },
     ],
     component: () => import(/* webpackChunkName: "user" */ '../views/User/User.vue')
   },

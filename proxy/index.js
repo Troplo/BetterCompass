@@ -1,4 +1,5 @@
 console.log("Initializing")
+require('dotenv').config();
 let express = require('express')
 let app = express()
 //Middle-ware
@@ -22,11 +23,15 @@ const compassRouter = function(req) {
     }
 }
 app.use(function(req, res, next) {
-    res.cookie('cpssid_' + req.header("compassSchoolId"), req.cookies["cpssid_" + req.header("compassSchoolId")],
-        { expires: new Date(253402300000000), httpOnly: true, secure: true });
-    res.cookie('ASP.NET_SessionId', req.cookies["ASP.NET_SessionId"],
-        { expires: new Date(253402300000000), httpOnly: true, secure: true });
-    res.setHeader('Access-Control-Allow-Origin', "*");
+    if(req.header("compassSchoolId")) {
+        res.cookie('cpssid_' + req.header("compassSchoolId"), req.cookies["cpssid_" + req.header("compassSchoolId")],
+            {expires: new Date(253402300000000), httpOnly: true, secure: true, domain: process.env.HOSTNAME});
+    }
+    if(req.cookies["ASP.NET_SessionId"]) {
+        res.cookie('ASP.NET_SessionId', req.cookies["ASP.NET_SessionId"],
+            {expires: new Date(253402300000000), httpOnly: true, secure: true, domain: process.env.HOSTNAME});
+    }
+    res.header('Access-Control-Allow-Origin', process.env.HOSTNAME);
     res.header("Access-Control-Allow-Methods", "*");
     res.header("Access-Control-Allow-Headers", req.header('access-control-request-headers'));
     next();
@@ -64,6 +69,15 @@ app.use(bodyParser.json({ limit: '5mb' }))
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use("/api/v1/user", require("./routes/user.js"))
+app.use("/api/v1/themes", require("./routes/theme.js"))
+app.get("/api/v1/state", async (req, res) => {
+    res.json({
+        release: process.env.RELEASE,
+        loading: true,
+        notification: process.env.NOTIFICATION,
+        latestVersion: require("../package.json").version
+    })
+})
 
 app.post("/api/v1/feedback", async (req, res) => {
     try {
@@ -117,9 +131,9 @@ console.log(os.hostname())
 if(process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
     app.use(require('morgan')('dev'))
 }
-
+app.use(require("./lib/errorHandler"))
 function main () {
-    let server = app.listen(23994, () => {
+    app.listen(23994, () => {
         console.log('Initialized')
         console.log('Listening on port 0.0.0.0:' + 23994)
 

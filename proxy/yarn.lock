@@ -338,6 +338,13 @@ cors@^2.8.4:
     object-assign "^4"
     vary "^1"
 
+crypto-random-string@3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-3.3.1.tgz#13cee94cac8001e4842501608ef779e0ed08f82d"
+  integrity sha512-5j88ECEn6h17UePrLi6pn1JcLtAiANa3KExyr9y9Z5vo2mv56Gh3I4Aja/B9P9uyMwyxNHAHWv+nE72f30T5Dg==
+  dependencies:
+    type-fest "^0.8.1"
+
 css-parse@1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/css-parse/-/css-parse-1.0.4.tgz#38b0503fbf9da9f54e9c1dbda60e145c77117bdd"
@@ -842,7 +849,7 @@ mariadb@^3.0.0:
     "@types/node" "^17.0.10"
     denque "^2.0.1"
     iconv-lite "^0.6.3"
-    moment-timezone "^0.5.34"
+    dayjs-timezone "^0.5.34"
     please-upgrade-node "^3.2.0"
 
 media-typer@0.3.0:
@@ -897,16 +904,16 @@ mkdirp@~0.5.0:
   dependencies:
     minimist "^1.2.5"
 
-moment-timezone@^0.5.34:
+dayjs-timezone@^0.5.34:
   version "0.5.34"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.34.tgz#a75938f7476b88f155d3504a9343f7519d9a405c"
+  resolved "https://registry.yarnpkg.com/dayjs-timezone/-/dayjs-timezone-0.5.34.tgz#a75938f7476b88f155d3504a9343f7519d9a405c"
   integrity sha512-3zAEHh2hKUs3EXLESx/wsgw6IQdusOT8Bxm3D9UrHPQR7zlMmzwybC8zHEM1tQ4LJwP7fcxrWr8tuBg05fFCbg==
   dependencies:
-    moment ">= 2.9.0"
+    dayjs ">= 2.9.0"
 
-"moment@>= 2.9.0", moment@^2.29.1:
+"dayjs@>= 2.9.0", dayjs@^2.29.1:
   version "2.29.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
 morgan@^1.10.0:
@@ -1168,8 +1175,8 @@ sequelize@^6.17.0:
     dottie "^2.0.2"
     inflection "^1.13.2"
     lodash "^4.17.21"
-    moment "^2.29.1"
-    moment-timezone "^0.5.34"
+    dayjs "^2.29.1"
+    dayjs-timezone "^0.5.34"
     pg-connection-string "^2.5.0"
     retry-as-promised "^5.0.0"
     semver "^7.3.5"
@@ -1290,6 +1297,11 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+
+type-fest@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.8.1.tgz#09e249ebde851d3b1e48d27c105444667f17b83d"
+  integrity sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==
 
 type-is@~1.6.18:
   version "1.6.18"

@@ -1,7 +1,7 @@
 let { Sequelize } = require("../models")
 let Errors = require("./errors")
 
-module.exports = function (err, req, res) {
+module.exports = function (err, req, res, next) {
   if (err instanceof Sequelize.ValidationError) {
     res.status(400).json(err)
   } else if (err.name in Errors) {

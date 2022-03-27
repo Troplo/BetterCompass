@@ -3,7 +3,7 @@
     <div :class="{outer: !$vuetify.breakpoint.mobile}">
       <div :class="{middle: !$vuetify.breakpoint.mobile}">
         <div :class="{innerLogin: !$vuetify.breakpoint.mobile}">
-          <v-card class="rounded-xl" elevation="7" width="700">
+          <v-card color="card" class="rounded-xl" elevation="7" width="700">
             <v-container>
               <v-form ref="form" class="pa-4 pt-6">
                 <p class="text-center text-h4">
@@ -133,19 +133,36 @@ export default {
           this.$toast.error("Invalid username or password.")
           this.loading = false
         } else {
+          console.log(res.data.d?.roles[0].id)
           localStorage.setItem("userId", res.data.d?.roles[0].id)
           this.axios.post("/services/mobile.svc/GetPersonalDetails", {
             userId: res.data.d?.roles[0].userId
-          }).then((res) => {
-            localStorage.setItem("userId", res.data.d.id)
-            this.$store.commit("setUser", res.data.d.data)
-            this.$router.push("/")
+          }).then((response) => {
+            localStorage.setItem("userId", response.data.d.data.userId)
+            this.$store.dispatch("getUserInfo").then(() => {
+              this.$router.push("/")
+            })
           }).catch(() => {
             this.$toast.error("There was a validation error. Please refresh and login again.")
           })
         }
       }).catch(() => {
         this.$toast.error("Something went wrong, perhaps Compass is down?")
+      })
+      this.axios.post("/services/admin.svc/GetApiKey", {
+        password: this.password,
+        schoolId: this.$store.state.school.id,
+        sussiId: this.username
+      }).then((res) => {
+        if(res.data.d) {
+          this.loading = false
+          localStorage.setItem("apiKey", res.data.d)
+          this.$store.commit("setToken", res.data.d)
+          this.$router.push("/")
+        } else {
+          this.loading = false
+          this.$toast.error("Invalid username or password.")
+        }
       })
     }
   },
@@ -160,7 +177,7 @@ export default {
   },
   watch: {
     search() {
-      if(this.search?.length > 3) {
+      if(this.search?.length > 2) {
         this.searchSchool()
       }
     },

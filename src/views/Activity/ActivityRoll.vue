@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card v-for="user in users" :key="user.id" class="rounded-xl ma-3">
+    <v-card color="card" v-for="user in users" :key="user.id" class="rounded-xl ma-3">
       <v-card-text>{{user.data}}</v-card-text>
     </v-card>
   </div>

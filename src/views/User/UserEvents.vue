@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-dialog v-model="dialog" max-width="900px">
-      <v-card>
-        <v-toolbar>
+      <v-card color="card">
+        <v-toolbar color="toolbar">
           <v-toolbar-title>
             {{ selectedEvent.name }} - Event
           </v-toolbar-title>
@@ -32,8 +32,8 @@
                   :key="item.name"
               >
                 <td>{{ item.campusName }}</td>
-                <td>{{ moment(item.start).format("hh:mm A, dddd, MMMM Do YYYY") }}</td>
-                <td>{{ moment(item.finish).format("hh:mm A, dddd, MMMM Do YYYY") }}</td>
+                <td>{{ $date(item.start).format("hh:mm A, dddd, MMMM Do YYYY") }}</td>
+                <td>{{ $date(item.finish).format("hh:mm A, dddd, MMMM Do YYYY") }}</td>
               </tr>
               </tbody>
             </template>
@@ -48,14 +48,14 @@
     <v-overlay :value="loading" absolute>
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <v-card elevation="7" class="rounded-xl">
-      <v-toolbar>
+    <v-card color="card" elevation="7" class="rounded-xl">
+      <v-toolbar color="toolbar">
         <v-toolbar-title>Upcoming Events</v-toolbar-title>
       </v-toolbar>
       <v-container>
-        <v-card class="mb-3" v-for="event in events" :key="event.id" @click="openEvent(event)">
+        <v-card color="card" class="mb-3" v-for="event in events" :key="event.id" @click="openEvent(event)">
           <v-card-title class="subtitle-1">{{event.name}}</v-card-title>
-          <v-card-title class="subtitle-2">{{moment(event.start).format("hh:mm A, dddd, MMMM Do YYYY")}} -  {{moment(event.finish).format("hh:mm A, dddd, MMMM Do YYYY")}}</v-card-title>
+          <v-card-title class="subtitle-2">{{$date(event.start).format("hh:mm A, dddd, MMMM Do YYYY")}} -  {{$date(event.finish).format("hh:mm A, dddd, MMMM Do YYYY")}}</v-card-title>
           <v-chip-group>
             <v-chip class="ml-3" color="indigo">{{event.cost === 0 ? "Free" : "$" + event.cost}}</v-chip>
             <v-chip v-if="event.attendeeStatus === 1" color="success">Attending</v-chip>
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import moment from "moment";
+import dayjs from "dayjs";
 
 export default {
   name: "UserEvents",
@@ -92,8 +92,8 @@ export default {
       this.selectedEvent = event
       this.dialog = true
     },
-    moment(date) {
-      return moment(date);
+    dayjs(date) {
+      return dayjs(date);
     },
     getEvents() {
       this.axios.post("/Services/ActionCentre.svc/GetEvents", {}).then((res) => {

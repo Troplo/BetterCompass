@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-container>
-      <v-card class="rounded-xl" elevation="7">
-        <v-toolbar>
+      <v-card color="card" class="rounded-xl" elevation="7">
+        <v-toolbar color="toolbar">
           <v-toolbar-title>BetterCompass Changelog</v-toolbar-title>
         </v-toolbar>
         <v-container>

@@ -1,7 +1,7 @@
 <template>
   <div id="header">
     <v-dialog v-model="feedback.modal" width="700">
-      <v-card elevation="7">
+      <v-card color="card" elevation="7">
         <v-card-title>
           <span class="text-h5">Provide Feedback</span>
         </v-card-title>
@@ -62,14 +62,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-app-bar app v-if="$store.state.user">
+    <v-app-bar app v-if="$store.state.user" color="dark">
       <v-app-bar-nav-icon
           @click.stop="drawer = !drawer"
           v-if="$vuetify.breakpoint.mobile"
       ></v-app-bar-nav-icon>
       <v-toolbar-title
           v-if="!$vuetify.breakpoint.mobile"
-          class="troplo-title"
+          :style="'color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary"
           @click="$router.push('/')"
           style="cursor: pointer"
       >BetterCompass</v-toolbar-title
@@ -153,7 +153,7 @@
         v-model="drawer"
         v-if="$store.state.user"
         app
-        :color="navColor"
+        color="dark"
         floating
     >
       <v-list-item v-if="$vuetify.breakpoint.mobile">
@@ -357,9 +357,7 @@ export default {
           {
             id: 6,
             name: "BetterCompass Settings",
-            click() {
-              this.$store.commit("showSettings", true);
-            },
+            path: "/user/settings",
             icon: "mdi-settings"
           },
           {

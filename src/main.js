@@ -9,6 +9,8 @@ import Toast from "vue-toastification"
 import "vue-toastification/dist/index.css"
 import './registerServiceWorker'
 import VueSanitize from "vue-sanitize";
+import './plugins/dayjs';
+
 Vue.use(VueSanitize, {
   allowedTags: [
     "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4",
@@ -22,9 +24,19 @@ Vue.use(VueSanitize, {
   disallowedTagsMode: 'discard',
   allowedAttributes: {
     a: [ 'href', 'name', 'target' ],
-    // We don't currently allow img itself by default, but
-    // these attributes would make sense if we did.
-    img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'loading' ]
+    img: [ 'src', 'srcset', 'alt', 'title', 'width', 'height', 'loading', 'style' ]
+  },
+  allowedStyles: {
+    '*': {
+      // Match HEX and RGB
+      'text-align': [/^left$/, /^right$/, /^center$/],
+      // Match any number with px, em, or %
+      'font-size': [/^\d+(?:px|em|%)$/],
+      'font-weight': [/^\d+$/],
+      'font-style': [/^\d+$/],
+      'height': [/^\d+(?:px|em|%)$/],
+      'width': [/^\d+(?:px|em|%)$/]
+    }
   },
 // Lots of these won't come up by default because we don't allow them
   selfClosing: [ 'img', 'br', 'hr', 'area', 'base', 'basefont', 'input', 'link', 'meta' ],

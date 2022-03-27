@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-container>
-      <v-card elevation="7" class="rounded-xl">
-        <v-toolbar>
+      <v-card color="card" elevation="7" class="rounded-xl">
+        <v-toolbar color="toolbar">
           <v-toolbar-title>
             Resources
           </v-toolbar-title>
@@ -52,6 +52,7 @@
                   v-else
                   :key="selected.id"
                   class="mx-auto"
+                  color="card"
                   flat
               >
                 <template v-if="selected.type === 2">
@@ -60,7 +61,7 @@
                       {{ selected.name }}
                     </div>
                   </v-card-title>
-                  <html v-html="lessonPlan"></html>
+                  <html v-html="cleanLessonPlan"></html>
                 </template>
                 <template v-else>
                   <v-card-text>
@@ -82,7 +83,7 @@
                   </v-card-text>
                   <v-divider></v-divider>
                   <v-card-text>
-                    <v-btn color="blue" text :href="'/Services/FileAssets.svc/DownloadFile?id=' + selected.content.fileAssetId + '&originalFileName=' + selected.content.filename + '&forceInstance=' + $store.state.school.instance">
+                    <v-btn color="info" text :href="'/Services/FileAssets.svc/DownloadFile?id=' + selected.content.fileAssetId + '&originalFileName=' + selected.content.filename + '&forceInstance=' + $store.state.school.instance">
                       <v-icon>mdi-download</v-icon>
                       Download
                     </v-btn>
@@ -137,6 +138,9 @@ export default {
     selected () {
       if (!this.active.length) return undefined
       return this.active[0]
+    },
+    cleanLessonPlan() {
+      return this.$sanitize(this.lessonPlan);
     }
   },
   watch: {
@@ -144,8 +148,6 @@ export default {
       if(this.selected.type === 2) {
         this.lessonPlan = "<p>Loading...</p>";
         this.axios.get(`/Services/FileAssets.svc/DownloadFile?sessionstate=readonly&id=${this.selected.content.fileAssetId}&nodeId=${this.selected.parentNodeId}`).then((res) => {
-          // regex for //*.compass.education
-
           this.lessonPlan = res.data
               .replaceAll(/https:(.*)\.compass\.education/g, "")
               .replaceAll(`<img src="/Services/FileAssets.svc/DownloadFile?`, `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`)
