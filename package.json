@@ -1,6 +1,6 @@
 {
   "name": "compass-vue",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -13,6 +13,7 @@
     "@mdi/js": "^6.6.95",
     "apollo-boost": "^0.4.9",
     "axios": "^0.26.1",
+    "chart.js": "^3.7.1",
     "cheerio": "^1.0.0-rc.10",
     "core-js": "^3.6.5",
     "dayjs": "^1.11.0",
@@ -27,6 +28,7 @@
     "vue": "^2.6.11",
     "vue-apollo": "^3.1.0",
     "vue-axios": "^3.4.1",
+    "vue-chartjs": "^4.0.1",
     "vue-router": "^3.2.0",
     "vue-sanitize": "^0.2.1",
     "vue-shortkey": "^3.1.7",

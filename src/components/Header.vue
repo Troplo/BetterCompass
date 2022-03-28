@@ -239,6 +239,13 @@
                   </v-list-item>
                 </v-list-group>
               </v-list-group>
+              <v-list-item to="/communications" v-if="$store.state.site.release === 'dev'">
+                <v-list-item-icon>
+                  <v-icon>mdi-android-messages</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-title>Communications</v-list-item-title>
+              </v-list-item>
               <v-list-item to="/user/events">
                 <v-list-item-icon>
                   <v-icon>mdi-swim</v-icon>

@@ -7,6 +7,21 @@
         </v-toolbar>
         <v-container>
           <v-card-title>
+            28/03/2022
+          </v-card-title>
+          <ul>
+            <li>There is a new guided setup wizard for new BetterCompass users.</li>
+            <li>The calendar day persists if you were to go back to Home after navigating away.</li>
+            <li>Progress Reports have been added.</li>
+            <li>The calendar now has columns for overlapping events.</li>
+            <li>The minimize calendar events feature now permits blue events.</li>
+            <li>The QuickSwitcher now has the subject short-code (eg. Year 11 Computing (11COM11))</li>
+            <li>You can use existing theme presets to create a new theme.</li>
+            <li>The attendance now registers "Late Un'd" as Late.</li>
+            <li>You can now randomize a theme with the theme creator.</li>
+          </ul>
+
+          <v-card-title>
             25/03/2022 - 27/03/2022
           </v-card-title>
           <ul>

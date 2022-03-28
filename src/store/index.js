@@ -25,10 +25,12 @@ export default new Vuex.Store({
     token: null,
     subjects: [],
     events: [],
+    focus: dayjs().format(),
     settings: {
       dark: true
     },
     modals: {
+      guidedWizard: true,
       settings: false,
       search: false
     },
@@ -78,7 +80,10 @@ export default new Vuex.Store({
       state.modals.search = value
     },
     updateQuickSwitchCache(state, value) {
-      state.quickSwitchCache.push(value)
+      state.quickSwitchCache.push({
+        ...value,
+        subjectLongName:  value.name ? value.subjectLongName + " (" + value.name + ")" : value.subjectLongName,
+      })
     }
   },
   actions: {
@@ -93,14 +98,14 @@ export default new Vuex.Store({
       }
       Vue.axios.post("/Services/Calendar.svc/GetCalendarEventsByUser", {
         activityId: null,
-        endDate: dayjs(this.focus).add(7, "day").format("YYYY-MM-DD"),
+        endDate: dayjs(context.state.focus).add(7, "day").format("YYYY-MM-DD"),
         homePage: true,
         limit: 25,
         locationId: null,
         page: 1,
         staffIds: null,
         start: 0,
-        startDate: dayjs(this.focus).subtract(7, "day").format("YYYY-MM-DD"),
+        startDate: dayjs(context.state.focus).subtract(7, "day").format("YYYY-MM-DD"),
         userId: context.state.user?.userId || localStorage.getItem("userId")
       }).then((res) => {
         context.commit("setEvents", res.data.d.map((event) => {

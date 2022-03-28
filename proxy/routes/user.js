@@ -24,7 +24,8 @@ router.put("/settings/:type", auth, async (req, res, next) => {
                 settingsSync: req.body.settingsSync,
                 minimizeHeaderEvents: req.body.minimizeHeaderEvents,
                 learningTaskNotification: req.body.learningTaskNotification,
-                calendarAutoJump: req.body.calendarAutoJump
+                calendarAutoJump: req.body.calendarAutoJump,
+                guidedWizard: req.body.guidedWizard
             }, {
                 where: {
                     id: req.user.id

@@ -122,7 +122,7 @@ export default {
           color: "red",
           icon: "mdi-close"
         }
-      } else if(attendanceStatus === "Late") {
+      } else if(attendanceStatus === "Late" || attendanceStatus === "Late Un'd") {
         return {
           color: "orange",
           icon: "mdi-clock"

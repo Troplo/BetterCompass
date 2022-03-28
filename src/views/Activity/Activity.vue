@@ -53,7 +53,7 @@
               </v-btn>
             </template>
             <span>
-            This is a BetterCompass exclusive feature until it gets added officially by Compass.
+            This is a BetterCompass exclusive feature unless your school officially supports it.
           </span>
           </v-tooltip>
         </v-tab>

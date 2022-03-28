@@ -12,7 +12,7 @@
           </v-btn>
         </v-toolbar>
         <v-container>
-          <v-card outlined>
+          <v-card outlined color="card">
             <v-container>
               <v-card-title>
                 <v-avatar size="50" class="mr-2">
@@ -24,13 +24,14 @@
               </v-card-title>
               <v-card-title>{{ selectedTopic.contents[0].name }}</v-card-title>
               <v-card-subtitle>{{selectedTopic.contents[0].body}}</v-card-subtitle>
+              <small class="ml-4">{{ $date(selectedTopic.createdAt).fromNow() }}</small>
             </v-container>
           </v-card>
-          <v-text-field class="ml-1" label="Add a comment" v-model="newComment" @keyup.enter.native="addComment(selectedTopic)" :counter="250" append-outer-icon="mdi-send" @click:append-outer="addComment(selectedTopic)"></v-text-field>
+          <v-text-field class="ml-6" label="Add a comment" v-model="newComment" @keyup.enter.native="addComment(selectedTopic)" :counter="250" append-outer-icon="mdi-send" @click:append-outer="addComment(selectedTopic)"></v-text-field>
           <v-divider></v-divider>
-          <v-list two-line v-if="selectedTopic.comments">
+          <v-list two-line v-if="selectedTopic.comments" color="card">
             <v-subheader>Comments</v-subheader>
-            <v-card v-for="comment in selectedTopic.comments.nodes" :key="comment.id" outlined>
+            <v-card v-for="comment in selectedTopic.comments.nodes" :key="comment.id" outlined color="card">
               <v-card-title>
                 <v-avatar size="50" class="mr-2">
                   <img :src="selectedTopic.createdByUser.avatarUrl.replace('full', 'square') + '?forceInstance=' + $store.state.school.instance">
@@ -40,11 +41,12 @@
                 </div>
               </v-card-title>
               <p class="ml-6">{{comment.contents[0].body}}</p>
+              <small class="ml-6">{{ $date(comment.contents[0].createdAt).fromNow() }}</small>
               <!-- sub replies to comments -->
               <v-divider></v-divider>
-              <v-list v-if="comment.replies" class="mx-5">
+              <v-list v-if="comment.replies" class="mx-5" color="card">
                 <v-subheader>Replies</v-subheader>
-                <v-card v-for="reply in comment.replies.nodes" :key="reply.id" outlined>
+                <v-card v-for="reply in comment.replies.nodes" :key="reply.id" outlined color="card">
                   <v-card-title>
                     <v-avatar size="50" class="mr-2">
                       <img :src="selectedTopic.createdByUser.avatarUrl.replace('full', 'square') + '?forceInstance=' + $store.state.school.instance">
@@ -76,12 +78,12 @@
           </v-btn>
         </v-toolbar>
         <v-container>
-          <v-card v-for="topic in userData.topics" :key="topic.id" outlined hover @click="openTopic(topic)">
+          <v-card v-for="topic in userData.topics" :key="topic.id" outlined hover @click="openTopic(topic)" color="card">
             <v-container>
               <v-card-title>{{ topic.contents[0].name }}</v-card-title>
               <v-card-subtitle>
                 {{ topic.createdByUser.firstName }} {{topic.createdByUser.lastName}}<br>
-                {{ topic.comments.totalCount}} comments
+                {{ topic.comments.totalCount}} comments &bullet; {{ $date(topic.createdAt).fromNow() }}
               </v-card-subtitle>
             </v-container>
           </v-card>

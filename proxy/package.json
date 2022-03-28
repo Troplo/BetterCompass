@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "serve": "node ."
+    "serve": "nodemon"
   },
   "dependencies": {
     "axios": "^0.26.1",

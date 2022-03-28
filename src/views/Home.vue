@@ -108,7 +108,7 @@
                   </v-btn>
                 </template>
                 <v-date-picker
-                    v-model="focus"
+                    v-model="$store.state.focus"
                     @change="fetchEvents(false, true)"
                     no-title
                     scrollable
@@ -118,17 +118,17 @@
                   <v-btn
                       text
                       color="primary"
-                      @click="$refs.menu.save(focus)"
+                      @click="$refs.menu.save($store.state.focus)"
                   >
                     OK
                   </v-btn>
                 </v-date-picker>
               </v-menu>
               <v-spacer></v-spacer>
-              <v-toolbar-title>{{ $date(focus).format("dddd, MMMM Do YYYY") }}</v-toolbar-title>
+              <v-toolbar-title>{{ $date($store.state.focus).format("dddd, MMMM Do YYYY") }}</v-toolbar-title>
               <v-spacer></v-spacer>
               &nbsp;
-              <v-btn text small fab @click="focus = dayjs().toISOString(); fetchEvents(false, true)">
+              <v-btn text small fab @click="$store.state.focus = dayjs().format(); fetchEvents(false, true)">
                 <v-icon>mdi-refresh</v-icon>
               </v-btn>
               <v-btn text small fab @click="changeDay('add')">
@@ -155,7 +155,7 @@
                   :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card"
                   :class="type"
                   ref="calendar"
-                  v-model="focus"
+                  v-model="$store.state.focus"
                   :weekdays="weekday"
                   :type="type"
                   :events="computeEvents"
@@ -346,20 +346,18 @@
             </v-toolbar>
             <v-container>
               <v-card-title>
-                25/03/2022 - 27/03/2022
+                28/03/2022
               </v-card-title>
               <ul>
-                <li>Themes, there are now a few theme presets to choose from, some include Classic, Grey, and AMOLED (Dark)</li>
-                <li>You can now make your own themes by changing the defined colors to your liking</li>
-                <li>You can now choose the accent/primary color of your choosing without creating an entire new theme.</li>
-                <li>Themes will synchronize throughout all devices, including your preferred theme.</li>
-                <li>Calendar Auto Jumping, the calendar will now skip to Monday if on a weekend (can be disabled in Settings).</li>
-                <li>Significantly reduced bundle size.</li>
-                <li>Settings now has its own dedicated page as a User Profile tab.</li>
-                <li>All ugly styles are removed from lesson plans, including in Resources.</li>
-                <li>The calendar is now much faster by preloading a week before, and in advance which will defeat the need for loading.</li>
-                <li>There is now a banner shown when there is a BetterCompass update available.</li>
-                <li>Settings now synchronize throughout all devices.</li>
+                <li>There is a new guided setup wizard for new BetterCompass users.</li>
+                <li>The calendar day persists if you were to go back to Home after navigating away.</li>
+                <li>Progress Reports have been added.</li>
+                <li>The calendar now has columns for overlapping events.</li>
+                <li>The minimize calendar events feature now permits blue events.</li>
+                <li>The QuickSwitcher now has the subject short-code (eg. Year 11 Computing (11COM11))</li>
+                <li>You can use existing theme presets to create a new theme.</li>
+                <li>The attendance now registers "Late Un'd" as Late.</li>
+                <li>You can now randomize a theme with the theme creator.</li>
               </ul>
               <small>BetterCompass version {{$store.state.versioning.version}}, built on {{$store.state.versioning.date}}</small>
             </v-container>
@@ -429,7 +427,7 @@ export default {
       learningTaskAlert: false,
       tasks: [],
       type: 'day',
-      mode: 'stack',
+      mode: 'column',
       alerts: [],
       overDueLearningTasks: 0,
       weekday: [1, 2, 3, 4, 5],
@@ -473,7 +471,7 @@ export default {
       if(this.$store.state.bcUser.minimizeHeaderEvents) {
         // only show timed events, or events that have a color of #003300
         return this.events.filter(event => {
-          return event.timed || event.color === '#003300' || event.color === "#FFBB5B"
+          return event.timed || event.color === '#003300' || event.color === "#FFBB5B" || event.color === "#133897"
         });
       } else {
         return this.events
@@ -705,6 +703,8 @@ export default {
     computeColor(event) {
       if(event.color === "#003300") {
         return this.$vuetify.theme.themes[this.$store.state.bcUser.theme || "dark"].calendarActivityType8
+      } else if(event.color === "#133897") {
+        return this.$vuetify.theme.themes[this.$store.state.bcUser.theme || "dark"].calendarExternalActivity
       } else if (event.activityType === 7 || event.color === "#f4dcdc") {
         return this.$vuetify.theme.themes[this.$store.state.bcUser.theme || "dark"].calendarActivityType7
       } else if (event.color === "#dce6f4") {
@@ -717,10 +717,10 @@ export default {
     },
     changeDay(type) {
       if (type === "add") {
-        //this.focus = dayjs(this.focus).add(1, "day").format();
+        //this.$store.state.focus = dayjs(this.$store.state.focus).add(1, "day").format();
         this.$refs.calendar.next();
       } else if (type === "subtract") {
-        //this.focus = dayjs(this.focus).subtract(1, "day").format();
+        //this.$store.state.focus = dayjs(this.$store.state.focus).subtract(1, "day").format();
         this.$refs.calendar.prev();
       }
     },
@@ -743,9 +743,9 @@ export default {
     },
     fetchEvents(init, load) {
       if(init) {
-        if(dayjs().day() === 0) {
+        if(dayjs().day() === 0 && this.$store.state.bcUser.calendarAutoJump) {
           this.$refs.calendar.next();
-        } else if(dayjs().day() === 6) {
+        } else if(dayjs().day() === 6 && this.$store.state.bcUser.calendarAutoJump) {
           this.$refs.calendar.next();
           this.$refs.calendar.next();
         }
@@ -756,14 +756,14 @@ export default {
       }
       this.axios.post("/Services/Calendar.svc/GetCalendarEventsByUser", {
         activityId: null,
-        endDate: dayjs(this.focus).add(7, "day").format("YYYY-MM-DD"),
+        endDate: dayjs(this.$store.state.focus).add(7, "day").format("YYYY-MM-DD"),
         homePage: true,
         limit: 25,
         locationId: null,
         page: 1,
         staffIds: null,
         start: 0,
-        startDate: dayjs(this.focus).subtract(7, "day").format("YYYY-MM-DD"),
+        startDate: dayjs(this.$store.state.focus).subtract(7, "day").format("YYYY-MM-DD"),
         userId: this.$store.state.user?.userId || localStorage.getItem("userId")
       }).then((res) => {
         // map events

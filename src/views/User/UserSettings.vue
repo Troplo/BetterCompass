@@ -4,14 +4,28 @@
       <v-card color="card">
         <v-card-title>
           Theme {{ creatorType === "create" ? "Creator" : "Editor" }}
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <div
+                  v-on="on"
+                  v-bind="attrs">
+                <v-btn fab small text @click="randomizeTheme">
+                  <v-icon>mdi-dice-multiple</v-icon>
+                </v-btn>
+              </div>
+            </template>
+            <span>
+              Randomize theme
+          </span>
+          </v-tooltip>
         </v-card-title>
         <v-container>
           <v-form>
             <v-text-field
-              v-model="creator.name"
-              class="mx-3"
-              label="Theme Name"
-              required
+                v-model="creator.name"
+                class="mx-3"
+                label="Theme Name"
+                required
             ></v-text-field>
             <v-select :items="intendedFor" label="Intended for" class="mx-3" v-model="creator.primaryType">
 
@@ -103,17 +117,17 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="blue darken-1"
-            text
-            @click="createAccountDialog = false"
+              color="blue darken-1"
+              text
+              @click="createAccountDialog = false"
           >
             Cancel
           </v-btn>
           <v-btn
-            color="blue darken-1"
-            text
-            :disabled="!agree"
-            @click="createAccount"
+              color="blue darken-1"
+              text
+              :disabled="!agree"
+              @click="createAccount"
           >
             Create Account
           </v-btn>
@@ -236,6 +250,9 @@
                 </v-btn>
                 <v-btn text fab small @click="doDeleteTheme(theme)" v-if="theme.userId === $store.state.bcUser.id">
                   <v-icon>mdi-delete</v-icon>
+                </v-btn>
+                <v-btn text fab small @click="doCreateTheme('copy', theme)">
+                  <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
               </v-list-item-title>
               <v-list-item-subtitle>
@@ -372,6 +389,49 @@ export default {
     }
   },
   methods: {
+    randomizeTheme() {
+      // random colors for each this.creator.dark and this.creator.light
+      this.creator.light = {
+        primary: "#" + Math.floor(Math.random()*16777215).toString(16),
+        secondary:"#" + Math.floor(Math.random()*16777215).toString(16),
+        accent:"#" + Math.floor(Math.random()*16777215).toString(16),
+        error:"#" + Math.floor(Math.random()*16777215).toString(16),
+        info:"#" + Math.floor(Math.random()*16777215).toString(16),
+        success:"#" + Math.floor(Math.random()*16777215).toString(16),
+        warning:"#" + Math.floor(Math.random()*16777215).toString(16),
+        card:"#" + Math.floor(Math.random()*16777215).toString(16),
+        toolbar:"#" + Math.floor(Math.random()*16777215).toString(16),
+        sheet:"#" + Math.floor(Math.random()*16777215).toString(16),
+        text:"#" + Math.floor(Math.random()*16777215).toString(16),
+        dark:"#" + Math.floor(Math.random()*16777215).toString(16),
+        bg:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarNormalActivity:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarActivityType7:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarActivityType8:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarActivityType10:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarExternalActivity: Math.floor(Math.random()*16777215).toString(16)
+      }
+      this.creator.dark = {
+        primary:"#" + Math.floor(Math.random()*16777215).toString(16),
+        secondary:"#" + Math.floor(Math.random()*16777215).toString(16),
+        accent:"#" + Math.floor(Math.random()*16777215).toString(16),
+        error:"#" + Math.floor(Math.random()*16777215).toString(16),
+        info:"#" + Math.floor(Math.random()*16777215).toString(16),
+        success:"#" + Math.floor(Math.random()*16777215).toString(16),
+        warning:"#" + Math.floor(Math.random()*16777215).toString(16),
+        card:"#" + Math.floor(Math.random()*16777215).toString(16),
+        toolbar:"#" + Math.floor(Math.random()*16777215).toString(16),
+        sheet:"#" + Math.floor(Math.random()*16777215).toString(16),
+        text:"#" + Math.floor(Math.random()*16777215).toString(16),
+        dark:"#" + Math.floor(Math.random()*16777215).toString(16),
+        bg:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarNormalActivity:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarActivityType7:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarActivityType8:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarActivityType10:"#" + Math.floor(Math.random()*16777215).toString(16),
+        calendarExternalActivity: Math.floor(Math.random()*16777215).toString(16)
+      }
+    },
     doDeleteTheme(theme) {
       this.axios.delete("/api/v1/themes/" + theme.id).then(() => {
         this.$store.dispatch("getUserInfo")
@@ -396,11 +456,11 @@ export default {
         })
       })
     },
-    doCreateTheme(type) {
+    doCreateTheme(type, theme) {
       if(this.creatorType === "create" || type === "copy") {
         this.axios.post("/api/v1/themes", {
-          name: type === "copy" ? this.creator.name + " - Copy" : this.creator.name,
-          theme: this.creator
+          name: type === "copy" ? theme?.name + " - Copy" || this.creator.name + " - Copy" : this.creator.name,
+          theme: theme || this.creator
         }).then(() => {
           this.getThemes()
           this.doDiscardTheme()
@@ -427,47 +487,47 @@ export default {
     doDiscardTheme() {
       this.creator = {
         id: 1,
-            name: "BetterCompass Classic",
-            primaryType: "all",
-            dark: {
-              primary: "#0190ea",
-              secondary: "#757575",
-              accent: "#000000",
-              error: "#ff1744",
-              info: "#2196F3",
-              success: "#4CAF50",
-              warning: "#ff9800",
-              card: "#151515",
-              toolbar: "#191919",
-              sheet: "#181818",
-              text: "#000000",
-              dark: "#151515",
-              bg: "#151515",
-              calendarNormalActivity: "#3f51b5",
-              calendarActivityType7: "#f44336",
-              calendarActivityType8: "#4caf50",
-              calendarActivityType10: "#ff9800",
-              calendarExternalActivity: "#2196f3"
+        name: "BetterCompass Classic",
+        primaryType: "all",
+        dark: {
+          primary: "#0190ea",
+          secondary: "#757575",
+          accent: "#000000",
+          error: "#ff1744",
+          info: "#2196F3",
+          success: "#4CAF50",
+          warning: "#ff9800",
+          card: "#151515",
+          toolbar: "#191919",
+          sheet: "#181818",
+          text: "#000000",
+          dark: "#151515",
+          bg: "#151515",
+          calendarNormalActivity: "#3f51b5",
+          calendarActivityType7: "#f44336",
+          calendarActivityType8: "#4caf50",
+          calendarActivityType10: "#ff9800",
+          calendarExternalActivity: "#2196f3"
         },
         light: {
           primary: "#0190ea",
-              secondary: "#757575",
-              accent: "#000000",
-              error: "#ff1744",
-              info: "#2196F3",
-              success: "#4CAF50",
-              warning: "#ff9800",
-              card: "#f8f8f8",
-              toolbar: "#f8f8f8",
-              sheet: "#f8f8f8",
-              text: "#000000",
-              dark: "#f8f8f8",
-              bg: "#f8f8f8",
-              calendarNormalActivity: "#3f51b5",
-              calendarActivityType7: "#f44336",
-              calendarActivityType8: "#4caf50",
-              calendarActivityType10: "#ff9800",
-              calendarExternalActivity: "#2196f3"
+          secondary: "#757575",
+          accent: "#000000",
+          error: "#ff1744",
+          info: "#2196F3",
+          success: "#4CAF50",
+          warning: "#ff9800",
+          card: "#f8f8f8",
+          toolbar: "#f8f8f8",
+          sheet: "#f8f8f8",
+          text: "#000000",
+          dark: "#f8f8f8",
+          bg: "#f8f8f8",
+          calendarNormalActivity: "#3f51b5",
+          calendarActivityType7: "#f44336",
+          calendarActivityType8: "#4caf50",
+          calendarActivityType10: "#ff9800",
+          calendarExternalActivity: "#2196f3"
         }
       }
       this.creatorType = "create"
@@ -573,7 +633,7 @@ export default {
         this.$vuetify.theme.dark = this.$store.state.bcUser.theme === "dark"
       },
       deep: true
-  },
+    },
   }
 }
 </script>
