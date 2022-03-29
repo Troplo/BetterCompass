@@ -1,5 +1,10 @@
 <template>
-  <v-app :style="'background-color: ' +   $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].bg">
+  <v-app
+    :style="
+      'background-color: ' +
+      $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].bg
+    "
+  >
     <v-overlay :value="$store.state.site.loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
@@ -22,15 +27,25 @@
         </v-container>
       </v-card>
     </v-overlay>-->
-    <v-dialog v-if="$store.state.bcUser" v-model="$store.state.bcUser.guidedWizard" max-width="600px">
+    <v-dialog
+      v-if="$store.state.bcUser"
+      v-model="$store.state.bcUser.guidedWizard"
+      max-width="600px"
+    >
       <v-card color="card" class="text-center justify-center">
         <div v-if="guidedWizard.step === 1">
           <v-card-title class="text-center justify-center">
             <span class="headline">Welcome to BetterCompass.</span>
           </v-card-title>
           <v-container>
-            <p>BetterCompass is an enhanced version of Compass that resolves the long standing problems of Compass.</p>
-            <p>Some major improvements that can be seen throughout BetterCompass are:</p>
+            <p>
+              BetterCompass is an enhanced version of Compass that resolves the
+              long standing problems of Compass.
+            </p>
+            <p>
+              Some major improvements that can be seen throughout BetterCompass
+              are:
+            </p>
             <dl style="list-style-type: none">
               <li>Themes & Customization</li>
               <li>Quick Route Switching</li>
@@ -41,7 +56,12 @@
               <li>Enhanced calendar</li>
             </dl>
 
-            <v-btn color="red" class="mt-5 mr-3" @click="completeGuidedWizard()" :loading="loadingGuidedWizard">
+            <v-btn
+              color="red"
+              class="mt-5 mr-3"
+              @click="completeGuidedWizard()"
+              :loading="loadingGuidedWizard"
+            >
               <v-icon left>mdi-arrow-left</v-icon>
               Skip
             </v-btn>
@@ -63,23 +83,24 @@
             <v-flex>
               <v-layout column align-center>
                 <v-switch
-                    inset
-                    v-model="$store.state.bcUser.theme"
-                    @change="saveSettings"
-                    true-value="dark"
-                    false-value="light"
-                    label="Dark Mode"
-                    color="primary"
-                    class="mt-5"
+                  inset
+                  v-model="$store.state.bcUser.theme"
+                  @change="saveSettings"
+                  true-value="dark"
+                  false-value="light"
+                  label="Dark Mode"
+                  color="primary"
+                  class="mt-5"
                 ></v-switch>
               </v-layout>
             </v-flex>
             <v-card-text>
-              <v-card class="my-2"
-                      @click="setTheme(theme)"
-                      elevation="7"
-                      v-for="(theme, index) in computeThemes"
-                      :key="index"
+              <v-card
+                class="my-2"
+                @click="setTheme(theme)"
+                elevation="7"
+                v-for="(theme, index) in computeThemes"
+                :key="index"
               >
                 <v-list-item>
                   <v-list-item-content>
@@ -87,14 +108,15 @@
                       {{ theme.name }}
                     </v-list-item-title>
                     <v-list-item-subtitle>
-                      {{ theme.public ? 'Public' : 'Private' }}, created by {{ theme.user.sussiId }}
+                      {{ theme.public ? "Public" : "Private" }}, created by
+                      {{ theme.user.sussiId }}
                     </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
                     <v-avatar
-                        color="success"
-                        size="30"
-                        v-if="name === theme.id"
+                      color="success"
+                      size="30"
+                      v-if="name === theme.id"
                     >
                       <v-icon>mdi-check</v-icon>
                     </v-avatar>
@@ -102,7 +124,11 @@
                 </v-list-item>
               </v-card>
             </v-card-text>
-            <v-btn color="primary" class="mt-5 mr-3" @click="guidedWizard.step = 1">
+            <v-btn
+              color="primary"
+              class="mt-5 mr-3"
+              @click="guidedWizard.step = 1"
+            >
               <v-icon left>mdi-arrow-left</v-icon>
               Previous
             </v-btn>
@@ -117,54 +143,63 @@
             <span class="headline">Other Preferences</span>
           </v-card-title>
           <v-card-subtitle class="text-center justify-center">
-            <span class="subtitle-1">If you wish, you may modify some additional settings.</span>
+            <span class="subtitle-1"
+              >If you wish, you may modify some additional settings.</span
+            >
           </v-card-subtitle>
           <v-container class="text-center justify-center">
             <v-flex>
               <v-layout column align-center>
                 <v-switch
-                    @change="saveSettings"
-                    v-model="$store.state.bcUser.learningTaskNotification"
-                    inset
-                    label="Show overdue learning task warning"
-                    color="warning"
+                  @change="saveSettings"
+                  v-model="$store.state.bcUser.learningTaskNotification"
+                  inset
+                  label="Show overdue learning task warning"
+                  color="warning"
                 ></v-switch>
                 <v-switch
-                    @change="saveSettings"
-                    v-model="$store.state.bcUser.weather"
-                    inset
-                    label="Show weather widget"
+                  @change="saveSettings"
+                  v-model="$store.state.bcUser.weather"
+                  inset
+                  label="Show weather widget"
                 ></v-switch>
                 <v-switch
-                    @change="saveSettings"
-                    v-model="$store.state.bcUser.minimizeHeaderEvents"
-                    inset
-                    label="Minimize header events"
+                  @change="saveSettings"
+                  v-model="$store.state.bcUser.minimizeHeaderEvents"
+                  inset
+                  label="Minimize header events"
                 ></v-switch>
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
-                    <div
-                        v-on="on"
-                        v-bind="attrs">
+                    <div v-on="on" v-bind="attrs">
                       <v-switch
-                          @change="saveSettings"
-                          v-model="$store.state.bcUser.calendarAutoJump"
-                          inset
-                          label="Calendar Auto Jump"
+                        @change="saveSettings"
+                        v-model="$store.state.bcUser.calendarAutoJump"
+                        inset
+                        label="Calendar Auto Jump"
                       ></v-switch>
                     </div>
                   </template>
                   <span>
-              This will skip to Monday on Saturday and Sunday.
-          </span>
+                    This will skip to Monday on Saturday and Sunday.
+                  </span>
                 </v-tooltip>
               </v-layout>
             </v-flex>
-            <v-btn color="primary" class="mt-5 mr-3" @click="guidedWizard.step = 2">
+            <v-btn
+              color="primary"
+              class="mt-5 mr-3"
+              @click="guidedWizard.step = 2"
+            >
               <v-icon left>mdi-arrow-left</v-icon>
               Previous
             </v-btn>
-            <v-btn color="primary" class="mt-5" @click="completeGuidedWizard()" :loading="loadingGuidedWizard">
+            <v-btn
+              color="primary"
+              class="mt-5"
+              @click="completeGuidedWizard()"
+              :loading="loadingGuidedWizard"
+            >
               Finish
             </v-btn>
           </v-container>
@@ -174,24 +209,38 @@
     <v-dialog v-model="$store.state.modals.search" max-width="600px">
       <v-card color="card">
         <v-card-title>
-          <span class="headline">BetterCompass QuickSwitcher (BETA)</span>
+          <span class="headline">BetterCompass QuickSwitcher</span>
         </v-card-title>
         <v-container>
-          <v-autocomplete auto-select-first v-model="search" :items="$store.state.quickSwitchCache" item-text="subjectLongName" label="Search" outlined autofocus return-object :search-input.sync="searchInput">
+          <v-autocomplete
+            auto-select-first
+            v-model="search"
+            :items="$store.state.quickSwitchCache"
+            item-text="subjectLongName"
+            label="Search"
+            outlined
+            autofocus
+            return-object
+            :search-input.sync="searchInput"
+          >
           </v-autocomplete>
         </v-container>
       </v-card>
     </v-dialog>
     <Header></Header>
     <v-main>
-      <v-container v-if="$store.state.site.latestVersion > $store.state.versioning.version">
+      <v-container
+        v-if="$store.state.site.latestVersion > $store.state.versioning.version"
+      >
         <v-alert class="mx-4" type="info">
-          BetterCompass just got a little bit better. Please CTRL+R / ⌘+R to update. (You are on version {{ $store.state.versioning.version }}, and the latest version is {{ $store.state.site.latestVersion }})
+          BetterCompass just got better. Please CTRL+R / ⌘+R to update. (You are
+          on version {{ $store.state.versioning.version }}, and the latest
+          version is {{ $store.state.site.latestVersion }})
         </v-alert>
       </v-container>
       <v-container v-if="$store.state.site.notification">
         <v-alert class="mx-4" type="info">
-          {{$store.state.site.notification}}
+          {{ $store.state.site.notification }}
         </v-alert>
       </v-container>
       <!--<v-container v-if="!$store.state.online">
@@ -199,7 +248,12 @@
           You are currently offline, BetterCompass functionality will be limited.
         </v-alert>
       </v-container>-->
-      <router-view :style="'background-color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].bg"/>
+      <router-view
+        :style="
+          'background-color: ' +
+          $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].bg
+        "
+      />
     </v-main>
   </v-app>
 </template>
@@ -217,7 +271,7 @@
   scrollbar-width: none; /* Firefox */
 }
 .troplo-nav {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .troplo-header {
@@ -242,7 +296,7 @@
   -webkit-text-fill-color: transparent;
 }
 .theme--dark.v-sheet {
-  overflow:auto !important;
+  overflow: auto !important;
   color: #ffffff;
 }
 .card {
@@ -251,15 +305,14 @@
 
 .v-calendar-daily_head-day {
   border-right: 1px transparent !important;
-
 }
 
 .day .v-calendar-daily_head-weekday {
-  visibility: hidden !important
+  visibility: hidden !important;
 }
 
 .day .v-calendar-daily_head-day-label {
-  display: none !important
+  display: none !important;
 }
 
 div .theme--dark.v-calendar-events .v-event-timed {
@@ -285,36 +338,36 @@ div .theme--dark.v-calendar-daily .v-calendar-daily__day {
 }
 
 .light::-webkit-scrollbar-track {
-  background: #e6e6e6!important;
-  border-left: 1px solid #dadada!important;
+  background: #e6e6e6 !important;
+  border-left: 1px solid #dadada !important;
 }
 
 .light::-webkit-scrollbar-thumb {
-  background: #b0b0b0!important;
-  border: solid 3px #e6e6e6!important;
-  border-radius: 7px!important;
+  background: #b0b0b0 !important;
+  border: solid 3px #e6e6e6 !important;
+  border-radius: 7px !important;
 }
 
 .light::-webkit-scrollbar-thumb:hover {
-  background: black!important;
+  background: black !important;
 }
 
 ::-webkit-scrollbar {
-  width: 15px!important;
+  width: 15px !important;
 }
 
 ::-webkit-scrollbar-track {
-  background: #151515!important;
+  background: #151515 !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3e3e3e!important;
-  border: solid 3px #202020!important;
-  border-radius: 7px!important;
+  background: #3e3e3e !important;
+  border: solid 3px #202020 !important;
+  border-radius: 7px !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: white!important;
+  background: white !important;
 }
 
 .vuecal__event-time {
@@ -329,17 +382,17 @@ div .theme--dark.v-calendar-daily .v-calendar-daily__day {
 }
 </style>
 <script>
-import Header from './components/Header.vue'
-import AjaxErrorHandler from "@/lib/errorHandler";
+import Header from "./components/Header.vue"
+import AjaxErrorHandler from "@/lib/errorHandler"
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Header
   },
   data: () => ({
     loading: false,
     defineAccent: false,
-    accent: '#0179f3',
+    accent: "#0179f3",
     loadingGuidedWizard: false,
     guidedWizard: {
       step: 1
@@ -354,11 +407,16 @@ export default {
   computed: {
     computeThemes() {
       let array = []
-      if(this.$vuetify.theme.dark) {
-        array = this.themes.filter(theme => theme.primaryType === "dark" || theme.primaryType === "all")
+      if (this.$vuetify.theme.dark) {
+        array = this.themes.filter(
+          (theme) => theme.primaryType === "dark" || theme.primaryType === "all"
+        )
         return array
       } else {
-        array = this.themes.filter(theme => theme.primaryType === "light" || theme.primaryType === "all")
+        array = this.themes.filter(
+          (theme) =>
+            theme.primaryType === "light" || theme.primaryType === "all"
+        )
         return array
       }
     }
@@ -366,13 +424,17 @@ export default {
   methods: {
     saveSettings() {
       this.loading = true
-      this.$vuetify.theme.dark = this.$store.state.bcUser?.theme === "dark" || true
-      this.$store.dispatch("saveOnlineSettings").then(() => {
-        this.loading = false
-      }).catch((e) => {
-        this.loading = false
-        AjaxErrorHandler(this.$store)(e)
-      })
+      this.$vuetify.theme.dark =
+        this.$store.state.bcUser?.theme === "dark" || true
+      this.$store
+        .dispatch("saveOnlineSettings")
+        .then(() => {
+          this.loading = false
+        })
+        .catch((e) => {
+          this.loading = false
+          AjaxErrorHandler(this.$store)(e)
+        })
     },
     completeGuidedWizard() {
       this.loadingGuidedWizard = true
@@ -384,8 +446,8 @@ export default {
       })
     },
     getThemes() {
-      this.axios.get("/api/v1/themes").then(res => {
-        this.themes = res.data.map(theme => {
+      this.axios.get("/api/v1/themes").then((res) => {
+        this.themes = res.data.map((theme) => {
           return {
             id: theme.id,
             name: theme.name,
@@ -400,24 +462,26 @@ export default {
       })
     },
     setTheme(theme) {
-      const name = theme.id;
-      const dark = theme.dark;
-      const light = theme.light;
-      this.$vuetify.theme.themes.dark = dark;
-      this.$vuetify.theme.themes.light = light;
-      this.$vuetify.theme.themes.name = name;
-      this.$vuetify.theme.themes.primaryType = theme.primaryType;
-      if(this.accent && this.defineAccent) {
+      const name = theme.id
+      const dark = theme.dark
+      const light = theme.light
+      this.$vuetify.theme.themes.dark = dark
+      this.$vuetify.theme.themes.light = light
+      this.$vuetify.theme.themes.name = name
+      this.$vuetify.theme.themes.primaryType = theme.primaryType
+      if (this.accent && this.defineAccent) {
         this.$vuetify.theme.themes.light.primary = this.accent
         this.$vuetify.theme.themes.dark.primary = this.accent
       }
       this.name = name
-      this.axios.put("/api/v1/user/settings/theme", {
-        id: name,
-        accent: this.defineAccent ? this.accent : null
-      }).catch((e) => {
-        AjaxErrorHandler(this.$store)(e)
-      })
+      this.axios
+        .put("/api/v1/user/settings/theme", {
+          id: name,
+          accent: this.defineAccent ? this.accent : null
+        })
+        .catch((e) => {
+          AjaxErrorHandler(this.$store)(e)
+        })
     },
     retryConnection() {
       this.connectionLoading = true
@@ -426,37 +490,45 @@ export default {
       })
     },
     validate(value, defaultValue) {
-      if(value === undefined || value === null) {
+      if (value === undefined || value === null) {
         return defaultValue
       } else {
         return value
       }
-    },
+    }
   },
   mounted() {
-    document.title = this.$route.name + " - BetterCompass"
+    document.title = this.$route.name
+      ? this.$route.name + " - BetterCompass"
+      : "BetterCompass"
+    this.$store.commit("setLoading", true)
     this.$store.commit("setSettings", this.settings)
-    if(localStorage.getItem("settings")) {
+    if (localStorage.getItem("settings")) {
       localStorage.removeItem("settings")
     }
-    this.$vuetify.theme.dark = this.$store.state.bcUser?.theme === "dark" || true
+    this.$vuetify.theme.dark =
+      this.$store.state.bcUser?.theme === "dark" || true
     this.$store.commit("setSchool", {
       name: localStorage.getItem("schoolName"),
       id: localStorage.getItem("schoolId"),
       fqdn: localStorage.getItem("schoolFqdn"),
       instance: localStorage.getItem("schoolInstance")
     })
-    this.axios.defaults.headers.common['compassInstance'] = localStorage.getItem('schoolInstance')
-    this.axios.defaults.headers.common['compassSchoolId'] = localStorage.getItem('schoolId')
+    this.axios.defaults.headers.common["compassInstance"] =
+      localStorage.getItem("schoolInstance")
+    this.axios.defaults.headers.common["compassSchoolId"] =
+      localStorage.getItem("schoolId")
     this.getThemes()
     this.$store.dispatch("getState")
-    this.$store.dispatch("getUserInfo")
-        .then(() => {
-          this.$store.dispatch("updateQuickSwitch")
-        }).catch((e) => {
-          console.log(e)
-      this.$router.push('/login')
-    })
+    this.$store
+      .dispatch("getUserInfo")
+      .then(() => {
+        this.$store.dispatch("updateQuickSwitch")
+      })
+      .catch((e) => {
+        console.log(e)
+        this.$router.push("/login")
+      })
   },
   watch: {
     "$store.state.bcUser.theme": {
@@ -469,15 +541,15 @@ export default {
       document.title = to.name + " - BetterCompass"
     },
     search() {
-      if(this.search) {
-        if(this.search.id) {
+      if (this.search) {
+        if (this.search.id) {
           this.$router.push("/activity/activity/" + this.search.id)
           this.$store.commit("setSearch", false)
           this.search = null
           this.$nextTick(() => {
             this.searchInput = null
           })
-        } else if(this.search.customType === 1) {
+        } else if (this.search.customType === 1) {
           this.$router.push(this.search.route)
           this.$store.commit("setSearch", false)
           this.search = null
@@ -488,5 +560,5 @@ export default {
       }
     }
   }
-};
+}
 </script>

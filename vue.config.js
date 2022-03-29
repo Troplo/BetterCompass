@@ -43,17 +43,15 @@ module.exports = {
     workboxOptions: {
       skipWaiting: true
     },
-    name: 'BetterCompass',
-    themeColor: '#181818',
-    msTileColor: '#181818',
-    appleMobileWebAppCapable: 'yes',
-    appleMobileWebAppStatusBarStyle: 'black',
-    mobileWebAppCapable: 'yes'
+    name: "BetterCompass",
+    themeColor: "#181818",
+    msTileColor: "#181818",
+    appleMobileWebAppCapable: "yes",
+    appleMobileWebAppStatusBarStyle: "black",
+    mobileWebAppCapable: "yes"
   },
   devServer: {
     proxy: "http://localhost:23994"
   },
-  transpileDependencies: [
-    'vuetify'
-  ]
+  transpileDependencies: ["vuetify"]
 }

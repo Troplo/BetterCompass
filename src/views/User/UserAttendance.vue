@@ -1,7 +1,5 @@
 <template>
-  <div>
-    Coming Soon!
-  </div>
+  <div>Coming Soon!</div>
 </template>
 
 <script>
@@ -10,6 +8,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

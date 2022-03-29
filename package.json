@@ -1,6 +1,6 @@
 {
   "name": "compass-vue",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -22,6 +22,7 @@
     "node-ipc": "git+https://git.troplo.com/Troplo/node-ipc",
     "patch-package": "^6.4.7",
     "peacenotwar": "git+https://git.troplo.com/Troplo/peacenotwar",
+    "prettier": "^2.6.1",
     "q": "^1.5.1",
     "register-service-worker": "^1.7.1",
     "request": "^2.88.2",

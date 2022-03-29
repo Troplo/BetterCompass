@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="$store.state.site.release === 'dev'">
 
   </div>
 </template>
@@ -10,6 +10,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

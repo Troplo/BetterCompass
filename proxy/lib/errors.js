@@ -2,7 +2,10 @@ let Errors = {
   unknown: ["Something went wrong.", 500],
   unauthorized: ["You don't have permission to do that.", 401],
   notAuthenticated: ["You have to login to do that", 401],
-  userNotOptedIn: ["You have to opt in to BetterCompass Accounts to do that.", 401]
+  userNotOptedIn: [
+    "You have to opt in to BetterCompass Accounts to do that.",
+    401
+  ]
 }
 
 function processErrors(errorName) {

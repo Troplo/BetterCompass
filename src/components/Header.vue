@@ -10,33 +10,33 @@
             <v-row>
               <v-col cols="12" md="4" sm="6">
                 <v-text-field
-                    class="rounded-xl"
-                    v-model="feedback.route"
-                    label="Route"
-                    required
+                  class="rounded-xl"
+                  v-model="feedback.route"
+                  label="Route"
+                  required
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="4" sm="6">
                 Rating:
                 <v-rating
-                    v-model="feedback.rating"
-                    background-color="grey darken-1"
-                    color="yellow darken-3"
-                    empty-icon="$ratingFull"
-                    hover
+                  v-model="feedback.rating"
+                  background-color="grey darken-1"
+                  color="yellow darken-3"
+                  empty-icon="$ratingFull"
+                  hover
                 ></v-rating>
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                    class="rounded-xl"
-                    v-model="feedback.text"
-                    label="Enter your Feedback"
-                    required
+                  class="rounded-xl"
+                  v-model="feedback.text"
+                  label="Enter your Feedback"
+                  required
                 ></v-text-field>
               </v-col>
               <small
-              >Your feedback will be used to make
-                BetterCompass even better.</small
+                >Your feedback will be used to make BetterCompass even
+                better.</small
               >
             </v-row>
           </v-container>
@@ -44,18 +44,18 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-              class="rounded-xl"
-              color="blue darken-1"
-              text
-              @click="feedback.modal = false"
+            class="rounded-xl"
+            color="blue darken-1"
+            text
+            @click="feedback.modal = false"
           >
             Close
           </v-btn>
           <v-btn
-              class="rounded-xl"
-              color="blue darken-1"
-              text
-              @click="submitFeedback()"
+            class="rounded-xl"
+            color="blue darken-1"
+            text
+            @click="submitFeedback()"
           >
             Submit
           </v-btn>
@@ -64,84 +64,101 @@
     </v-dialog>
     <v-app-bar app v-if="$store.state.user" color="dark">
       <v-app-bar-nav-icon
-          @click.stop="drawer = !drawer"
-          v-if="$vuetify.breakpoint.mobile"
+        @click.stop="drawer = !drawer"
+        v-if="$vuetify.breakpoint.mobile"
       ></v-app-bar-nav-icon>
       <v-toolbar-title
-          v-if="!$vuetify.breakpoint.mobile"
-          :style="'color: ' + $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary"
-          @click="$router.push('/')"
-          style="cursor: pointer"
-      >BetterCompass</v-toolbar-title
+        v-if="!$vuetify.breakpoint.mobile"
+        :style="
+          'color: ' +
+          $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary
+        "
+        @click="$router.push('/')"
+        style="cursor: pointer"
+        >BetterCompass</v-toolbar-title
       ><v-app-bar-nav-icon
         v-if="!$vuetify.breakpoint.mobile"
         style="z-index: 1000"
         disabled
-    >Beta</v-app-bar-nav-icon
-    >
+        >Beta</v-app-bar-nav-icon
+      >
       <v-text-field
-          ref="searchInput"
-          autocomplete="off"
-          class="mx-2 mx-md-4"
-          dense
-          hide-details
-          outlined
-          placeholder="English"
-          :label="$vuetify.breakpoint.mobile ? 'Search BetterCompass...' : 'Search BetterCompass... (CTRL + K)' "
-          @click="$store.commit('setSearch', true)"
-          style="max-width: 450px;"
+        ref="searchInput"
+        autocomplete="off"
+        class="mx-2 mx-md-4"
+        dense
+        hide-details
+        outlined
+        placeholder="English"
+        :label="
+          $vuetify.breakpoint.mobile
+            ? 'Search BetterCompass...'
+            : 'Search BetterCompass... (CTRL + K)'
+        "
+        @click="$store.commit('setSearch', true)"
+        style="max-width: 450px"
       >
       </v-text-field>
-      <button style="display: none" v-shortkey.once="['ctrl', 'k']" @shortkey="$store.commit('setSearch', true)">Debug</button>
+      <button
+        style="display: none"
+        v-shortkey.once="['ctrl', 'k']"
+        @shortkey="$store.commit('setSearch', true)"
+      >
+        Debug
+      </button>
       <v-spacer></v-spacer>
       <v-menu
-          v-if="$store.state.user.username"
-          offset-y
-          rounded
-          class="rounded-xxl"
+        v-if="$store.state.user.username"
+        offset-y
+        rounded
+        class="rounded-xxl"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn class="rounded-xl" icon v-bind="attrs" v-on="on">
             <v-avatar
-                v-if="!$store.state.user.avatar"
-                align="center"
-                class="text-center"
-                size="38"
+              v-if="!$store.state.user.avatar"
+              align="center"
+              class="text-center"
+              size="38"
             >
-              <v-icon v-if="!$store.state.user.avatar">mdi-account-circle</v-icon>
+              <v-icon v-if="!$store.state.user.avatar"
+                >mdi-account-circle</v-icon
+              >
             </v-avatar>
           </v-btn>
         </template>
 
         <v-list>
           <v-list-item
-              v-for="(item, index) in menus.dropdownAuthenticated"
-              :key="item.id"
-              :disabled="item.disabled"
-              :to="item.path"
-              :style="'color:' + item.color"
-              @click="handleClickDropdown(index)"
+            v-for="(item, index) in menus.dropdownAuthenticated"
+            :key="item.id"
+            :disabled="item.disabled"
+            :to="item.path"
+            :style="'color:' + item.color"
+            @click="handleClickDropdown(index)"
           >
             <v-list-item-title>{{ item.name }}</v-list-item-title>
           </v-list-item>
           <template v-if="$store.state.user.admin">
             <v-list-item
-                v-for="(item, index) in menus.admin"
-                :key="item.id"
-                :disabled="item.disabled"
-                :to="item.path"
-                @click="handleClickDropdown(index)"
+              v-for="(item, index) in menus.admin"
+              :key="item.id"
+              :disabled="item.disabled"
+              :to="item.path"
+              @click="handleClickDropdown(index)"
             >
               <v-list-item-title>{{ item.name }}</v-list-item-title>
             </v-list-item>
           </template>
-          <template v-if="$store.state.user.moderator || $store.state.user.admin">
+          <template
+            v-if="$store.state.user.moderator || $store.state.user.admin"
+          >
             <v-list-item
-                v-for="(item, index) in menus.moderator"
-                :key="item.id"
-                :disabled="item.disabled"
-                :to="item.path"
-                @click="handleClickDropdown(index)"
+              v-for="(item, index) in menus.moderator"
+              :key="item.id"
+              :disabled="item.disabled"
+              :to="item.path"
+              @click="handleClickDropdown(index)"
             >
               <v-list-item-title>{{ item.name }}</v-list-item-title>
             </v-list-item>
@@ -150,21 +167,21 @@
       </v-menu>
     </v-app-bar>
     <v-navigation-drawer
-        v-model="drawer"
-        v-if="$store.state.user"
-        app
-        color="dark"
-        floating
+      v-model="drawer"
+      v-if="$store.state.user"
+      app
+      color="dark"
+      floating
     >
       <v-list-item v-if="$vuetify.breakpoint.mobile">
         <v-list-item-content>
           <v-list-item-title class="text-h6">
             <v-toolbar-title
-                v-if="$vuetify.breakpoint.mobile"
-                class="troplo-title text-center justify-center"
-                @click="$router.push('/')"
-                style="cursor: pointer"
-            >BetterCompass</v-toolbar-title
+              v-if="$vuetify.breakpoint.mobile"
+              class="troplo-title text-center justify-center"
+              @click="$router.push('/')"
+              style="cursor: pointer"
+              >BetterCompass</v-toolbar-title
             >
           </v-list-item-title>
         </v-list-item-content>
@@ -190,56 +207,47 @@
                 <v-list-item-title>Your Profile</v-list-item-title>
               </v-list-item>
 
-              <v-list-group
-                  prepend-icon="mdi-pen"
-              >
+              <v-list-group prepend-icon="mdi-pen">
                 <template v-slot:activator>
                   <v-list-item-title>Curriculum</v-list-item-title>
                 </template>
 
-                <v-list-group
-                    no-action
-                    sub-group
-                >
+                <v-list-group no-action sub-group>
                   <template v-slot:activator>
                     <v-list-item-content>
                       <v-list-item-title>Pages</v-list-item-title>
                     </v-list-item-content>
                   </template>
-                  <v-list-item
-                      link
-                      to="/user/tasks"
-                  >
+                  <v-list-item link to="/user/tasks">
                     <v-list-item-title>Learning Tasks</v-list-item-title>
                   </v-list-item>
-                  <v-list-item
-                      link
-                      to="/school/resources"
-                  >
+                  <v-list-item link to="/school/resources">
                     <v-list-item-title>School Resources</v-list-item-title>
                   </v-list-item>
                 </v-list-group>
 
-                <v-list-group
-                    no-action
-                    sub-group
-                >
+                <v-list-group no-action sub-group>
                   <template v-slot:activator>
                     <v-list-item-content>
                       <v-list-item-title>Subjects & Classes</v-list-item-title>
                     </v-list-item-content>
                   </template>
                   <v-list-item
-                      v-for="subject in $store.state.subjects"
-                      :key="subject.id"
-                      :to="'/activity/activity/' + subject.id"
-                      link
+                    v-for="subject in $store.state.subjects"
+                    :key="subject.id"
+                    :to="'/activity/activity/' + subject.id"
+                    link
                   >
-                    <v-list-item-title>{{subject.subjectLongName}}</v-list-item-title>
+                    <v-list-item-title>{{
+                      subject.subjectLongName
+                    }}</v-list-item-title>
                   </v-list-item>
                 </v-list-group>
               </v-list-group>
-              <v-list-item to="/communications" v-if="$store.state.site.release === 'dev'">
+              <v-list-item
+                to="/communications"
+                v-if="$store.state.site.release === 'dev'"
+              >
                 <v-list-item-icon>
                   <v-icon>mdi-android-messages</v-icon>
                 </v-list-item-icon>
@@ -270,33 +278,33 @@
             </template>
             <template v-if="$store.state.site.release === 'dev'">
               <v-list-item
-                  v-for="(item, index) in menus.debug"
-                  :key="item.id"
-                  :to="item.path"
-                  link
-                  @click="handleClick(index)"
+                v-for="(item, index) in menus.debug"
+                :key="item.id"
+                :to="item.path"
+                link
+                @click="handleClick(index)"
               >
                 <v-list-item-icon>
                   <v-icon
-                      v-bind:class="{
+                    v-bind:class="{
                       gradient:
                         item.name === $route.name &&
                         !$store.state.site.whitelabel
                     }"
-                  >{{ item.icon }}
+                    >{{ item.icon }}
                   </v-icon>
                 </v-list-item-icon>
 
                 <v-list-item-content>
                   <v-list-item-title
-                  >{{ item.name }}
+                    >{{ item.name }}
                     <v-chip
-                        v-if="item.preview"
-                        class="ma-2"
-                        color="success"
-                        outlined
-                        rounded
-                        x-small
+                      v-if="item.preview"
+                      class="ma-2"
+                      color="success"
+                      outlined
+                      rounded
+                      x-small
                     >
                       <v-icon>mdi-flask</v-icon>
                     </v-chip>
@@ -318,11 +326,11 @@
           </v-list-item>
           <v-list>
             <v-list-item
-                v-for="(item, index) in menus.default"
-                :key="index"
-                :to="item.path"
-                link
-                @click="handleClick(index)"
+              v-for="(item, index) in menus.default"
+              :key="index"
+              :to="item.path"
+              link
+              @click="handleClick(index)"
             >
               <v-list-item-icon>
                 <v-icon>{{ item.icon }}</v-icon>
@@ -375,7 +383,7 @@ export default {
             },
             color: "#c53030",
             icon: "mdi-settings"
-          },
+          }
         ],
         debug: [],
         default: [
@@ -415,7 +423,7 @@ export default {
   },
   computed: {
     navColor() {
-      if(this.$vuetify.theme.dark) {
+      if (this.$vuetify.theme.dark) {
         return "#181818"
       } else {
         return "#FFFFFF"
@@ -425,21 +433,23 @@ export default {
   methods: {
     submitFeedback() {
       this.axios
-          .post("/api/v1/feedback", {
-            text: this.feedback.text,
-            starRating: this.feedback.rating,
-            route: this.feedback.route,
-            sussiId: this.$store.state.user.username
-          })
-          .then(() => {
-            this.feedback.text = "";
-            this.feedback.rating = 0;
-            this.feedback.modal = false
-            this.$toast.success("Thank you for making a BetterCompass.")
-          })
-          .catch(() => {
-            this.$toast.error("Something went wrong while submitting feedback, you should submit feedback about this.")
-          })
+        .post("/api/v1/feedback", {
+          text: this.feedback.text,
+          starRating: this.feedback.rating,
+          route: this.feedback.route,
+          sussiId: this.$store.state.user.username
+        })
+        .then(() => {
+          this.feedback.text = ""
+          this.feedback.rating = 0
+          this.feedback.modal = false
+          this.$toast.success("Thank you for making a BetterCompass.")
+        })
+        .catch(() => {
+          this.$toast.error(
+            "Something went wrong while submitting feedback, you should submit feedback about this."
+          )
+        })
     },
     handleClickDropdown(index) {
       this.menus.selected = index
@@ -459,7 +469,7 @@ export default {
   },
   mounted() {
     this.feedback.route = this.$route.path
-    if(this.$vuetify.breakpoint.mobile) {
+    if (this.$vuetify.breakpoint.mobile) {
       this.drawer = false
     }
   },
@@ -471,6 +481,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

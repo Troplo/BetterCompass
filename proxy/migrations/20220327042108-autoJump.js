@@ -1,11 +1,11 @@
-'use strict';
+"use strict"
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('users', 'calendarAutoJump', {
+    await queryInterface.addColumn("users", "calendarAutoJump", {
       type: Sequelize.BOOLEAN,
-      defaultValue: true,
-    });
+      defaultValue: true
+    })
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -16,4 +16,4 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
   }
-};
+}
