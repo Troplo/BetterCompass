@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("chats", {
+    await queryInterface.createTable("Chat", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -52,7 +52,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
-    await queryInterface.createTable("messages", {
+    await queryInterface.createTable("Messages", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -101,7 +101,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
-    await queryInterface.createTable("invites", {
+    await queryInterface.createTable("Invites", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -133,7 +133,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
-    await queryInterface.createTable("blockedUsers", {
+    await queryInterface.createTable("BlockedUsers", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -158,7 +158,7 @@ module.exports = {
       }
     })
     // muted channels
-    await queryInterface.createTable("mutedChats", {
+    await queryInterface.createTable("MutedChats", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -184,14 +184,7 @@ module.exports = {
     })
     await queryInterface.addColumn("users", "privacy", {
       type: Sequelize.JSON,
-      defaultValue: {
-        communications: {
-          enabled: false,
-          outsideTenant: false,
-          directMessages: "friendsOnly",
-          friendRequests: true
-        }
-      },
+      defaultValue: {"communications":{"enabled":false,"outsideTenant":false,"directMessages":"friendsOnly","friendRequests":true}},
       allowNull: false
     })
     // friends

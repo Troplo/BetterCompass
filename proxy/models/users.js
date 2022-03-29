@@ -78,6 +78,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true
+      },
+      privacy: {
+        type: DataTypes.JSON,
+        defaultValue: {"communications":{"enabled":false,"outsideTenant":false,"directMessages":"friendsOnly","friendRequests":true}}
       }
     },
     {
