@@ -30,8 +30,9 @@
                 <div>
                   <span class="title"
                     >{{ selectedTopic.createdByUser.firstName }}
-                    {{ selectedTopic.createdByUser.lastName }}</span
-                  >
+                    {{ selectedTopic.createdByUser.lastName }}
+                    ({{selectedTopic.createdByUser.userId}})
+                  </span>
                 </div>
                 <v-spacer></v-spacer>
                 <v-btn fab text v-if="selectedTopic.createdByUser.userId === $store.state.user.userId">
@@ -72,7 +73,7 @@
                 <v-avatar size="50" class="mr-2">
                   <img
                     :src="
-                      selectedTopic.createdByUser.avatarUrl.replace(
+                      comment.createdByUser.avatarUrl.replace(
                         'full',
                         'square'
                       ) +
@@ -83,10 +84,13 @@
                 </v-avatar>
                 <div>
                   <span class="title"
-                    >{{ selectedTopic.createdByUser.firstName }}
-                    {{ selectedTopic.createdByUser.lastName }}</span
-                  >
+                    >{{ comment.createdByUser.firstName }}
+                    {{ comment.createdByUser.lastName }}
+                    ({{comment.createdByUser.userId}})
+                  </span>
                 </div>
+                <v-divider></v-divider>
+
               </v-card-title>
               <p class="ml-6">{{ comment.contents[0].body }}</p>
               <small class="ml-6">{{
@@ -94,7 +98,7 @@
               }}</small>
               <!-- sub replies to comments -->
               <v-divider></v-divider>
-              <v-list v-if="comment.replies" class="mx-5" color="card">
+              <v-list v-if="comment.replies && false" class="mx-5" color="card">
                 <v-subheader>Replies</v-subheader>
                 <v-card
                   v-for="reply in comment.replies.nodes"
@@ -117,9 +121,10 @@
                     </v-avatar>
                     <div>
                       <span class="title"
-                        >{{ selectedTopic.createdByUser.firstName }}
-                        {{ selectedTopic.createdByUser.lastName }}</span
-                      >
+                        >{{ reply.createdByUser.firstName }}
+                        {{ reply.createdByUser.lastName }}
+                      ({{reply.createdByUser.userId}})
+                      </span>
                     </div>
                   </v-card-title>
                   <p class="ml-6">{{ reply.contents[0].body }}</p>
@@ -355,6 +360,30 @@ fragment CommentFields on DiscussionsComment {
           this.topicDialog = true
         })
     },
+    async getUserData() {
+      await this.$apollo.query({
+        query: gql`query CompassUserData {
+  currentUser {
+    firstName
+    lastName
+    baseRole
+    id
+    profileImage(size: FULL) {
+      url
+      id
+      __typename
+    }
+    __typename
+  }
+}`
+      })
+        .then((res) => {
+          this.user = res.data.data.currentUser
+        })
+        .catch((e) => {
+          AjaxErrorHandler(e)
+        })
+    },
     async createTopic() {
       await this.$apollo
         .mutate({
@@ -485,7 +514,26 @@ fragment CommentFields on DiscussionsComment {
         })
     }
   },
-  mounted() {
+  async mounted() {
+    await this.getUserData().then(() => {
+      this.$apollo
+        .mutate({
+          mutation: gql`mutation ValidateUser($avatarUrl: String!, $firstName: String!, $lastName: String!, $userId: Int!) {
+  validateDiscussionsUser(avatarUrl: $avatarUrl, firstName: $firstName, lastName: $lastName, userId: $userId)
+}`,
+          variables: {
+            avatarUrl: this.$store.state.bcUser?.discussionsImage || "/download/cdn/full/" + this.$store.state.user.imageGuid + ".jpg",
+            firstName: this.$store.state.bcUser?.discussionsFirstName || this.$store.state.user.firstName,
+            lastName: this.$store.state.bcUser?.discussionsLastName || this.$store.state.user.lastName
+          }
+        })
+        .then((res) => {
+          this.user.validated = res.data.validateDiscussionsUser
+        })
+        .catch((e) => {
+          AjaxErrorHandler(e)
+        })
+    })
     this.getTopics()
   }
 }

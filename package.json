@@ -1,6 +1,6 @@
 {
   "name": "compass-vue",
-  "version": "1.0.20",
+  "version": "1.0.22",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

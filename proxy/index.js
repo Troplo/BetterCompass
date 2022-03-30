@@ -108,6 +108,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use("/api/v1/user", require("./routes/user.js"))
 app.use("/api/v1/themes", require("./routes/theme.js"))
+app.use("/api/v1/communications", require("./routes/communications.js"))
 app.get("/api/v1/state", async (req, res) => {
   res.json({
     release: process.env.RELEASE,

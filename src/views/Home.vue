@@ -453,23 +453,9 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
-              <v-card-title> 29/03/2022 </v-card-title>
+              <v-card-title> 30/03/2022 </v-card-title>
               <ul>
-                <li>
-                  You can now see Analytics in your profile.
-                </li>
-                <li>
-                  You can now see your true score for Learning Tasks. (eg. Excellent (8/8))
-                </li>
-                <li>
-                  Fixed bug where you couldn't see progress reports.
-                </li>
-                <li>
-                  Fixed double-loading calendar bug.
-                </li>
-                <li>
-                  Fixed missing loading spinner on page initialization.
-                </li>
+                <li>Activity Discussions will not be added to BetterCompass for now.</li>
               </ul>
               <small
                 >BetterCompass version {{ $store.state.versioning.version }},

@@ -32,7 +32,7 @@
             <span> This is a BetterCompass exclusive feature. </span>
           </v-tooltip>
         </v-tab>
-        <v-tab to="discussions">
+        <v-tab to="discussions" v-if="false">
           Discussions
           <v-tooltip top>
             <template v-slot:activator="{ on }">
@@ -43,6 +43,19 @@
             <span>
               This is a BetterCompass exclusive feature unless your school
               officially supports it.
+            </span>
+          </v-tooltip>
+        </v-tab>
+        <v-tab to="chat">
+          Chat
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on">
+                <v-icon>mdi-information</v-icon>
+              </v-btn>
+            </template>
+            <span>
+              This is a BetterCompass exclusive feature.
             </span>
           </v-tooltip>
         </v-tab>

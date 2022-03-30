@@ -47,7 +47,7 @@
                   <template>
                     <v-list-item-content>
                       <v-list-item-title
-                        v-text="item.title"
+                        v-text="item.name"
                       ></v-list-item-title>
 
                       <v-list-item-subtitle
@@ -77,50 +77,7 @@ export default {
   data() {
     return {
       selected: [2],
-      items: [
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-          title: "Ali Connors"
-        },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          subtitle: `Wish I could come, but I'm out of town this weekend.`,
-          title: "me, Scrott, Jennifer"
-        },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-          subtitle: "Do you have Paris recommendations? Have you ever been?",
-          title: "Sandra Adams"
-        },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
-          subtitle:
-            "Have any ideas about what we should get Heidi for her birthday?",
-          title: "Trevor Hansen"
-        },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
-          subtitle:
-            "We should eat this: Grate, Squash, Corn, and tomatillo Tacos.",
-          title: "Britta Holt"
-        },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          subtitle: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-          title: "Connors"
-        },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          subtitle: `Wish I could come, but I'm out of town this weekend.`,
-          title: " Jennifer"
-        },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-          subtitle: "Do you have Paris recommendations? Have you ever been?",
-          title: "Sandra "
-        }
-      ],
+      items: [],
       files: [
         { text: "Landing_page.zip", icon: " mdi-cloud-upload" },
         { text: "Requirements.pdf", icon: " mdi-cloud-upload" },
@@ -145,7 +102,15 @@ export default {
     },
     resetIcon() {
       this.iconIndex = 0
+    },
+    getChats() {
+      this.axios.get("/api/v1/communications").then(response => {
+        this.items = response.data
+      })
     }
+  },
+  mounted() {
+    this.getChats()
   }
 }
 </script>

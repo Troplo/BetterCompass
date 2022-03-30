@@ -16,7 +16,7 @@
                   :loading="loading"
                   :search-input.sync="search"
                   color="white"
-                  label="Search your School"
+                  label="Search for your School"
                   placeholder="Start typing to Search"
                 ></v-autocomplete>
                 <v-text-field
