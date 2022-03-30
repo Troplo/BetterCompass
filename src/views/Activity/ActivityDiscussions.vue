@@ -33,6 +33,13 @@
                     {{ selectedTopic.createdByUser.lastName }}</span
                   >
                 </div>
+                <v-spacer></v-spacer>
+                <v-btn fab text v-if="selectedTopic.createdByUser.userId === $store.state.user.userId">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn fab text v-if="selectedTopic.createdByUser.userId === $store.state.user.userId">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
               </v-card-title>
               <v-card-title>{{ selectedTopic.contents[0].name }}</v-card-title>
               <v-card-subtitle>{{
@@ -186,8 +193,62 @@ export default {
   },
   methods: {
     addComment(topic) {
-      this.$toast.error("Not implemented yet.")
-      console.log(topic)
+      this.$apollo.mutate({
+        mutation: gql`mutation CreateComment($body: String!, $schoolId: String!, $topicId: Uuid!, $userId: Int!) {
+  createComment(body: $body, schoolId: $schoolId, topicId: $topicId, userId: $userId) {
+    ...CommentFields
+    __typename
+  }
+}
+
+fragment CommentFields on DiscussionsComment {
+  id
+  canEdit
+  canDelete
+  createdByUser {
+    userId
+    id
+    firstName
+    lastName
+    avatarUrl
+    __typename
+  }
+  parentCommentId
+  topicId
+  contents(order_by: {createdAt: DESC}) {
+    body
+    id
+    commentId
+    createdAt
+    createdByUserId
+    __typename
+  }
+  topic {
+    id
+    createdByUser {
+      id
+      userId
+      __typename
+    }
+    __typename
+  }
+  __typename
+}`,
+        variables: {
+          body: this.newComment,
+          schoolId: this.$store.state.school.id,
+          topicId: topic.id,
+          userId: this.$store.state.user.userId
+        }
+      })
+        .then(({ data }) => {
+          this.newComment = ""
+          this.selectedTopic.contents.push(data.createComment)
+          this.openTopic(topic)
+        })
+        .catch((e) => {
+          AjaxErrorHandler(e)
+        })
     },
     openTopic(topic) {
       this.$apollo
