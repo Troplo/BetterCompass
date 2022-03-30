@@ -523,6 +523,10 @@ export default {
     this.$store
       .dispatch("getUserInfo")
       .then(() => {
+        // eslint-disable-next-line no-undef
+        _paq.push(["setUserId", this.$store.state.bcUser.id])
+        // eslint-disable-next-line no-undef
+        _paq.push(["trackPageView"])
         this.$store.dispatch("updateQuickSwitch")
       })
       .catch((e) => {
