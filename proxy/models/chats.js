@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
         as: "user",
       })
+      // Get users from chatAssociation table that have the same chatId and return the user object
+      Chat.belongsToMany(models.User, {
+        through: "chatAssociations",
+        as: "users",
+        foreignKey: "chatId",
+      })
     }
   }
   Chat.init({

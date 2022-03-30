@@ -4,20 +4,20 @@
       <v-card color="card">
         <v-card-title>
           <span class="headline">{{
-            selectedChronicle.chronicleEntries[0].templateName
-          }}</span>
+              selectedChronicle.chronicleEntries[0].templateName
+            }}</span>
         </v-card-title>
         <v-card-text>
           <v-chip-group column>
             <v-chip color="indigo"
-              >{{
+            >{{
                 selectedChronicle.chronicleEntries[0].communicationLogs.length
               }}
               email recipients</v-chip
             >
             <v-chip
               v-if="selectedChronicle.chronicleEntries[0].visibleToParents"
-              >Parents</v-chip
+            >Parents</v-chip
             >
           </v-chip-group>
         </v-card-text>
@@ -45,25 +45,25 @@
                 <p>
                   Name:
                   <b
-                    >{{ $store.state.user.firstName }}
+                  >{{ $store.state.user.firstName }}
                     {{ $store.state.user.lastName }}</b
                   ><br />
                   Student ID (Username): <b>{{ $store.state.user.sussiId }}</b
-                  ><br />
+                ><br />
                   <template v-if="$store.state.parent"
-                    >Parent ID (SussiID):
+                  >Parent ID (SussiID):
                     <b>Configure parent linking in BetterCompass settings.</b
                     ><br
-                  /></template>
+                    /></template>
                   Email: <b>{{ $store.state.user.email }}</b
-                  ><br />
+                ><br />
                   Age: <b>{{ user.userDetails }}</b
-                  ><br />
+                ><br />
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <v-chip color="indigo" v-on="on">{{
-                        user.chroniclePinnedCount
-                      }}</v-chip>
+                          user.chroniclePinnedCount
+                        }}</v-chip>
                     </template>
                     <span> Pinned Chronicle Count </span>
                   </v-tooltip>
@@ -76,20 +76,22 @@
                       :key="attendance.id"
                     >
                       <template v-slot:activator="{ on }">
-                        <v-chip
-                          v-on="on"
+                        <span v-on="on">
+                         <v-chip
                           pill
                           style="opacity: 1"
+                          disabled
                           fab
                           :color="getAttendance(attendance.statusName).color"
-                        >
+                          >
                           <v-icon>
                             {{ getAttendance(attendance.statusName).icon }}
                           </v-icon>
                         </v-chip>
+                        </span>
                       </template>
                       <span
-                        >{{ attendance.name }}:
+                      >{{ attendance.name }}:
                         {{ attendance.statusName }}</span
                       >
                     </v-tooltip>
@@ -114,7 +116,7 @@
             >
               <v-toolbar color="toolbar">
                 <v-toolbar-title
-                  >{{ item.chronicleEntries[0].templateName }}
+                >{{ item.chronicleEntries[0].templateName }}
                   <div class="subheading subtitle-1">
                     Recorded by: {{ item.chronicleEntries[0].userNameCreated }}
                   </div>
@@ -126,7 +128,7 @@
                     selectedChronicle = item
                     chronicleInfo = true
                   "
-                  >Info</v-chip
+                >Info</v-chip
                 >
               </v-toolbar>
               <v-container>

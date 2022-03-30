@@ -32,7 +32,7 @@
             <span> This is a BetterCompass exclusive feature. </span>
           </v-tooltip>
         </v-tab>
-        <v-tab to="discussions" v-if="false">
+        <v-tab to="discussions" v-if="$store.state.site.release === 'dev'">
           Discussions
           <v-tooltip top>
             <template v-slot:activator="{ on }">
@@ -46,7 +46,7 @@
             </span>
           </v-tooltip>
         </v-tab>
-        <v-tab to="chat">
+        <v-tab to="chat" v-if="$store.state.site.release === 'dev'">
           Chat
           <v-tooltip top>
             <template v-slot:activator="{ on }">

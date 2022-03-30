@@ -14,7 +14,7 @@ export default new Vuex.Store({
       version: process.env.VUE_APP_VERSION
     },
     site: {
-      release: "dev",
+      release: "beta",
       loading: true
     },
     user: null,
