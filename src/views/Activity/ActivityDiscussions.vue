@@ -518,8 +518,8 @@ fragment CommentFields on DiscussionsComment {
     await this.getUserData().then(() => {
       this.$apollo
         .mutate({
-          mutation: gql`mutation ValidateUser($avatarUrl: String!, $firstName: String!, $lastName: String!, $userId: Int!) {
-  validateDiscussionsUser(avatarUrl: $avatarUrl, firstName: $firstName, lastName: $lastName, userId: $userId)
+          mutation: gql`mutation ValidateUser($avatarUrl: String!, $firstName: String!, $lastName: String!) {
+  validateDiscussionsUser(avatarUrl: $avatarUrl, firstName: $firstName, lastName: $lastName)
 }`,
           variables: {
             avatarUrl: this.$store.state.bcUser?.discussionsImage || "/download/cdn/full/" + this.$store.state.user.imageGuid + ".jpg",

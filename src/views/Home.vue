@@ -89,15 +89,17 @@
           >
             Link your parent account to BetterCompass to get additional features.
           </v-alert>-->
-          <v-alert
-            dismissible
-            v-model="learningTaskAlert"
-            elevation="5"
-            class="rounded-xl ma-3"
-            type="warning"
-          >
-            {{ overDueLearningTasks }} overdue learning tasks.
-          </v-alert>
+          <router-link v-if="learningTaskAlert" to="/user/events" style="text-decoration: none">
+            <v-alert
+              dismissible
+              v-model="learningTaskAlert"
+              elevation="5"
+              class="rounded-xl ma-3"
+              type="warning"
+            >
+              {{ overDueLearningTasks }} overdue learning tasks.
+            </v-alert>
+          </router-link>
           <v-card color="card" class="rounded-xl ma-3" elevation="7">
             <v-overlay :value="loading.calendar" absolute>
               <v-progress-circular

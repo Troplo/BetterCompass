@@ -6,7 +6,9 @@
 
 <script>
 export default {
-  name: "CommunicationsChat"
+  name: "CommunicationsChat",
+  methods: {
+  }
 }
 </script>
 

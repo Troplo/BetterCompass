@@ -33,7 +33,7 @@
           </v-tooltip>
         </v-tab>
         <v-tab to="discussions" v-if="$store.state.site.release === 'dev'">
-          Discussions
+          Compass Discussions
           <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-btn icon v-on="on">
