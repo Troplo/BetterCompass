@@ -89,7 +89,7 @@
           >
             Link your parent account to BetterCompass to get additional features.
           </v-alert>-->
-          <router-link v-if="learningTaskAlert" to="/user/events" style="text-decoration: none">
+          <router-link v-if="learningTaskAlert" to="/user/tasks" style="text-decoration: none">
             <v-alert
               dismissible
               v-model="learningTaskAlert"
