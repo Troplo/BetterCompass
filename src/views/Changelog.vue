@@ -6,6 +6,14 @@
           <v-toolbar-title>BetterCompass Changelog</v-toolbar-title>
         </v-toolbar>
         <v-container>
+          <v-card-title> 30/03/2022 </v-card-title>
+          <ul>
+            <li>An alternate domain, bettercompass.com.au can be used to access BetterCompass if you wish.</li>
+            <li>Compass-compatible Activity Discussions will not be added to BetterCompass.</li>
+            <li>Attendance calendar has been added to Your Profile.</li>
+            <li>Performance & Bug fixes.</li>
+          </ul>
+
           <v-card-title> 29/03/2022 </v-card-title>
           <ul>
             <li>

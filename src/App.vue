@@ -238,7 +238,7 @@
           version is {{ $store.state.site.latestVersion }})
         </v-alert>
       </v-container>
-      <v-container v-if="$store.state.site.notification">
+      <v-container v-if="$store.state.site.notification && $store.state.user">
         <v-alert class="mx-4" type="info">
           {{ $store.state.site.notification }}
         </v-alert>
