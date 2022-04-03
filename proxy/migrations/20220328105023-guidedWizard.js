@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn("users", "guidedWizard", {
+    await queryInterface.addColumn("Users", "guidedWizard", {
       type: Sequelize.BOOLEAN,
       defaultValue: true
     })

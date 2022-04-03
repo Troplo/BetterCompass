@@ -6,7 +6,7 @@ module.exports = {
       type: Sequelize.BIGINT,
       defaultValue: 1
     })
-    await queryInterface.createTable("themes", {
+    await queryInterface.createTable("Themes", {
       id: {
         allowNull: false,
         autoIncrement: true,

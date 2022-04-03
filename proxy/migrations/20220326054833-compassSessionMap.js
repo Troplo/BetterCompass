@@ -2,11 +2,11 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn("sessions", "compassSession", {
+    await queryInterface.addColumn("Sessions", "compassSession", {
       type: Sequelize.STRING,
       allowNull: false
     })
-    await queryInterface.addColumn("sessions", "expiredAt", {
+    await queryInterface.addColumn("Sessions", "expiredAt", {
       type: Sequelize.DATE
     })
   },

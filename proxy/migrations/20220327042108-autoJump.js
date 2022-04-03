@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn("users", "calendarAutoJump", {
+    await queryInterface.addColumn("Users", "calendarAutoJump", {
       type: Sequelize.BOOLEAN,
       defaultValue: true
     })
