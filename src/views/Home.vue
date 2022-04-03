@@ -81,15 +81,7 @@
     <v-container>
       <v-row>
         <v-col xl="6">
-          <!--<v-alert
-              dismissible
-              elevation="5"
-              class="rounded-xl ma-3"
-              type="info"
-          >
-            Link your parent account to BetterCompass to get additional features.
-          </v-alert>-->
-          <router-link v-if="learningTaskAlert" to="/user/tasks" style="text-decoration: none">
+          <router-link v-if="learningTaskAlert" :to="'/user/' + $store.state.user.userId + '/tasks'" style="text-decoration: none">
             <v-alert
               dismissible
               v-model="learningTaskAlert"
@@ -324,7 +316,7 @@
                 <v-container>
                   <router-link
                     style="text-decoration: none"
-                    to="/user/events"
+                    :to="'/user/' + $store.state.user.userId + '/events'"
                     >{{ item.LinkText }}</router-link
                   ><br />
                   <small>{{ item.Body }}</small>
@@ -836,7 +828,7 @@ export default {
     },
     pushEvent(event) {
       if (event.event.activityType === 10) {
-        this.$router.push("/user/tasks")
+        this.$router.push("/user/" + this.$store.state.user.userId + "/tasks")
       } else {
         this.$router.push("/activity/" + event.event.instanceId)
       }

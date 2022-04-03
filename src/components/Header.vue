@@ -232,7 +232,7 @@
                       <v-list-item-title>Pages</v-list-item-title>
                     </v-list-item-content>
                   </template>
-                  <v-list-item link to="/user/tasks">
+                  <v-list-item link :to="'/user/' + $store.state.user.userId + '/tasks'">
                     <v-list-item-title>Learning Tasks</v-list-item-title>
                   </v-list-item>
                   <v-list-item link to="/school/resources">
@@ -268,7 +268,7 @@
 
                 <v-list-item-title>Communications</v-list-item-title>
               </v-list-item>
-              <v-list-item to="/user/events">
+              <v-list-item :to="'/user/'+ $store.state.user.userId + '/events'">
                 <v-list-item-icon>
                   <v-icon>mdi-swim</v-icon>
                 </v-list-item-icon>
