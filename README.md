@@ -77,7 +77,7 @@ You may be able to login with unsupported accounts, but the features unique to s
 - [x] Ability to hide excess calendar header events (BetterCompass Exclusive)
 - [x] See overdue learning task amount on homepage (BetterCompass Exclusive)
 
-Home: ![BetterCompass Home](https://i.troplo.com/i/74391e75.png)
+Home: ![BetterCompass Home](https://i.troplo.com/i/5da430fb.png)
 
 Subject: ![BetterCompass Activity Page](https://i.troplo.com/i/fb6afe86.png)
 
