@@ -83,7 +83,7 @@ accounts.
 - [x] View chronicle entries (and extra information)
 - [x] View today's attendance status
 - [x] Attendance history
-- [x] (Partially completed) Viewing reports
+- [x] Viewing reports
 - [x] Analytics (for NAPLAN, etc)
 - [x] User learning tasks
 
