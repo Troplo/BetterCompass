@@ -11,6 +11,7 @@
               <v-col cols="12" md="4" sm="6">
                 <v-text-field
                   class="rounded-xl"
+                  disabled
                   v-model="feedback.route"
                   label="Route"
                   required
