@@ -73,6 +73,7 @@
           'color: ' +
           $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary
         "
+        :class="{'troplo-title': !$store.state.bcUser.accentColor}"
         @click="$router.push('/')"
         style="cursor: pointer"
         >BetterCompass</v-toolbar-title
@@ -178,7 +179,12 @@
           <v-list-item-title class="text-h6">
             <v-toolbar-title
               v-if="$vuetify.breakpoint.mobile"
-              class="troplo-title text-center justify-center"
+              class="text-center justify-center"
+              :style="
+          'color: ' +
+          $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary
+        "
+              :class="{'troplo-title': !$store.state.bcUser.accentColor}"
               @click="$router.push('/')"
               style="cursor: pointer"
               >BetterCompass</v-toolbar-title

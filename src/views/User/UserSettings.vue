@@ -209,11 +209,6 @@
         devices.
       </v-alert>
       <v-card-text>
-        <v-btn :disabled="$store.state.user.baseRole === 3">
-          Configure ParentLink
-        </v-btn>
-      </v-card-text>
-      <v-card-text>
         <v-switch
           @change="saveSettings"
           v-model="$store.state.bcUser.learningTaskNotification"
@@ -702,6 +697,9 @@ export default {
       if (this.accent && this.defineAccent) {
         this.$vuetify.theme.themes.light.primary = this.accent
         this.$vuetify.theme.themes.dark.primary = this.accent
+        this.$store.state.bcUser.accentColor = this.accent
+      } else {
+        this.$store.state.bcUser.accentColor = null
       }
       this.name = name
       this.axios

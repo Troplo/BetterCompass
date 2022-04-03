@@ -472,6 +472,7 @@
                 <li>Fixed & Improved Calendar AutoJump.</li>
                 <li>You can now submit URL links in Learning Tasks.</li>
                 <li>You can now see your per term attendance.</li>
+                <li>The BetterCompass gradient will appear again on the title if there is no set accent color.</li>
               </ul>
               <small
                 >BetterCompass version {{ $store.state.versioning.version }},

@@ -23,6 +23,7 @@
             <li>Fixed & Improved Calendar AutoJump.</li>
             <li>You can now submit URL links in Learning Tasks.</li>
             <li>You can now see your per term attendance.</li>
+            <li>The BetterCompass gradient will appear again on the title if there is no set accent color.</li>
           </ul>
 
           <v-card-title> 30/03/2022 </v-card-title>
