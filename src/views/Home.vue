@@ -455,12 +455,23 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
-              <v-card-title> 30/03/2022 </v-card-title>
+              <v-card-title> 02/04/2022 - 03/04/2022</v-card-title>
               <ul>
-                <li>An alternate domain, bettercompass.com.au can be used to access BetterCompass if you wish.</li>
-                <li>Compass-compatible Activity Discussions will not be added to BetterCompass.</li>
-                <li>Attendance calendar has been added to Your Profile.</li>
-                <li>Performance & Bug fixes.</li>
+                <li>BetterCompass is now <a href="https://github.com/Troplo/BetterCompass"> open source</a>, licensed under GNU General Public License V3.</li>
+                <li>Progress Reports now has a chart that corresponds to the selected cycle (BetterCompass Exclusive).</li>
+                <li>Due date is now shown on the learning tasks table.</li>
+                <li>Subject and Activity is now shown on the User Profile Learning Tasks table. (Now sorted by activity by default)</li>
+                <li>You can now see your class attendance record per class on the Attendance tab.</li>
+                <li>You can now view child profiles, and your personal user profile with a Parent account.</li>
+                <li>Reports, Attendance, etc now correspond to the child profile.</li>
+                <li>Updated profile route scheme to /user/:id/:tab from /user/:tab.</li>
+                <li>User Flags are now shown as red banners on the User Profile (Parent only).</li>
+                <li>Clicking on the learning task notification warning will take you to Learning Tasks.</li>
+                <li>Fixed bug where the Learning Task description would always be null on the User Profile Learning Tasks.</li>
+                <li>Fixed login validation error.</li>
+                <li>Fixed & Improved Calendar AutoJump.</li>
+                <li>You can now submit URL links in Learning Tasks.</li>
+                <li>You can now see your per term attendance.</li>
               </ul>
               <small
                 >BetterCompass version {{ $store.state.versioning.version }},
@@ -573,7 +584,6 @@ export default {
     },
     computeEvents() {
       if (this.$store.state.bcUser.minimizeHeaderEvents) {
-        // only show timed events, or events that have a color of #003300
         return this.events.filter((event) => {
           return (
             event.timed ||
@@ -877,8 +887,6 @@ export default {
       if (!subject) {
         return event.longTitleWithoutTime
       } else {
-        // if statement, check if longTitleWithoutTime has /<strike>.*<\/strike>&nbsp;/
-        // if so, remove it
         if (/<strike>.*<\/strike>&nbsp;/.test(event.longTitleWithoutTime)) {
           return `${
             subject.subjectLongName
@@ -893,14 +901,17 @@ export default {
     },
     fetchEvents(init, load) {
       if (init) {
-        if (dayjs().day() === 0 && this.$store.state.bcUser.calendarAutoJump) {
+        if (dayjs().day() === 0 && this.$store.state.bcUser.calendarAutoJump && !this.$store.state.calendarInit) {
           this.$refs.calendar.next()
         } else if (
           dayjs().day() === 6 &&
           this.$store.state.bcUser.calendarAutoJump
+          && !this.$store.state.calendarInit
         ) {
           this.$refs.calendar.next()
-          this.$refs.calendar.next()
+          this.$nextTick(() => {
+            this.$refs.calendar.next()
+          })
         }
         this.loading.calendar = true
       }
@@ -926,10 +937,9 @@ export default {
             this.$store.state.user?.userId || localStorage.getItem("userId")
         })
         .then((res) => {
-          // map events
+          this.$store.commit("setCalendarInit", true)
           this.events = res.data.d.map((event) => {
             return {
-              // lookup event.title in this.$store.state.subjects for name
               name: this.subjectName(event),
               content: event.longTitle,
               color: event.backgroundColor,

@@ -14,7 +14,7 @@ const { Feedback } = require("./models")
 const compassRouter = function (req) {
   const instance =
     req.header("compassInstance") || req.query.forceInstance || "devices"
-  console.log("Instance: " + instance)
+  console.log("Request from instance: " + instance)
   // this is to avoid the ability to proxy non Compass sites through the proxy.
   if (instance.match(/^[a-zA-Z0-9-]+$/)) {
     return "https://" + instance + ".compass.education"
@@ -103,7 +103,7 @@ app.use(
   })
 )
 
-app.use(bodyParser.json({ limit: "5mb" }))
+app.use(bodyParser.json({ limit: "15mb" }))
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use("/api/v1/user", require("./routes/user.js"))
@@ -153,13 +153,13 @@ app.get("/api/v1/weather", (req, res) => {
               response1.data.lat +
               "&lon=" +
               response1.data.lon +
-              "&appid=cc89e60155163ce2bbd7a7a5e3ca413b&units=metric"
+              "&appid=" + process.env.WEATHER_API_KEY + "&units=metric"
           )
           .then((response2) => {
             res.send(response2.data)
           })
           .catch((error) => {
-            res.send(error.response.data)
+            res.send("Weather widget API failure: " + error.response.data)
           })
       })
       .catch(() => {
@@ -178,21 +178,14 @@ app.all("/api/*", (req, res) => {
 
 console.log(os.hostname())
 
-if (process.env.NODE_ENV !== "test" && process.env.NODE_ENV !== "production") {
-  app.use(require("morgan")("dev"))
-}
 app.use(require("./lib/errorHandler"))
-function main() {
-  app.listen(23994, () => {
-    console.log("Initialized")
-    console.log("Listening on port 0.0.0.0:" + 23994)
 
-    app.locals.appStarted = true
-    app.emit("appStarted")
-  })
-}
-if (process.env.NODE_ENV === "test") {
-} else {
-  main()
-}
+app.listen(23994, () => {
+  console.log("Initialized")
+  console.log("Listening on port 0.0.0.0:" + 23994)
+
+  app.locals.appStarted = true
+  app.emit("appStarted")
+})
+
 module.exports = app

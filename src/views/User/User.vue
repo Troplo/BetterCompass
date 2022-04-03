@@ -7,9 +7,9 @@
       <v-card color="card" elevation="7" class="rounded-xl">
         <v-container>
           <h1>
-            Student: {{ $store.state.user.reportName }} -
-            {{ $store.state.user.formGroup }} ({{ $store.state.user.house }}) -
-            Year {{ $store.state.user.yearLevel }}
+            {{ baseRole() }}: {{ user.userFullName }} -
+            {{ user.userFormGroup }} ({{ user.userHouse }}) -
+            {{ user.userYearLevel }}
             <v-chip color="success">
               <v-icon>mdi-check</v-icon>
               Active
@@ -22,7 +22,7 @@
             <v-tab to="reports"> Reports </v-tab>
             <v-tab to="analytics"> Analytics </v-tab>
             <v-tab to="events"> Events </v-tab>
-            <v-tab to="settings"> BetterCompass </v-tab>
+            <v-tab to="settings" v-if="user.userId === $store.state.user.userId"> BetterCompass </v-tab>
           </v-tabs>
           <v-container>
             <router-view :chronicle="chronicle" :user="user"></router-view>
@@ -51,6 +51,18 @@ export default {
     }
   },
   methods: {
+    baseRole() {
+      const userBaseRole = [
+        "Guest",
+        "Student",
+        "Staff",
+        "Parent",
+        "Admin",
+        "Visitor",
+        "Not Authenticated",
+      ]
+      return userBaseRole[this.user.userRole || 6]
+    },
     dayjs(date) {
       return dayjs(date)
     },
@@ -61,7 +73,7 @@ export default {
           userId:
             this.$store.state.user?.userId || localStorage.getItem("userId"),
           targetUserId:
-            this.$store.state.user?.userId || localStorage.getItem("userId")
+            this.$route.params.id
         })
         .then((res) => {
           this.loading = false
@@ -95,6 +107,11 @@ export default {
     this.$store.dispatch("getUserInfo").then(() => {
       this.getUserData()
     })
+  },
+  watch: {
+    "$route.params.id"() {
+      this.getUserData()
+    }
   }
 }
 </script>

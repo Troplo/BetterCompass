@@ -34,7 +34,7 @@ module.exports = {
           }
         },
         LOGS_TEXT: {
-          AIS_START: "Troplo AIV started"
+          AIS_START: "Troplo BetterCompass AIV started"
         }
       })
     ]

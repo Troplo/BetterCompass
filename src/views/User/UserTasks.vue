@@ -5,7 +5,7 @@
         <v-card-title class="headline">
           <span class="title">{{ upload.title }}</span>
         </v-card-title>
-        <v-card-text>
+        <v-card-text v-if="upload.type !== 4">
           <v-file-input
             v-model="upload.file"
             prepend-icon="mdi-upload"
@@ -14,17 +14,22 @@
             outlined
           ></v-file-input>
         </v-card-text>
+        <v-card-text v-if="upload.type === 4">
+          <v-text-field label="URL Link" v-model="upload.file" prepend-icon="mdi-link" color="primary" outlined placeholder="https://google.com">
+
+          </v-text-field>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="upload.dialog = false"
-            >Cancel</v-btn
+          >Cancel</v-btn
           >
           <v-btn
             color="primary"
             text
             @click="uploadFile"
             :loading="upload.loading"
-            >Upload</v-btn
+          >Upload</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -169,7 +174,7 @@
                           >
                             <v-list-item-title>File Upload</v-list-item-title>
                           </v-list-item>
-                          <v-list-item>
+                          <v-list-item @click="upload.type = 4; upload.dialog = true">
                             <v-list-item-title>URL Upload</v-list-item-title>
                           </v-list-item>
                         </v-list>
@@ -487,6 +492,7 @@
         :headers="headers"
         :items="tasks"
         :items-per-page="20"
+        :sort-by.sync="sortBy"
         class="elevation-3"
         @click:row="taskDialog"
         style="cursor: pointer"
@@ -533,6 +539,7 @@ export default {
   data() {
     return {
       newFeedback: "",
+      sortBy: "activityName",
       tasks: [],
       dialog: false,
       loading: true,
@@ -575,8 +582,16 @@ export default {
           value: "name"
         },
         { text: "Tags", value: "tags", sortable: false },
+        { text: "Activity", value: "activityName" },
+        { text: "Subject", value: "subjectName" },
+        { text: "Due Date", value: "dueDateTimestamp"},
         { text: "Status", value: "status" }
       ]
+    }
+  },
+  computed: {
+    cleanLessonPlan() {
+      return this.$sanitize(this.selectedTask.description)
     }
   },
   methods: {
@@ -587,7 +602,6 @@ export default {
       return scheme.options.length
     },
     getGradingScheme(gradingItem, result) {
-      // find measureUniqueId from gradingItem in gradingSchemes array and in options array, find the result to the value
       const scheme = this.gradingSchemes.find(
         scheme => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
@@ -618,58 +632,79 @@ export default {
     },
     uploadFile() {
       this.upload.loading = true
-      const formData = new FormData()
-      formData.append(
-        "fileuploadfield-1504-inputEl",
-        this.upload.file,
-        this.upload.file.name
-      )
-      formData.append("FileUploadType", this.upload.type)
-      /*         fileId: f.result.fileId || f.result.OutputFileId,
-                    fileName: f.result.fileName || f.result.file,
-                    resizedFileId: f.result.resizedFileId || "",
-                    displayName: u,
-                    schoolId: f.result.schoolId || "",
-                    wikiNodeType: Compass.enums.WikiNodeType.File,*/
-
-      this.axios
-        .post("/Services/FileUpload/FileUploadHandler", formData)
-        .then((res) => {
-          this.axios
-            .post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
-              taskStudentSubmission: {
-                fileId: res.data.fileId,
-                fileName: res.data.fileName,
-                submissionFileType: this.upload.type,
-                taskStudentId: this.selectedTask.students[0].id,
-                taskSubmissionItemId: this.selectedTask.submissionItems[0].id
-              }
+      if(this.upload.type === 4) {
+        this.axios.post("/Services/FileAssets.svc/UploadSubmissionUrlWithPost", {
+          addressString: this.upload.file
+        }).then((res) => {
+          this.axios.post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
+            taskStudentSubmission: {
+              fileId: res.data.fileId,
+              fileName: res.data.fileName,
+              submissionFileType: this.upload.type,
+              taskStudentId: this.selectedTask.students[0].id,
+              taskSubmissionItemId: this.selectedTask.submissionItems[0].id
+            }
+          }).then((res1) => {
+            this.upload.dialog = false
+            this.upload.file = null
+            this.upload.type = null
+            this.upload.loading = false
+            this.selectedTask.students[0].submissions.push({
+              id: res1.data.d,
+              fileId: res.data.fileId,
+              fileName: res.data.fileName,
+              submissionFileType: this.upload.type,
+              taskStudentId: this.selectedTask.students[0].id,
+              taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
+              timestamp: this.$date().format()
             })
-            .then(() => {
-              this.upload.dialog = false
-              this.upload.file = null
-              this.upload.type = null
-              this.upload.loading = false
-              this.getLearningTasks()
-            })
-          //fileId: "3187570e-049b-4cc9-9a0e-ba402a88ff03"
-          //fileName: "ignore.txt"
-          //submissionFileType: 1
-          //submitterBaseRole: 1
-          //taskStudentId: 542298
-          //taskSubmissionItemId: 22280
+            this.getLearningTasks()
+          })
+        })
+      } else {
+        const formData = new FormData()
+        formData.append(
+          "fileuploadfield-1504-inputEl",
+          this.upload.file,
+          this.upload.file.name
+        )
+        formData.append("FileUploadType", this.upload.type)
 
-          //fileId: "3187570e-049b-4cc9-9a0e-ba402a88ff03"
-          //fileName: "ignore.txt"
-          //message: null
-          //resizedFileId: null
-          //schoolId: "bhs.vic.edu.au"
-          // success: true
-        })
-        .catch((error) => {
-          this.upload.loading = false
-          console.log(error)
-        })
+        this.axios
+          .post("/Services/FileUpload/FileUploadHandler", formData)
+          .then((res) => {
+            this.axios
+              .post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
+                taskStudentSubmission: {
+                  fileId: res.data.fileId,
+                  fileName: res.data.fileName,
+                  submissionFileType: this.upload.type,
+                  taskStudentId: this.selectedTask.students[0].id,
+                  taskSubmissionItemId: this.selectedTask.submissionItems[0].id
+                }
+              })
+              .then((res1) => {
+                this.upload.dialog = false
+                this.upload.file = null
+                this.upload.type = null
+                this.upload.loading = false
+                this.selectedTask.students[0].submissions.push({
+                  id: res1.data.d,
+                  fileId: res.data.fileId,
+                  fileName: res.data.fileName,
+                  submissionFileType: this.upload.type,
+                  taskStudentId: this.selectedTask.students[0].id,
+                  taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
+                  timestamp: this.$date().format()
+                })
+                this.getLearningTasks()
+              })
+          })
+          .catch((error) => {
+            this.upload.loading = false
+            console.log(error)
+          })
+      }
     },
     dayjs(date) {
       return dayjs(date)
@@ -799,7 +834,12 @@ export default {
         })
         .then((res) => {
           this.loading = false
-          this.tasks = res.data.d.data
+          this.tasks = res.data.d.data.map((item) => {
+            return {
+              ...item,
+              dueDateTimestamp: item.dueDateTimestamp ? this.$date(item.dueDateTimestamp).format("hh:mm A, dddd, MMMM Do YYYY") : "No due date"
+            }
+          })
         })
         .catch((err) => {
           console.log(err)

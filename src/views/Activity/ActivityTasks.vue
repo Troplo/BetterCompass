@@ -5,7 +5,7 @@
         <v-card-title class="headline">
           <span class="title">{{ upload.title }}</span>
         </v-card-title>
-        <v-card-text>
+        <v-card-text v-if="upload.type !== 4">
           <v-file-input
             v-model="upload.file"
             prepend-icon="mdi-upload"
@@ -13,6 +13,11 @@
             color="primary"
             outlined
           ></v-file-input>
+        </v-card-text>
+        <v-card-text v-if="upload.type === 4">
+          <v-text-field label="URL Link" v-model="upload.file" prepend-icon="mdi-link" color="primary" outlined placeholder="https://google.com">
+
+          </v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -169,7 +174,7 @@
                           >
                             <v-list-item-title>File Upload</v-list-item-title>
                           </v-list-item>
-                          <v-list-item>
+                          <v-list-item @click="upload.type = 4; upload.dialog = true">
                             <v-list-item-title>URL Upload</v-list-item-title>
                           </v-list-item>
                         </v-list>
@@ -579,6 +584,7 @@ export default {
           value: "name"
         },
         { text: "Tags", value: "tags", sortable: false },
+        { text: "Due Date", value: "dueDateTimestamp"},
         { text: "Status", value: "status" }
       ]
     }
@@ -596,7 +602,6 @@ export default {
       return scheme.options.length
     },
     getGradingScheme(gradingItem, result) {
-      // find measureUniqueId from gradingItem in gradingSchemes array and in options array, find the result to the value
       const scheme = this.gradingSchemes.find(
         scheme => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
@@ -640,39 +645,79 @@ export default {
     },
     uploadFile() {
       this.upload.loading = true
-      const formData = new FormData()
-      formData.append(
-        "fileuploadfield-1504-inputEl",
-        this.upload.file,
-        this.upload.file.name
-      )
-      formData.append("FileUploadType", this.upload.type)
+      if(this.upload.type === 4) {
+        this.axios.post("/Services/FileAssets.svc/UploadSubmissionUrlWithPost", {
+          addressString: this.upload.file
+        }).then((res) => {
+          this.axios.post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
+            taskStudentSubmission: {
+              fileId: res.data.fileId,
+              fileName: res.data.fileName,
+              submissionFileType: this.upload.type,
+              taskStudentId: this.selectedTask.students[0].id,
+              taskSubmissionItemId: this.selectedTask.submissionItems[0].id
+            }
+          }).then((res1) => {
+            this.upload.dialog = false
+            this.upload.file = null
+            this.upload.type = null
+            this.upload.loading = false
+            this.selectedTask.students[0].submissions.push({
+              id: res1.data.d,
+              fileId: res.data.fileId,
+              fileName: res.data.fileName,
+              submissionFileType: this.upload.type,
+              taskStudentId: this.selectedTask.students[0].id,
+              taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
+              timestamp: this.$date().format()
+            })
+            this.getLearningTasks()
+          })
+        })
+      } else {
+        const formData = new FormData()
+        formData.append(
+          "fileuploadfield-1504-inputEl",
+          this.upload.file,
+          this.upload.file.name
+        )
+        formData.append("FileUploadType", this.upload.type)
 
-      this.axios
-        .post("/Services/FileUpload/FileUploadHandler", formData)
-        .then((res) => {
-          this.axios
-            .post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
-              taskStudentSubmission: {
-                fileId: res.data.fileId,
-                fileName: res.data.fileName,
-                submissionFileType: this.upload.type,
-                taskStudentId: this.selectedTask.students[0].id,
-                taskSubmissionItemId: this.selectedTask.submissionItems[0].id
-              }
-            })
-            .then(() => {
-              this.upload.dialog = false
-              this.upload.file = null
-              this.upload.type = null
-              this.upload.loading = false
-              this.getLearningTasks()
-            })
-        })
-        .catch((error) => {
-          this.upload.loading = false
-          console.log(error)
-        })
+        this.axios
+          .post("/Services/FileUpload/FileUploadHandler", formData)
+          .then((res) => {
+            this.axios
+              .post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
+                taskStudentSubmission: {
+                  fileId: res.data.fileId,
+                  fileName: res.data.fileName,
+                  submissionFileType: this.upload.type,
+                  taskStudentId: this.selectedTask.students[0].id,
+                  taskSubmissionItemId: this.selectedTask.submissionItems[0].id
+                }
+              })
+              .then((res1) => {
+                this.upload.dialog = false
+                this.upload.file = null
+                this.upload.type = null
+                this.upload.loading = false
+                this.selectedTask.students[0].submissions.push({
+                  id: res1.data.d,
+                  fileId: res.data.fileId,
+                  fileName: res.data.fileName,
+                  submissionFileType: this.upload.type,
+                  taskStudentId: this.selectedTask.students[0].id,
+                  taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
+                  timestamp: this.$date().format()
+                })
+                this.getLearningTasks()
+              })
+          })
+          .catch((error) => {
+            this.upload.loading = false
+            console.log(error)
+          })
+      }
     },
     dayjs(date) {
       return dayjs(date)
@@ -800,7 +845,12 @@ export default {
           start: this.offset
         })
         .then((res) => {
-          this.tasks = res.data.d.data
+          this.tasks = res.data.d.data.map((item) => {
+            return {
+              ...item,
+              dueDateTimestamp: item.dueDateTimestamp ? this.$date(item.dueDateTimestamp).format("hh:mm A, dddd, MMMM Do YYYY") : "No due date"
+            }
+          })
         })
         .catch((err) => {
           console.log(err)

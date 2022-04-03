@@ -95,11 +95,10 @@ const routes = [
       )
   },
   {
-    path: "/user",
+    path: "/user/:id",
     name: "User",
-    redirect: "/user/dashboard",
+    redirect: "/user/:id/dashboard",
     children: [
-      // UserDashboard, UserAnalytics, UserAttendance, UserReports, UserTasks
       {
         path: "dashboard",
         name: "User Dashboard",

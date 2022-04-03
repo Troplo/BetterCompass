@@ -41,6 +41,12 @@
           ></v-select>
         </v-toolbar-title>
       </v-toolbar>
+      <Bar
+        v-if="chartData.init"
+        :chart-options="chartOptions"
+        :chart-data="chartData"
+        :height="200"
+      />
       <v-data-table
         :items="progressReports.entities"
         :headers="headers.progress"
@@ -58,10 +64,25 @@
 </template>
 
 <script>
+import { Bar } from 'vue-chartjs/legacy'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import colors from 'vuetify/lib/util/colors'
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 export default {
   name: "UserReports",
+  components: { Bar },
+  props: ["user"],
   data() {
     return {
+      chartData: {
+        init: false,
+        labels: [],
+        datasets: []
+      },
+      chartOptions: {
+        responsive: true
+      },
       loading: true,
       cycles: [],
       selectedCycle: null,
@@ -79,6 +100,21 @@ export default {
     }
   },
   methods: {
+    calculateFriendlyAOAForEntity(entity) {
+      let results = []
+      entity.results.forEach(function (area) {
+        const areaOfAssessment =
+          this.progressReports.aoas[
+            this.progressReports.aoas.findIndex((x) => x.id === area.id)
+            ]
+        const friendlyName = areaOfAssessment.options.find(
+          (x) => x.id === area.result
+        )
+        console.log(friendlyName.value)
+        results.push(friendlyName.value)
+      }, this)
+      return results
+    },
     calculateFriendlyAOA(area) {
       const areaOfAssessment =
         this.progressReports.aoas[
@@ -92,8 +128,15 @@ export default {
         value: friendlyName.value
       }
     },
+    randomColorGenerator() {
+      console.log(colors)
+      const approvedColors = ["green", "indigo", "red", "orange", "blue", "purple", "amber", "lightBlue", "deepPurple", "yellow", "teal", "cyan"]
+      const randomColor = colors[approvedColors[Math.floor(Math.random() * approvedColors.length)]]
+      return randomColor.base
+    },
     async progressReportTable() {
       this.progressReports.aoas.forEach(function (area) {
+        this.chartData.labels.push(area.title)
         this.headers.progress.push({
           text: area.title,
           value: "result." + area.id,
@@ -106,6 +149,19 @@ export default {
         value: "total"
       })
       this.progressReports.entities.forEach(function (entity) {
+        const color = this.randomColorGenerator()
+        this.chartData.datasets.push({
+          label: entity.name.split("<br />")[0],
+          data: this.calculateFriendlyAOAForEntity(entity),
+          backgroundColor: [
+            color,
+            color,
+            color,
+            color,
+            color,
+            color
+          ],
+        })
         if (!entity.result) {
           entity.result = {}
         }
@@ -117,11 +173,12 @@ export default {
           entity.total = entity.total + this.calculateFriendlyAOA(area).value
         }, this)
       }, this)
+      this.chartData.init = true
     },
     getCycles() {
       this.axios
         .post("/Services/Gpa.svc/GetCyclesByUser", {
-          userId: this.$store.state.user.userId
+          userId: this.user.userId
         })
         .then((response) => {
           this.cycles = response.data.d
@@ -131,13 +188,13 @@ export default {
     getReports() {
       this.axios
         .post("/Services/Gpa.svc/GetActivitiesOverviewConfig", {
-          userId: this.$store.state.user.userId
+          userId: this.user.userId,
         })
         .then((res) => {
           this.config = res.data.d
           this.axios
             .post("/Services/Reports.svc/GetMyReportsList", {
-              userId: this.$store.state.user.userId
+              userId: this.user.userId,
             })
             .then(async (res) => {
               await this.progressReportTable().then(() => {})
@@ -146,7 +203,7 @@ export default {
             })
           this.axios
             .post("/Services/Gpa.svc/GetResultsByCycleAndStudent", {
-              entityId: this.$store.state.user.userId,
+              entityId: this.user.userId,
               cycleId: this.selectedCycle,
               editing: true
             })
@@ -162,7 +219,10 @@ export default {
     })
   },
   watch: {
-    selectedCycle() {
+    selectedCycle()  {
+      this.chartData.init = false
+      this.chartData.datasets = []
+      this.chartData.labels = []
       this.headers.progress = [{ text: "Subject", value: "name" }]
       this.loading = true
       this.getReports()

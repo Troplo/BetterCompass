@@ -149,10 +149,8 @@ export default {
             this.$store.state.user?.userId || localStorage.getItem("userId")
         })
         .then((res) => {
-          // map events
           this.events = res.data.d.map((event) => {
             return {
-              // lookup event.title in this.$store.state.subjects for name
               name: this.subjectName(event),
               content: event.longTitle,
               color: this.computeColor(event),

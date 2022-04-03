@@ -4,7 +4,7 @@ module.exports = function (vuex) {
 
     if (res.response === undefined || res.response.data.errors === undefined) {
       errors.push(
-        "An unknown error occurred. Please contact support if this issue persists."
+        "An unknown error occurred. Please try again later."
       )
     } else {
       res.response.data.errors.forEach((error) => {

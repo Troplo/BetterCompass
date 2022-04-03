@@ -1,3 +1,5 @@
+// This is unused, was going to be used for an alternate opt-in authentication method for the BetterCompass account.
+
 "use strict"
 const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {

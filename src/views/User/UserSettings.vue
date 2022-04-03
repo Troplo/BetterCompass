@@ -209,6 +209,11 @@
         devices.
       </v-alert>
       <v-card-text>
+        <v-btn :disabled="$store.state.user.baseRole === 3">
+          Configure ParentLink
+        </v-btn>
+      </v-card-text>
+      <v-card-text>
         <v-switch
           @change="saveSettings"
           v-model="$store.state.bcUser.learningTaskNotification"
@@ -489,7 +494,6 @@ export default {
   },
   methods: {
     randomizeTheme() {
-      // random colors for each this.creator.dark and this.creator.light
       this.creator.light = {
         primary: "#" + Math.floor(Math.random() * 16777215).toString(16),
         secondary: "#" + Math.floor(Math.random() * 16777215).toString(16),

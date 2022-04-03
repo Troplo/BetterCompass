@@ -26,6 +26,7 @@ export default new Vuex.Store({
     subjects: [],
     events: [],
     focus: dayjs().format(),
+    calendarInit: false,
     settings: {
       dark: true
     },
@@ -37,6 +38,9 @@ export default new Vuex.Store({
     quickSwitchCache: []
   },
   mutations: {
+    setCalendarInit(state, value) {
+      state.calendarInit = value
+    },
     setEvents(state, events) {
       state.events = events
     },
@@ -123,7 +127,6 @@ export default new Vuex.Store({
             "setEvents",
             res.data.d.map((event) => {
               return {
-                // lookup event.title in this.$store.state.subjects for name
                 name: subjectName(event),
                 content: event.longTitle,
                 color: event.backgroundColor,
@@ -165,17 +168,17 @@ export default new Vuex.Store({
       context.commit("updateQuickSwitchCache", {
         subjectLongName: "Your Profile",
         customType: 1,
-        route: "/user"
+        route: "/user/" + context.state.user.userId + "/dashboard"
       })
       context.commit("updateQuickSwitchCache", {
         subjectLongName: "Reports",
         customType: 1,
-        route: "/user/reports"
+        route: "/user/" + context.state.user.userId + "/reports"
       })
       context.commit("updateQuickSwitchCache", {
         subjectLongName: "Events",
         customType: 1,
-        route: "/user/events"
+        route: "/user/" + context.state.user.userId + "/events"
       })
       context.commit("updateQuickSwitchCache", {
         subjectLongName: "School Resources",
@@ -190,12 +193,12 @@ export default new Vuex.Store({
       context.commit("updateQuickSwitchCache", {
         subjectLongName: "Learning Tasks",
         customType: 1,
-        route: "/user/tasks"
+        route: "/user/" + context.state.user.userId + "/tasks"
       })
       context.commit("updateQuickSwitchCache", {
         subjectLongName: "BetterCompass Settings",
         customType: 1,
-        route: "/user/settings"
+        route: "/user/" + context.state.user.userId + "/settings"
       })
       Vue.axios
         .post(

@@ -149,8 +149,6 @@ export default {
             `/Services/FileAssets.svc/DownloadFile?sessionstate=readonly&id=${this.selected.content.fileAssetId}&nodeId=${this.selected.parentNodeId}`
           )
           .then((res) => {
-            // regex for //*.compass.education
-
             this.lessonPlan = res.data
               .replaceAll(/https:(.*)\.compass\.education/g, "")
               .replaceAll(

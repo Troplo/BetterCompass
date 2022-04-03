@@ -25,6 +25,15 @@
     </v-dialog>
     <v-row>
       <v-col>
+        <v-alert
+          elevation="5"
+          class="rounded-xl"
+          type="error"
+          v-for="flag in user.userFlags"
+          :key="flag.id"
+        >
+          {{flag.d}}
+        </v-alert>
         <v-card color="card" elevation="7" class="rounded-xl">
           <v-toolbar color="toolbar">
             <v-toolbar-title>Account</v-toolbar-title>
@@ -34,9 +43,7 @@
               <v-col sm="2">
                 <v-img
                   :src="
-                    $store.state.school.fqdn +
-                    '/download/cdn/full/' +
-                    $store.state.user.imageGuid
+                    $store.state.school.fqdn + user.userPhotoPath
                   "
                   width="200"
                 ></v-img>
@@ -45,17 +52,16 @@
                 <p>
                   Name:
                   <b
-                  >{{ $store.state.user.firstName }}
-                    {{ $store.state.user.lastName }}</b
+                  >{{user.userFullName}}</b
                   ><br />
-                  Student ID (Username): <b>{{ $store.state.user.sussiId }}</b
+                  Student ID (Username): <b>{{ user.userSussiID }}</b
                 ><br />
                   <template v-if="$store.state.parent"
                   >Parent ID (SussiID):
                     <b>Configure parent linking in BetterCompass settings.</b
                     ><br
                     /></template>
-                  Email: <b>{{ $store.state.user.email }}</b
+                  Email: <b>{{ user.userEmail }}</b
                 ><br />
                   Age: <b>{{ user.userDetails }}</b
                 ><br />

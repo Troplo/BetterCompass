@@ -1,7 +1,8 @@
 {
-  "name": "compass-backend",
-  "version": "0.0.0",
+  "name": "compass-vue-proxy",
+  "version": "1.0.0",
   "private": true,
+  "license": "GPL-3.0",
   "scripts": {
     "start": "node .",
     "serve": "nodemon"
@@ -18,7 +19,6 @@
     "jade": "~1.11.0",
     "local-cors-proxy": "^1.1.0",
     "mariadb": "^3.0.0",
-    "morgan": "^1.10.0",
     "sequelize": "^6.17.0"
   }
 }

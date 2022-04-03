@@ -199,7 +199,15 @@
                 <v-list-item-title>Home</v-list-item-title>
               </v-list-item>
 
-              <v-list-item to="/user">
+              <v-list-item v-for="user in $store.state.user.children" :key="user.userId" :to="'/user/' + user.userId">
+                <v-list-item-icon>
+                  <v-icon>mdi-account-child</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-title>{{user.firstName}}'s Profile</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item :to="'/user/' + $store.state.user.userId">
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
                 </v-list-item-icon>
@@ -476,6 +484,32 @@ export default {
   watch: {
     $route(to) {
       this.feedback.route = to.path
+    },
+    "$store.state.user"() {
+      this.menus.dropdownAuthenticated = [
+        {
+          id: 7,
+          name: "My Account",
+          click() {},
+          path: "/user/" + this.$store.state.user?.userId,
+          icon: "mdi-settings"
+        },
+        {
+          id: 6,
+          name: "BetterCompass Settings",
+          path: "/user/" + this.$store.state.user?.userId + "/settings",
+          icon: "mdi-settings"
+        },
+        {
+          id: 8,
+          name: "Logout",
+          click() {
+            this.$store.dispatch("logout")
+          },
+          color: "#c53030",
+          icon: "mdi-settings"
+        }
+      ]
     }
   }
 }

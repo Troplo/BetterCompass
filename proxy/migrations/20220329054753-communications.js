@@ -157,7 +157,6 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
-    // muted channels
     await queryInterface.createTable("MutedChats", {
       id: {
         allowNull: false,
@@ -187,7 +186,6 @@ module.exports = {
       defaultValue: {"communications":{"enabled":false,"outsideTenant":false,"directMessages":"friendsOnly","friendRequests":true}},
       allowNull: false
     })
-    // friends
     await queryInterface.createTable("friends", {
       id: {
         allowNull: false,
