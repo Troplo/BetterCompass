@@ -105,7 +105,7 @@ integration with BetterCompass.<br> This can be found in `/proxy`, and can be
 run with `node .`, view setup instructions in proxy/README.md.
 
 ## Project setup
-
+Rename .env.example to .env and fill it out with your own information.
 ```
 yarn install
 ```
