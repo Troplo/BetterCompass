@@ -4,20 +4,20 @@
       <v-card color="card">
         <v-card-title>
           <span class="headline">{{
-              selectedChronicle.chronicleEntries[0].templateName
-            }}</span>
+            selectedChronicle.chronicleEntries[0].templateName
+          }}</span>
         </v-card-title>
         <v-card-text>
           <v-chip-group column>
             <v-chip color="indigo"
-            >{{
+              >{{
                 selectedChronicle.chronicleEntries[0].communicationLogs.length
               }}
               email recipients</v-chip
             >
             <v-chip
               v-if="selectedChronicle.chronicleEntries[0].visibleToParents"
-            >Parents</v-chip
+              >Parents</v-chip
             >
           </v-chip-group>
         </v-card-text>
@@ -32,7 +32,7 @@
           v-for="flag in user.userFlags"
           :key="flag.id"
         >
-          {{flag.d}}
+          {{ flag.d }}
         </v-alert>
         <v-card color="card" elevation="7" class="rounded-xl">
           <v-toolbar color="toolbar">
@@ -42,34 +42,31 @@
             <v-row>
               <v-col sm="2">
                 <v-img
-                  :src="
-                    $store.state.school.fqdn + user.userPhotoPath
-                  "
+                  :src="$store.state.school.fqdn + user.userPhotoPath"
                   width="200"
                 ></v-img>
               </v-col>
               <v-col>
                 <p>
                   Name:
-                  <b
-                  >{{user.userFullName}}</b
+                  <b>{{ user.userFullName }}</b
                   ><br />
                   Student ID (Username): <b>{{ user.userSussiID }}</b
-                ><br />
+                  ><br />
                   <template v-if="$store.state.parent"
-                  >Parent ID (SussiID):
+                    >Parent ID (SussiID):
                     <b>Configure parent linking in BetterCompass settings.</b
                     ><br
-                    /></template>
+                  /></template>
                   Email: <b>{{ user.userEmail }}</b
-                ><br />
+                  ><br />
                   Age: <b>{{ user.userDetails }}</b
-                ><br />
+                  ><br />
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <v-chip color="indigo" v-on="on">{{
-                          user.chroniclePinnedCount
-                        }}</v-chip>
+                        user.chroniclePinnedCount
+                      }}</v-chip>
                     </template>
                     <span> Pinned Chronicle Count </span>
                   </v-tooltip>
@@ -83,21 +80,21 @@
                     >
                       <template v-slot:activator="{ on }">
                         <span v-on="on">
-                         <v-chip
-                          pill
-                          style="opacity: 1"
-                          disabled
-                          fab
-                          :color="getAttendance(attendance.statusName).color"
+                          <v-chip
+                            pill
+                            style="opacity: 1"
+                            disabled
+                            fab
+                            :color="getAttendance(attendance.statusName).color"
                           >
-                          <v-icon>
-                            {{ getAttendance(attendance.statusName).icon }}
-                          </v-icon>
-                        </v-chip>
+                            <v-icon>
+                              {{ getAttendance(attendance.statusName).icon }}
+                            </v-icon>
+                          </v-chip>
                         </span>
                       </template>
                       <span
-                      >{{ attendance.name }}:
+                        >{{ attendance.name }}:
                         {{ attendance.statusName }}</span
                       >
                     </v-tooltip>
@@ -122,7 +119,7 @@
             >
               <v-toolbar color="toolbar">
                 <v-toolbar-title
-                >{{ item.chronicleEntries[0].templateName }}
+                  >{{ item.chronicleEntries[0].templateName }}
                   <div class="subheading subtitle-1">
                     Recorded by: {{ item.chronicleEntries[0].userNameCreated }}
                   </div>
@@ -134,7 +131,7 @@
                     selectedChronicle = item
                     chronicleInfo = true
                   "
-                >Info</v-chip
+                  >Info</v-chip
                 >
               </v-toolbar>
               <v-container>

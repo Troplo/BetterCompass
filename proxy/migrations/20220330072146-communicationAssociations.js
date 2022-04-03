@@ -1,4 +1,4 @@
-'use strict';
+"use strict"
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -11,7 +11,7 @@ module.exports = {
       },
       chatId: {
         type: Sequelize.BIGINT,
-        allowNull: false,
+        allowNull: false
       },
       userId: {
         type: Sequelize.BIGINT,
@@ -41,4 +41,4 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
   }
-};
+}

@@ -3,9 +3,7 @@ module.exports = function (vuex) {
     let errors = []
 
     if (res.response === undefined || res.response.data.errors === undefined) {
-      errors.push(
-        "An unknown error occurred. Please try again later."
-      )
+      errors.push("An unknown error occurred. Please try again later.")
     } else {
       res.response.data.errors.forEach((error) => {
         let path = error.path

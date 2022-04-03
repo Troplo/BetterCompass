@@ -1,14 +1,11 @@
 <template>
-  <div v-if="$store.state.site.release === 'dev'">
-
-  </div>
+  <div v-if="$store.state.site.release === 'dev'"></div>
 </template>
 
 <script>
 export default {
   name: "CommunicationsChat",
-  methods: {
-  }
+  methods: {}
 }
 </script>
 

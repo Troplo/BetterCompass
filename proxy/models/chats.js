@@ -11,16 +11,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Chat.belongsTo(models.User, {
         foreignKey: "userId",
-        as: "user",
+        as: "user"
       })
       Chat.belongsToMany(models.User, {
         through: "chatAssociations",
         as: "users",
-        foreignKey: "chatId",
+        foreignKey: "chatId"
       })
     }
   }
-  Chat.init({
+  Chat.init(
+    {
       type: {
         type: DataTypes.ENUM(["direct", "group", "channel"])
       },

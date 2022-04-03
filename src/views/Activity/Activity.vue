@@ -54,9 +54,7 @@
                 <v-icon>mdi-information</v-icon>
               </v-btn>
             </template>
-            <span>
-              This is a BetterCompass exclusive feature.
-            </span>
+            <span> This is a BetterCompass exclusive feature. </span>
           </v-tooltip>
         </v-tab>
       </v-tabs>

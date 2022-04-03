@@ -1,22 +1,39 @@
 # BetterCompass
+
 BetterCompass is a frontend for
-[JDLF's compass.education](http://compass.education/) written in Vue 2 and Vuetify.
+[JDLF's compass.education](http://compass.education/) written in Vue 2 and
+Vuetify.
 
+The normal Compass frontend has a variety of issues, being made over a decade
+ago with a growing inconsistent design as it is being updated, it is very slow,
+the mobile app for students is horrible and buggy (at least on Android) which
+lacks features, the website isn't responsive, and feels very neglected overall.
 
-The normal Compass frontend has a variety of issues, being made over a decade ago with a growing inconsistent design as it is being updated, it is very slow, the mobile app for students is horrible and buggy (at least on Android) which lacks features, the website isn't responsive, and feels very neglected overall.
+A public instance of BetterCompass can be found at
+[https://compass.troplo.com](https://compass.troplo.com), which is constantly
+kept up to date, and is recommended to be used if you don't want to self host
+your own instance.
 
-A public instance of BetterCompass can be found at [https://compass.troplo.com](https://compass.troplo.com), which is constantly kept up to date, and is recommended to be used if you don't want to self host your own instance.
+BetterCompass may have missing features that are out of scope, this is likely
+because I do not have full access to the Compass platform, and feature
+availability can differ between different instances.
 
-BetterCompass may have missing features that are out of scope, this is likely because I do not have full access to the Compass platform, and feature availability can differ between different instances.
 ## Supported Compass features
+
 ### Account Types
-You may be able to login with unsupported accounts, but the features unique to said account type are unlikely to be available, as it was intended for student accounts.
+
+You may be able to login with unsupported accounts, but the features unique to
+said account type are unlikely to be available, as it was intended for student
+accounts.
+
 - [x] Student
 - [ ] Guest
 - [ ] Staff
-- [x] Parent (Partial support, billing will never be supported for security reasons.)
+- [x] Parent (Partial support, billing will never be supported for security
+      reasons.)
 - [ ] Admin
 - [ ] Visitor
+
 ### Activities
 
 #### Learning Tasks
@@ -114,6 +131,5 @@ yarn lint
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
 
 #### View the BetterCompass license in the LICENSE file.

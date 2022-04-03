@@ -11,7 +11,7 @@ router.get("/", auth, async (req, res, next) => {
   try {
     let chats = await ChatAssociation.findAll({
       where: {
-        userId: req.user.id,
+        userId: req.user.id
       },
       include: [
         {
@@ -21,9 +21,9 @@ router.get("/", auth, async (req, res, next) => {
             {
               model: User,
               as: "users",
-              attributes: ["id", "sussiId", "createdAt"],
-            },
-          ],
+              attributes: ["id", "sussiId", "createdAt"]
+            }
+          ]
         },
         {
           model: User,
@@ -33,7 +33,6 @@ router.get("/", auth, async (req, res, next) => {
       ]
     })
     res.json(chats)
-
   } catch (err) {
     next(err)
   }

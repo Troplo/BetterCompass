@@ -24,13 +24,12 @@
           ></v-text-field>
 
           <v-list two-line color="card">
-            <v-list-item-group
-              v-model="selected"
-              class="rounded-xl"
-
-            >
+            <v-list-item-group v-model="selected" class="rounded-xl">
               <template v-for="(item, index) in items">
-                <v-list-item :key="item.title" :to="'/communications/' + item.id">
+                <v-list-item
+                  :key="item.title"
+                  :to="'/communications/' + item.id"
+                >
                   <v-badge
                     bordered
                     bottom
@@ -40,7 +39,9 @@
                     offset-x="24"
                     offset-y="26"
                   >
-                    <v-list-item-avatar :color="$vuetify.theme.themes.dark.primary">
+                    <v-list-item-avatar
+                      :color="$vuetify.theme.themes.dark.primary"
+                    >
                       <v-icon v-if="item.chat.type === 'group'">
                         mdi-account-group
                       </v-icon>
@@ -50,7 +51,9 @@
                     </v-list-item-avatar>
                   </v-badge>
                   <v-badge dot color="none" v-else>
-                    <v-list-item-avatar :color="$vuetify.theme.themes.dark.primary">
+                    <v-list-item-avatar
+                      :color="$vuetify.theme.themes.dark.primary"
+                    >
                       <v-icon v-if="item.chat.type === 'group'">
                         mdi-account-group
                       </v-icon>
@@ -59,16 +62,14 @@
                   <template>
                     <v-list-item-content>
                       <v-list-item-title v-if="item.chat.type === 'direct'">
-                        {{item.chat.name}}
+                        {{ item.chat.name }}
                       </v-list-item-title>
                       <v-list-item-title v-else>
-                        {{item.chat.name}}
+                        {{ item.chat.name }}
                       </v-list-item-title>
 
-                      <v-list-item-subtitle
-                        v-if="item.chat.type === 'group'"
-                      >
-                        {{item.chat.users.length}} Members
+                      <v-list-item-subtitle v-if="item.chat.type === 'group'">
+                        {{ item.chat.users.length }} Members
                       </v-list-item-subtitle>
                     </v-list-item-content>
                   </template>
@@ -121,7 +122,7 @@ export default {
       this.iconIndex = 0
     },
     getChats() {
-      this.axios.get("/api/v1/communications").then(response => {
+      this.axios.get("/api/v1/communications").then((response) => {
         this.items = response.data
       })
     }

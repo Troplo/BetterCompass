@@ -243,9 +243,12 @@
           {{ $store.state.site.notification }}
         </v-alert>
       </v-container>
-      <v-container v-if="baseRole() !== 'Student' && baseRole() !== 'Not Authenticated'">
+      <v-container
+        v-if="baseRole() !== 'Student' && baseRole() !== 'Not Authenticated'"
+      >
         <v-alert class="mx-4 rounded-xl" dismissible type="info">
-          {{baseRole()}} accounts are not officially supported by BetterCompass yet.
+          {{ baseRole() }} accounts are not officially supported by
+          BetterCompass yet.
         </v-alert>
       </v-container>
       <!--<v-container v-if="!$store.state.online">
@@ -262,8 +265,7 @@
     </v-main>
   </v-app>
 </template>
-<style>
-</style>
+<style></style>
 <script>
 import Header from "./components/Header.vue"
 import AjaxErrorHandler from "@/lib/errorHandler"
@@ -313,7 +315,7 @@ export default {
         "Parent",
         "Admin",
         "Visitor",
-        "Not Authenticated",
+        "Not Authenticated"
       ]
       return userBaseRole[this.$store.state.user?.baseRole || 6]
     },

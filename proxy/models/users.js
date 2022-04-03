@@ -81,7 +81,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       privacy: {
         type: DataTypes.JSON,
-        defaultValue: {"communications":{"enabled":false,"outsideTenant":false,"directMessages":"friendsOnly","friendRequests":true}}
+        defaultValue: {
+          communications: {
+            enabled: false,
+            outsideTenant: false,
+            directMessages: "friendsOnly",
+            friendRequests: true
+          }
+        }
       },
       discussionsFirstName: {
         type: DataTypes.STRING,

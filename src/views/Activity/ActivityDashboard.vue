@@ -123,8 +123,7 @@
             <v-col>
               <h3>Teacher</h3>
               <h1>
-                <v-avatar large>
-                  <img :src="getTeacherPhoto" /> </v-avatar
+                <v-avatar large> <img :src="getTeacherPhoto" /> </v-avatar
                 >&nbsp; {{ activity.ManagerTextReadable }}
               </h1>
             </v-col>

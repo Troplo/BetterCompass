@@ -153,7 +153,9 @@ app.get("/api/v1/weather", (req, res) => {
               response1.data.lat +
               "&lon=" +
               response1.data.lon +
-              "&appid=" + process.env.WEATHER_API_KEY + "&units=metric"
+              "&appid=" +
+              process.env.WEATHER_API_KEY +
+              "&units=metric"
           )
           .then((response2) => {
             res.send(response2.data)

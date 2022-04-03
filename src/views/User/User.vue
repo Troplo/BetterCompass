@@ -22,7 +22,12 @@
             <v-tab to="reports"> Reports </v-tab>
             <v-tab to="analytics"> Analytics </v-tab>
             <v-tab to="events"> Events </v-tab>
-            <v-tab to="settings" v-if="user.userId === $store.state.user.userId"> BetterCompass </v-tab>
+            <v-tab
+              to="settings"
+              v-if="user.userId === $store.state.user.userId"
+            >
+              BetterCompass
+            </v-tab>
           </v-tabs>
           <v-container>
             <router-view :chronicle="chronicle" :user="user"></router-view>
@@ -59,7 +64,7 @@ export default {
         "Parent",
         "Admin",
         "Visitor",
-        "Not Authenticated",
+        "Not Authenticated"
       ]
       return userBaseRole[this.user.userRole || 6]
     },
@@ -72,8 +77,7 @@ export default {
         .post("/Services/User.svc/GetUserDetailsBlobByUserId", {
           userId:
             this.$store.state.user?.userId || localStorage.getItem("userId"),
-          targetUserId:
-            this.$route.params.id
+          targetUserId: this.$route.params.id
         })
         .then((res) => {
           this.loading = false

@@ -183,7 +183,14 @@ module.exports = {
     })
     await queryInterface.addColumn("users", "privacy", {
       type: Sequelize.JSON,
-      defaultValue: {"communications":{"enabled":false,"outsideTenant":false,"directMessages":"friendsOnly","friendRequests":true}},
+      defaultValue: {
+        communications: {
+          enabled: false,
+          outsideTenant: false,
+          directMessages: "friendsOnly",
+          friendRequests: true
+        }
+      },
       allowNull: false
     })
     await queryInterface.createTable("friends", {

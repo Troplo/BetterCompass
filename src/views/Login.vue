@@ -3,33 +3,55 @@
     <v-dialog v-model="usageDisclaimer" max-width="700px">
       <v-card color="card">
         <v-toolbar color="toolbar">
-          <v-toolbar-title>
-            BetterCompass Disclaimer
-          </v-toolbar-title>
+          <v-toolbar-title> BetterCompass Disclaimer </v-toolbar-title>
         </v-toolbar>
         <v-container>
-          BetterCompass is open source software, and is provided under the GNU General Public License v3.
-          <br>
-          The source code can be found <a href="https://github.com/Troplo/BetterCompass" target="_blank">here</a>, and the license of this piece of software can be found <a href="https://github.com/Troplo/BetterCompass/LICENSE" target="_blank">here</a>.
+          BetterCompass is open source software, and is provided under the GNU
+          General Public License v3.
+          <br />
+          The source code can be found
+          <a href="https://github.com/Troplo/BetterCompass" target="_blank"
+            >here</a
+          >, and the license of this piece of software can be found
+          <a
+            href="https://github.com/Troplo/BetterCompass/LICENSE"
+            target="_blank"
+            >here</a
+          >.
         </v-container>
       </v-card>
     </v-dialog>
     <v-dialog v-model="privacyPolicy" max-width="700px">
       <v-card color="card">
         <v-toolbar color="toolbar">
-          <v-toolbar-title>
-            BetterCompass Privacy Policy
-          </v-toolbar-title>
+          <v-toolbar-title> BetterCompass Privacy Policy </v-toolbar-title>
         </v-toolbar>
         <v-container>
-          BetterCompass uses a proxy to access JDLF compass.education services, which may pose a privacy risk as it is another point of potential data interception.<br><br>
-          Upon initial login, a database object with your Compass username, ID, hash, and Compass school ID is created on the BetterCompass server. This information is used to validate your login for enhanced BetterCompass features
-          such as Settings sync, communications, and more.<br><br>
-          Other than the information listed above, we do not store any secret, or personal information that could be used to identify you, such as your full name, password, email address, or authentication token.<br><br>
-          When updating your BetterCompass Settings, and other BetterCompass Exclusive features, this will get saved on the BetterCompass server.<br><br>
-          We try and store as little information as possible on the BetterCompass server, and only store the information necessary to provide a functioning service.<br><br>
-          THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW, as stated by the GNU General Public License v3.<br><br>
-          BetterCompass also uses Analytics software named "Matomo", which is hosted by BetterCompass to collect usage statistics. This information is used to improve the BetterCompass service and to provide a better user experience. The full privacy policy for Matomo can be viewed <a href="https://matomo.org/privacy-policy/" target="_blank">here</a>.<br><br>
+          BetterCompass uses a proxy to access JDLF compass.education services,
+          which may pose a privacy risk as it is another point of potential data
+          interception.<br /><br />
+          Upon initial login, a database object with your Compass username, ID,
+          hash, and Compass school ID is created on the BetterCompass server.
+          This information is used to validate your login for enhanced
+          BetterCompass features such as Settings sync, communications, and
+          more.<br /><br />
+          Other than the information listed above, we do not store any secret,
+          or personal information that could be used to identify you, such as
+          your full name, password, email address, or authentication token.<br /><br />
+          When updating your BetterCompass Settings, and other BetterCompass
+          Exclusive features, this will get saved on the BetterCompass
+          server.<br /><br />
+          We try and store as little information as possible on the
+          BetterCompass server, and only store the information necessary to
+          provide a functioning service.<br /><br />
+          THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+          APPLICABLE LAW, as stated by the GNU General Public License v3.<br /><br />
+          BetterCompass also uses Analytics software named "Matomo", which is
+          hosted by BetterCompass to collect usage statistics. This information
+          is used to improve the BetterCompass service and to provide a better
+          user experience. The full privacy policy for Matomo can be viewed
+          <a href="https://matomo.org/privacy-policy/" target="_blank">here</a
+          >.<br /><br />
         </v-container>
       </v-card>
     </v-dialog>
@@ -68,7 +90,23 @@
                   label="Password"
                   type="password"
                 ></v-text-field>
-                <small>By logging in you agree to the <a @click="usageDisclaimer = true"> BetterCompass Disclaimer</a>, <a @click="privacyPolicy = true"> BetterCompass Privacy Policy</a>, and <a style="text-decoration: none;" target="_blank" href="https://sites.google.com/a/jdlf.com.au/policies"> JDLF Compass Policies (external)</a>. These may be updated at any time, you will be notified about major changes to the BetterCompass policies.</small>
+                <small
+                  >By logging in you agree to the
+                  <a @click="usageDisclaimer = true">
+                    BetterCompass Disclaimer</a
+                  >,
+                  <a @click="privacyPolicy = true">
+                    BetterCompass Privacy Policy</a
+                  >, and
+                  <a
+                    style="text-decoration: none"
+                    target="_blank"
+                    href="https://sites.google.com/a/jdlf.com.au/policies"
+                  >
+                    JDLF Compass Policies (external)</a
+                  >. These may be updated at any time, you will be notified
+                  about major changes to the BetterCompass policies.</small
+                >
                 <v-divider></v-divider>
                 <small
                   >BetterCompass is not affiliated with Compass Education.<br />Compass

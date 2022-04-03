@@ -64,9 +64,17 @@
 </template>
 
 <script>
-import { Bar } from 'vue-chartjs/legacy'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-import colors from 'vuetify/lib/util/colors'
+import { Bar } from "vue-chartjs/legacy"
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+} from "chart.js"
+import colors from "vuetify/lib/util/colors"
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 export default {
@@ -106,7 +114,7 @@ export default {
         const areaOfAssessment =
           this.progressReports.aoas[
             this.progressReports.aoas.findIndex((x) => x.id === area.id)
-            ]
+          ]
         const friendlyName = areaOfAssessment.options.find(
           (x) => x.id === area.result
         )
@@ -130,8 +138,24 @@ export default {
     },
     randomColorGenerator() {
       console.log(colors)
-      const approvedColors = ["green", "indigo", "red", "orange", "blue", "purple", "amber", "lightBlue", "deepPurple", "yellow", "teal", "cyan"]
-      const randomColor = colors[approvedColors[Math.floor(Math.random() * approvedColors.length)]]
+      const approvedColors = [
+        "green",
+        "indigo",
+        "red",
+        "orange",
+        "blue",
+        "purple",
+        "amber",
+        "lightBlue",
+        "deepPurple",
+        "yellow",
+        "teal",
+        "cyan"
+      ]
+      const randomColor =
+        colors[
+          approvedColors[Math.floor(Math.random() * approvedColors.length)]
+        ]
       return randomColor.base
     },
     async progressReportTable() {
@@ -153,14 +177,7 @@ export default {
         this.chartData.datasets.push({
           label: entity.name.split("<br />")[0],
           data: this.calculateFriendlyAOAForEntity(entity),
-          backgroundColor: [
-            color,
-            color,
-            color,
-            color,
-            color,
-            color
-          ],
+          backgroundColor: [color, color, color, color, color, color]
         })
         if (!entity.result) {
           entity.result = {}
@@ -188,13 +205,13 @@ export default {
     getReports() {
       this.axios
         .post("/Services/Gpa.svc/GetActivitiesOverviewConfig", {
-          userId: this.user.userId,
+          userId: this.user.userId
         })
         .then((res) => {
           this.config = res.data.d
           this.axios
             .post("/Services/Reports.svc/GetMyReportsList", {
-              userId: this.user.userId,
+              userId: this.user.userId
             })
             .then(async (res) => {
               await this.progressReportTable().then(() => {})
@@ -219,7 +236,7 @@ export default {
     })
   },
   watch: {
-    selectedCycle()  {
+    selectedCycle() {
       this.chartData.init = false
       this.chartData.datasets = []
       this.chartData.labels = []

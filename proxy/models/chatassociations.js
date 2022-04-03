@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       ChatAssociation.belongsTo(models.User, {
         foreignKey: "userId",
-        as: "user",
+        as: "user"
       })
       ChatAssociation.belongsTo(models.Chat, {
         foreignKey: "chatId",
-        as: "chat",
+        as: "chat"
       })
     }
   }
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       chatId: {
         type: DataTypes.BIGINT,
-        allowNull: false,
+        allowNull: false
       },
       userId: {
         type: DataTypes.BIGINT,

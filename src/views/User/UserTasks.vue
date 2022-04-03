@@ -15,21 +15,27 @@
           ></v-file-input>
         </v-card-text>
         <v-card-text v-if="upload.type === 4">
-          <v-text-field label="URL Link" v-model="upload.file" prepend-icon="mdi-link" color="primary" outlined placeholder="https://google.com">
-
+          <v-text-field
+            label="URL Link"
+            v-model="upload.file"
+            prepend-icon="mdi-link"
+            color="primary"
+            outlined
+            placeholder="https://google.com"
+          >
           </v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="upload.dialog = false"
-          >Cancel</v-btn
+            >Cancel</v-btn
           >
           <v-btn
             color="primary"
             text
             @click="uploadFile"
             :loading="upload.loading"
-          >Upload</v-btn
+            >Upload</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -55,14 +61,14 @@
                   <v-card color="card" elevation="3" class="ma-2">
                     <v-container>
                       Name: <b>{{ selectedTask.name }}</b
-                    ><br />
+                      ><br />
                       <template v-if="selectedTask.dueDateTimestamp"
-                      >Due Date:
+                        >Due Date:
                         <b>{{
-                            $date(selectedTask.dueDateTimestamp).format(
-                              "dddd, MMMM Do YYYY, hh:mm A"
-                            )
-                          }}</b></template
+                          $date(selectedTask.dueDateTimestamp).format(
+                            "dddd, MMMM Do YYYY, hh:mm A"
+                          )
+                        }}</b></template
                       ><br />
                       Online Submission Enabled:
                       <b>{{ selectedTask.submissionItems ? "Yes" : "No" }}</b
@@ -174,7 +180,12 @@
                           >
                             <v-list-item-title>File Upload</v-list-item-title>
                           </v-list-item>
-                          <v-list-item @click="upload.type = 4; upload.dialog = true">
+                          <v-list-item
+                            @click="
+                              upload.type = 4
+                              upload.dialog = true
+                            "
+                          >
                             <v-list-item-title>URL Upload</v-list-item-title>
                           </v-list-item>
                         </v-list>
@@ -190,60 +201,60 @@
                     >
                       <template v-slot:default>
                         <thead>
-                        <tr>
-                          <th class="text-left">Name</th>
-                          <th class="text-left">Upload Date</th>
-                          <th class="text-left">Actions</th>
-                        </tr>
+                          <tr>
+                            <th class="text-left">Name</th>
+                            <th class="text-left">Upload Date</th>
+                            <th class="text-left">Actions</th>
+                          </tr>
                         </thead>
                         <tbody>
-                        <tr
-                          v-for="userSubmission in selectedTask.students[0]
+                          <tr
+                            v-for="userSubmission in selectedTask.students[0]
                               .submissions"
-                          :key="userSubmission.id"
-                        >
-                          <template
-                            v-if="
+                            :key="userSubmission.id"
+                          >
+                            <template
+                              v-if="
                                 userSubmission.taskSubmissionItemId ===
                                 submission.id
                               "
-                          >
-                            <td
-                              style="
+                            >
+                              <td
+                                style="
                                   white-space: pre-line;
                                   overflow-wrap: anywhere;
                                 "
-                            >
-                              {{ userSubmission.fileName }}
-                            </td>
-                            <td>
-                              {{
-                                $date(userSubmission.timestamp).format(
-                                  "dddd, MMMM Do YYYY, hh:mm A"
-                                )
-                              }}
-                            </td>
-                            <td>
-                              <v-card-actions>
-                                <v-btn
-                                  text
-                                  fab
-                                  small
-                                  rounded
-                                  target="_blank"
-                                  :href="userSubmission.fileName"
-                                  v-if="
+                              >
+                                {{ userSubmission.fileName }}
+                              </td>
+                              <td>
+                                {{
+                                  $date(userSubmission.timestamp).format(
+                                    "dddd, MMMM Do YYYY, hh:mm A"
+                                  )
+                                }}
+                              </td>
+                              <td>
+                                <v-card-actions>
+                                  <v-btn
+                                    text
+                                    fab
+                                    small
+                                    rounded
+                                    target="_blank"
+                                    :href="userSubmission.fileName"
+                                    v-if="
                                       userSubmission.submissionFileType === 4
                                     "
-                                >
-                                  <v-icon> mdi-open-in-new </v-icon>
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  fab
-                                  small
-                                  rounded
-                                  :href="
+                                  >
+                                    <v-icon> mdi-open-in-new </v-icon>
+                                  </v-btn>
+                                  <v-btn
+                                    text
+                                    fab
+                                    small
+                                    rounded
+                                    :href="
                                       '/Services/FileAssets.svc/DownloadFile?id=' +
                                       userSubmission.fileId +
                                       '&originalFileName=' +
@@ -251,18 +262,18 @@
                                       '&forceInstance=' +
                                       $store.state.school.instance
                                     "
-                                  v-if="
+                                    v-if="
                                       userSubmission.submissionFileType === 7
                                     "
-                                >
-                                  <v-icon> mdi-download </v-icon>
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  fab
-                                  small
-                                  rounded
-                                  :href="
+                                  >
+                                    <v-icon> mdi-download </v-icon>
+                                  </v-btn>
+                                  <v-btn
+                                    text
+                                    fab
+                                    small
+                                    rounded
+                                    :href="
                                       '/Services/FileAssets.svc/DownloadFile?id=' +
                                       userSubmission.fileId +
                                       '&originalFileName=' +
@@ -270,26 +281,26 @@
                                       '&forceInstance=' +
                                       $store.state.school.instance
                                     "
-                                  v-if="
+                                    v-if="
                                       userSubmission.submissionFileType === 1
                                     "
-                                >
-                                  <v-icon> mdi-download </v-icon>
-                                </v-btn>
-                                <v-btn
-                                  v-if="false"
-                                  text
-                                  fab
-                                  small
-                                  rounded
-                                  @click="deleteSubmission(userSubmission)"
-                                >
-                                  <v-icon> mdi-delete </v-icon>
-                                </v-btn>
-                              </v-card-actions>
-                            </td>
-                          </template>
-                        </tr>
+                                  >
+                                    <v-icon> mdi-download </v-icon>
+                                  </v-btn>
+                                  <v-btn
+                                    v-if="false"
+                                    text
+                                    fab
+                                    small
+                                    rounded
+                                    @click="deleteSubmission(userSubmission)"
+                                  >
+                                    <v-icon> mdi-delete </v-icon>
+                                  </v-btn>
+                                </v-card-actions>
+                              </td>
+                            </template>
+                          </tr>
                         </tbody>
                       </template>
                     </v-simple-table>
@@ -341,42 +352,52 @@
                       >
                         <template v-slot:default>
                           <thead>
-                          <tr>
-                            <th class="text-left">Name</th>
-                            <th class="text-left">Result</th>
-                          </tr>
+                            <tr>
+                              <th class="text-left">Name</th>
+                              <th class="text-left">Result</th>
+                            </tr>
                           </thead>
                           <tbody>
-                          <tr
-                            v-for="(
+                            <tr
+                              v-for="(
                                 gradingItem, index
                               ) in selectedTask.gradingItems"
-                            :key="gradingItem.id"
-                          >
-                            <td
-                              style="
+                              :key="gradingItem.id"
+                            >
+                              <td
+                                style="
                                   white-space: pre-line;
                                   overflow-wrap: anywhere;
                                 "
-                            >
-                              {{ gradingItem.name }}
-                            </td>
-                            <td>
-                              {{getGradingScheme(gradingItem, selectedTask.students[0].results[index].result)}}
-                              <template v-if="getGradingSchemeLength(gradingItem) <= 1">
+                              >
+                                {{ gradingItem.name }}
+                              </td>
+                              <td>
                                 {{
-                                  selectedTask.students[0].results[index]
-                                    .result
+                                  getGradingScheme(
+                                    gradingItem,
+                                    selectedTask.students[0].results[index]
+                                      .result
+                                  )
                                 }}
-                              </template>
-                              <template v-else>
-                                ({{
-                                  selectedTask.students[0].results[index]
-                                    .result
-                                }}/{{getGradingSchemeLength(gradingItem)}})
-                              </template>
-                            </td>
-                          </tr>
+                                <template
+                                  v-if="
+                                    getGradingSchemeLength(gradingItem) <= 1
+                                  "
+                                >
+                                  {{
+                                    selectedTask.students[0].results[index]
+                                      .result
+                                  }}
+                                </template>
+                                <template v-else>
+                                  ({{
+                                    selectedTask.students[0].results[index]
+                                      .result
+                                  }}/{{ getGradingSchemeLength(gradingItem) }})
+                                </template>
+                              </td>
+                            </tr>
                           </tbody>
                         </template>
                       </v-simple-table>
@@ -458,10 +479,10 @@
                             {{ feedback.comment }}
                           </v-list-item-content>
                           <small>{{
-                              $date(feedback.timestamp).format(
-                                "dddd, MMMM Do YYYY"
-                              )
-                            }}</small>
+                            $date(feedback.timestamp).format(
+                              "dddd, MMMM Do YYYY"
+                            )
+                          }}</small>
                         </v-container>
                       </v-card>
                       <v-text-field
@@ -584,7 +605,7 @@ export default {
         { text: "Tags", value: "tags", sortable: false },
         { text: "Activity", value: "activityName" },
         { text: "Subject", value: "subjectName" },
-        { text: "Due Date", value: "dueDateTimestamp"},
+        { text: "Due Date", value: "dueDateTimestamp" },
         { text: "Status", value: "status" }
       ]
     }
@@ -597,17 +618,17 @@ export default {
   methods: {
     getGradingSchemeLength(gradingItem) {
       const scheme = this.gradingSchemes.find(
-        scheme => scheme.measureUniqueId === gradingItem.measureUniqueId
+        (scheme) => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
       return scheme.options.length
     },
     getGradingScheme(gradingItem, result) {
       const scheme = this.gradingSchemes.find(
-        scheme => scheme.measureUniqueId === gradingItem.measureUniqueId
+        (scheme) => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
       if (scheme) {
         const option = scheme.options.find(
-          option => option.value === result.toString()
+          (option) => option.value === result.toString()
         )
         if (option) {
           return option.displayValue
@@ -632,35 +653,39 @@ export default {
     },
     uploadFile() {
       this.upload.loading = true
-      if(this.upload.type === 4) {
-        this.axios.post("/Services/FileAssets.svc/UploadSubmissionUrlWithPost", {
-          addressString: this.upload.file
-        }).then((res) => {
-          this.axios.post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
-            taskStudentSubmission: {
-              fileId: res.data.fileId,
-              fileName: res.data.fileName,
-              submissionFileType: this.upload.type,
-              taskStudentId: this.selectedTask.students[0].id,
-              taskSubmissionItemId: this.selectedTask.submissionItems[0].id
-            }
-          }).then((res1) => {
-            this.upload.dialog = false
-            this.upload.file = null
-            this.upload.type = null
-            this.upload.loading = false
-            this.selectedTask.students[0].submissions.push({
-              id: res1.data.d,
-              fileId: res.data.fileId,
-              fileName: res.data.fileName,
-              submissionFileType: this.upload.type,
-              taskStudentId: this.selectedTask.students[0].id,
-              taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
-              timestamp: this.$date().format()
-            })
-            this.getLearningTasks()
+      if (this.upload.type === 4) {
+        this.axios
+          .post("/Services/FileAssets.svc/UploadSubmissionUrlWithPost", {
+            addressString: this.upload.file
           })
-        })
+          .then((res) => {
+            this.axios
+              .post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
+                taskStudentSubmission: {
+                  fileId: res.data.fileId,
+                  fileName: res.data.fileName,
+                  submissionFileType: this.upload.type,
+                  taskStudentId: this.selectedTask.students[0].id,
+                  taskSubmissionItemId: this.selectedTask.submissionItems[0].id
+                }
+              })
+              .then((res1) => {
+                this.upload.dialog = false
+                this.upload.file = null
+                this.upload.type = null
+                this.upload.loading = false
+                this.selectedTask.students[0].submissions.push({
+                  id: res1.data.d,
+                  fileId: res.data.fileId,
+                  fileName: res.data.fileName,
+                  submissionFileType: this.upload.type,
+                  taskStudentId: this.selectedTask.students[0].id,
+                  taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
+                  timestamp: this.$date().format()
+                })
+                this.getLearningTasks()
+              })
+          })
       } else {
         const formData = new FormData()
         formData.append(
@@ -816,9 +841,13 @@ export default {
       }
     },
     getLearningSchemes() {
-      this.axios.get("/Services/ReferenceDataCache.svc/GetGradingSchemesForLearningTasks").then((res) => {
-        this.gradingSchemes = res.data.d
-      })
+      this.axios
+        .get(
+          "/Services/ReferenceDataCache.svc/GetGradingSchemesForLearningTasks"
+        )
+        .then((res) => {
+          this.gradingSchemes = res.data.d
+        })
     },
     getLearningTasks() {
       this.loading = true
@@ -837,7 +866,11 @@ export default {
           this.tasks = res.data.d.data.map((item) => {
             return {
               ...item,
-              dueDateTimestamp: item.dueDateTimestamp ? this.$date(item.dueDateTimestamp).format("hh:mm A, dddd, MMMM Do YYYY") : "No due date"
+              dueDateTimestamp: item.dueDateTimestamp
+                ? this.$date(item.dueDateTimestamp).format(
+                    "hh:mm A, dddd, MMMM Do YYYY"
+                  )
+                : "No due date"
             }
           })
         })

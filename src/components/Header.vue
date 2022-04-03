@@ -73,7 +73,7 @@
           'color: ' +
           $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary
         "
-        :class="{'troplo-title': !$store.state.bcUser.accentColor}"
+        :class="{ 'troplo-title': !$store.state.bcUser.accentColor }"
         @click="$router.push('/')"
         style="cursor: pointer"
         >BetterCompass</v-toolbar-title
@@ -181,10 +181,11 @@
               v-if="$vuetify.breakpoint.mobile"
               class="text-center justify-center"
               :style="
-          'color: ' +
-          $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary
-        "
-              :class="{'troplo-title': !$store.state.bcUser.accentColor}"
+                'color: ' +
+                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
+                  .primary
+              "
+              :class="{ 'troplo-title': !$store.state.bcUser.accentColor }"
               @click="$router.push('/')"
               style="cursor: pointer"
               >BetterCompass</v-toolbar-title
@@ -205,12 +206,18 @@
                 <v-list-item-title>Home</v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-for="user in $store.state.user.children" :key="user.userId" :to="'/user/' + user.userId">
+              <v-list-item
+                v-for="user in $store.state.user.children"
+                :key="user.userId"
+                :to="'/user/' + user.userId"
+              >
                 <v-list-item-icon>
                   <v-icon>mdi-account-child</v-icon>
                 </v-list-item-icon>
 
-                <v-list-item-title>{{user.firstName}}'s Profile</v-list-item-title>
+                <v-list-item-title
+                  >{{ user.firstName }}'s Profile</v-list-item-title
+                >
               </v-list-item>
 
               <v-list-item :to="'/user/' + $store.state.user.userId">
@@ -232,7 +239,10 @@
                       <v-list-item-title>Pages</v-list-item-title>
                     </v-list-item-content>
                   </template>
-                  <v-list-item link :to="'/user/' + $store.state.user.userId + '/tasks'">
+                  <v-list-item
+                    link
+                    :to="'/user/' + $store.state.user.userId + '/tasks'"
+                  >
                     <v-list-item-title>Learning Tasks</v-list-item-title>
                   </v-list-item>
                   <v-list-item link to="/school/resources">
@@ -268,7 +278,9 @@
 
                 <v-list-item-title>Communications</v-list-item-title>
               </v-list-item>
-              <v-list-item :to="'/user/'+ $store.state.user.userId + '/events'">
+              <v-list-item
+                :to="'/user/' + $store.state.user.userId + '/events'"
+              >
                 <v-list-item-icon>
                   <v-icon>mdi-swim</v-icon>
                 </v-list-item-icon>

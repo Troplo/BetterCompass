@@ -15,8 +15,14 @@
           ></v-file-input>
         </v-card-text>
         <v-card-text v-if="upload.type === 4">
-          <v-text-field label="URL Link" v-model="upload.file" prepend-icon="mdi-link" color="primary" outlined placeholder="https://google.com">
-
+          <v-text-field
+            label="URL Link"
+            v-model="upload.file"
+            prepend-icon="mdi-link"
+            color="primary"
+            outlined
+            placeholder="https://google.com"
+          >
           </v-text-field>
         </v-card-text>
         <v-card-actions>
@@ -174,7 +180,12 @@
                           >
                             <v-list-item-title>File Upload</v-list-item-title>
                           </v-list-item>
-                          <v-list-item @click="upload.type = 4; upload.dialog = true">
+                          <v-list-item
+                            @click="
+                              upload.type = 4
+                              upload.dialog = true
+                            "
+                          >
                             <v-list-item-title>URL Upload</v-list-item-title>
                           </v-list-item>
                         </v-list>
@@ -362,8 +373,18 @@
                                 {{ gradingItem.name }}
                               </td>
                               <td>
-                                {{getGradingScheme(gradingItem, selectedTask.students[0].results[index].result)}}
-                                <template v-if="getGradingSchemeLength(gradingItem) <= 1">
+                                {{
+                                  getGradingScheme(
+                                    gradingItem,
+                                    selectedTask.students[0].results[index]
+                                      .result
+                                  )
+                                }}
+                                <template
+                                  v-if="
+                                    getGradingSchemeLength(gradingItem) <= 1
+                                  "
+                                >
                                   {{
                                     selectedTask.students[0].results[index]
                                       .result
@@ -373,7 +394,7 @@
                                   ({{
                                     selectedTask.students[0].results[index]
                                       .result
-                                  }}/{{getGradingSchemeLength(gradingItem)}})
+                                  }}/{{ getGradingSchemeLength(gradingItem) }})
                                 </template>
                               </td>
                             </tr>
@@ -584,7 +605,7 @@ export default {
           value: "name"
         },
         { text: "Tags", value: "tags", sortable: false },
-        { text: "Due Date", value: "dueDateTimestamp"},
+        { text: "Due Date", value: "dueDateTimestamp" },
         { text: "Status", value: "status" }
       ]
     }
@@ -597,17 +618,17 @@ export default {
   methods: {
     getGradingSchemeLength(gradingItem) {
       const scheme = this.gradingSchemes.find(
-        scheme => scheme.measureUniqueId === gradingItem.measureUniqueId
+        (scheme) => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
       return scheme.options.length
     },
     getGradingScheme(gradingItem, result) {
       const scheme = this.gradingSchemes.find(
-        scheme => scheme.measureUniqueId === gradingItem.measureUniqueId
+        (scheme) => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
       if (scheme) {
         const option = scheme.options.find(
-          option => option.value === result.toString()
+          (option) => option.value === result.toString()
         )
         if (option) {
           return option.displayValue
@@ -645,35 +666,39 @@ export default {
     },
     uploadFile() {
       this.upload.loading = true
-      if(this.upload.type === 4) {
-        this.axios.post("/Services/FileAssets.svc/UploadSubmissionUrlWithPost", {
-          addressString: this.upload.file
-        }).then((res) => {
-          this.axios.post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
-            taskStudentSubmission: {
-              fileId: res.data.fileId,
-              fileName: res.data.fileName,
-              submissionFileType: this.upload.type,
-              taskStudentId: this.selectedTask.students[0].id,
-              taskSubmissionItemId: this.selectedTask.submissionItems[0].id
-            }
-          }).then((res1) => {
-            this.upload.dialog = false
-            this.upload.file = null
-            this.upload.type = null
-            this.upload.loading = false
-            this.selectedTask.students[0].submissions.push({
-              id: res1.data.d,
-              fileId: res.data.fileId,
-              fileName: res.data.fileName,
-              submissionFileType: this.upload.type,
-              taskStudentId: this.selectedTask.students[0].id,
-              taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
-              timestamp: this.$date().format()
-            })
-            this.getLearningTasks()
+      if (this.upload.type === 4) {
+        this.axios
+          .post("/Services/FileAssets.svc/UploadSubmissionUrlWithPost", {
+            addressString: this.upload.file
           })
-        })
+          .then((res) => {
+            this.axios
+              .post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
+                taskStudentSubmission: {
+                  fileId: res.data.fileId,
+                  fileName: res.data.fileName,
+                  submissionFileType: this.upload.type,
+                  taskStudentId: this.selectedTask.students[0].id,
+                  taskSubmissionItemId: this.selectedTask.submissionItems[0].id
+                }
+              })
+              .then((res1) => {
+                this.upload.dialog = false
+                this.upload.file = null
+                this.upload.type = null
+                this.upload.loading = false
+                this.selectedTask.students[0].submissions.push({
+                  id: res1.data.d,
+                  fileId: res.data.fileId,
+                  fileName: res.data.fileName,
+                  submissionFileType: this.upload.type,
+                  taskStudentId: this.selectedTask.students[0].id,
+                  taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
+                  timestamp: this.$date().format()
+                })
+                this.getLearningTasks()
+              })
+          })
       } else {
         const formData = new FormData()
         formData.append(
@@ -831,9 +856,13 @@ export default {
       }
     },
     getLearningSchemes() {
-      this.axios.get("/Services/ReferenceDataCache.svc/GetGradingSchemesForLearningTasks").then((res) => {
-        this.gradingSchemes = res.data.d
-      })
+      this.axios
+        .get(
+          "/Services/ReferenceDataCache.svc/GetGradingSchemesForLearningTasks"
+        )
+        .then((res) => {
+          this.gradingSchemes = res.data.d
+        })
     },
     getLearningTasks() {
       this.axios
@@ -848,7 +877,11 @@ export default {
           this.tasks = res.data.d.data.map((item) => {
             return {
               ...item,
-              dueDateTimestamp: item.dueDateTimestamp ? this.$date(item.dueDateTimestamp).format("hh:mm A, dddd, MMMM Do YYYY") : "No due date"
+              dueDateTimestamp: item.dueDateTimestamp
+                ? this.$date(item.dueDateTimestamp).format(
+                    "hh:mm A, dddd, MMMM Do YYYY"
+                  )
+                : "No due date"
             }
           })
         })
@@ -865,7 +898,8 @@ export default {
 </script>
 
 <style scoped>
-.v-simple-table > .v-data-table__wrapper > table > thead > tr > th,td {
+.v-simple-table > .v-data-table__wrapper > table > thead > tr > th,
+td {
   min-width: 150px !important;
 }
 </style>

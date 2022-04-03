@@ -31,14 +31,28 @@
                   <span class="title"
                     >{{ selectedTopic.createdByUser.firstName }}
                     {{ selectedTopic.createdByUser.lastName }}
-                    ({{selectedTopic.createdByUser.userId}})
+                    ({{ selectedTopic.createdByUser.userId }})
                   </span>
                 </div>
                 <v-spacer></v-spacer>
-                <v-btn fab text v-if="selectedTopic.createdByUser.userId === $store.state.user.userId">
+                <v-btn
+                  fab
+                  text
+                  v-if="
+                    selectedTopic.createdByUser.userId ===
+                    $store.state.user.userId
+                  "
+                >
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn fab text v-if="selectedTopic.createdByUser.userId === $store.state.user.userId">
+                <v-btn
+                  fab
+                  text
+                  v-if="
+                    selectedTopic.createdByUser.userId ===
+                    $store.state.user.userId
+                  "
+                >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-card-title>
@@ -86,11 +100,10 @@
                   <span class="title"
                     >{{ comment.createdByUser.firstName }}
                     {{ comment.createdByUser.lastName }}
-                    ({{comment.createdByUser.userId}})
+                    ({{ comment.createdByUser.userId }})
                   </span>
                 </div>
                 <v-divider></v-divider>
-
               </v-card-title>
               <p class="ml-6">{{ comment.contents[0].body }}</p>
               <small class="ml-6">{{
@@ -123,7 +136,7 @@
                       <span class="title"
                         >{{ reply.createdByUser.firstName }}
                         {{ reply.createdByUser.lastName }}
-                      ({{reply.createdByUser.userId}})
+                        ({{ reply.createdByUser.userId }})
                       </span>
                     </div>
                   </v-card-title>
@@ -198,54 +211,67 @@ export default {
   },
   methods: {
     addComment(topic) {
-      this.$apollo.mutate({
-        mutation: gql`mutation CreateComment($body: String!, $schoolId: String!, $topicId: Uuid!, $userId: Int!) {
-  createComment(body: $body, schoolId: $schoolId, topicId: $topicId, userId: $userId) {
-    ...CommentFields
-    __typename
-  }
-}
+      this.$apollo
+        .mutate({
+          mutation: gql`
+            mutation CreateComment(
+              $body: String!
+              $schoolId: String!
+              $topicId: Uuid!
+              $userId: Int!
+            ) {
+              createComment(
+                body: $body
+                schoolId: $schoolId
+                topicId: $topicId
+                userId: $userId
+              ) {
+                ...CommentFields
+                __typename
+              }
+            }
 
-fragment CommentFields on DiscussionsComment {
-  id
-  canEdit
-  canDelete
-  createdByUser {
-    userId
-    id
-    firstName
-    lastName
-    avatarUrl
-    __typename
-  }
-  parentCommentId
-  topicId
-  contents(order_by: {createdAt: DESC}) {
-    body
-    id
-    commentId
-    createdAt
-    createdByUserId
-    __typename
-  }
-  topic {
-    id
-    createdByUser {
-      id
-      userId
-      __typename
-    }
-    __typename
-  }
-  __typename
-}`,
-        variables: {
-          body: this.newComment,
-          schoolId: this.$store.state.school.id,
-          topicId: topic.id,
-          userId: this.$store.state.user.userId
-        }
-      })
+            fragment CommentFields on DiscussionsComment {
+              id
+              canEdit
+              canDelete
+              createdByUser {
+                userId
+                id
+                firstName
+                lastName
+                avatarUrl
+                __typename
+              }
+              parentCommentId
+              topicId
+              contents(order_by: { createdAt: DESC }) {
+                body
+                id
+                commentId
+                createdAt
+                createdByUserId
+                __typename
+              }
+              topic {
+                id
+                createdByUser {
+                  id
+                  userId
+                  __typename
+                }
+                __typename
+              }
+              __typename
+            }
+          `,
+          variables: {
+            body: this.newComment,
+            schoolId: this.$store.state.school.id,
+            topicId: topic.id,
+            userId: this.$store.state.user.userId
+          }
+        })
         .then(({ data }) => {
           this.newComment = ""
           this.selectedTopic.contents.push(data.createComment)
@@ -361,22 +387,25 @@ fragment CommentFields on DiscussionsComment {
         })
     },
     async getUserData() {
-      await this.$apollo.query({
-        query: gql`query CompassUserData {
-  currentUser {
-    firstName
-    lastName
-    baseRole
-    id
-    profileImage(size: FULL) {
-      url
-      id
-      __typename
-    }
-    __typename
-  }
-}`
-      })
+      await this.$apollo
+        .query({
+          query: gql`
+            query CompassUserData {
+              currentUser {
+                firstName
+                lastName
+                baseRole
+                id
+                profileImage(size: FULL) {
+                  url
+                  id
+                  __typename
+                }
+                __typename
+              }
+            }
+          `
+        })
         .then((res) => {
           this.user = res.data.data.currentUser
         })
@@ -518,13 +547,29 @@ fragment CommentFields on DiscussionsComment {
     await this.getUserData().then(() => {
       this.$apollo
         .mutate({
-          mutation: gql`mutation ValidateUser($avatarUrl: String!, $firstName: String!, $lastName: String!) {
-  validateDiscussionsUser(avatarUrl: $avatarUrl, firstName: $firstName, lastName: $lastName)
-}`,
+          mutation: gql`
+            mutation ValidateUser(
+              $avatarUrl: String!
+              $firstName: String!
+              $lastName: String!
+            ) {
+              validateDiscussionsUser(
+                avatarUrl: $avatarUrl
+                firstName: $firstName
+                lastName: $lastName
+              )
+            }
+          `,
           variables: {
-            avatarUrl: this.$store.state.bcUser?.discussionsImage || "/download/cdn/full/" + this.$store.state.user.imageGuid + ".jpg",
-            firstName: this.$store.state.bcUser?.discussionsFirstName || this.$store.state.user.firstName,
-            lastName: this.$store.state.bcUser?.discussionsLastName || this.$store.state.user.lastName
+            avatarUrl:
+              this.$store.state.bcUser?.discussionsImage ||
+              "/download/cdn/full/" + this.$store.state.user.imageGuid + ".jpg",
+            firstName:
+              this.$store.state.bcUser?.discussionsFirstName ||
+              this.$store.state.user.firstName,
+            lastName:
+              this.$store.state.bcUser?.discussionsLastName ||
+              this.$store.state.user.lastName
           }
         })
         .then((res) => {
