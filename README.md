@@ -8,7 +8,7 @@ The normal Compass frontend has a variety of issues, being made over a decade ag
 A public instance of BetterCompass can be found at [https://compass.troplo.com](https://compass.troplo.com), which is constantly kept up to date, and is recommended to be used if you don't want to self host your own instance.
 
 BetterCompass may have missing features that are out of scope, this is likely because I do not have full access to the Compass platform, and feature availability can differ between different instances.
-## Supported features
+## Supported Compass features
 ### Account Types
 You may be able to login with unsupported accounts, but the features unique to said account type are unlikely to be available, as it was intended for student accounts.
 - [x] Student
