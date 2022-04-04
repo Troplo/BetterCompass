@@ -22,6 +22,7 @@
             color="primary"
             outlined
             placeholder="https://google.com"
+            @keyup.enter="uploadFile"
           >
           </v-text-field>
         </v-card-text>
@@ -665,6 +666,9 @@ export default {
         })
     },
     uploadFile() {
+      if(!this.selectedTask.students[0].submissions) {
+        this.selectedTask.students[0].submissions = []
+      }
       this.upload.loading = true
       if (this.upload.type === 4) {
         this.axios
@@ -675,8 +679,9 @@ export default {
             this.axios
               .post("/Services/LearningTasks.svc/CreateTaskStudentSubmission", {
                 taskStudentSubmission: {
-                  fileId: res.data.fileId,
-                  fileName: res.data.fileName,
+                  // look at this inconsistency! res.data.d when its just res.data for the regular file uploads API
+                  fileId: res.data.d.fileId,
+                  fileName: res.data.d.fileName,
                   submissionFileType: this.upload.type,
                   taskStudentId: this.selectedTask.students[0].id,
                   taskSubmissionItemId: this.selectedTask.submissionItems[0].id
@@ -689,8 +694,8 @@ export default {
                 this.upload.loading = false
                 this.selectedTask.students[0].submissions.push({
                   id: res1.data.d,
-                  fileId: res.data.fileId,
-                  fileName: res.data.fileName,
+                  fileId: res.data.d.fileId,
+                  fileName: res.data.d.fileName,
                   submissionFileType: this.upload.type,
                   taskStudentId: this.selectedTask.students[0].id,
                   taskSubmissionItemId: this.selectedTask.submissionItems[0].id,
@@ -795,6 +800,24 @@ export default {
           status: "pendingLate",
           text: "Pending submission, overdue.",
           color: "red darken-1"
+        }
+      } else if (
+        submittedSubmission &&
+        this.selectedTask.students[0].submissionStatus === 1
+      ) {
+        return {
+          status: "submitted",
+          text: "Submitted",
+          color: "success"
+        }
+      } else if (
+        submittedSubmission &&
+        this.selectedTask.students[0].submissionStatus === 2
+      ) {
+        return {
+          status: "submitted",
+          text: "Submitted",
+          color: "success"
         }
       } else if (
         submittedSubmission &&
