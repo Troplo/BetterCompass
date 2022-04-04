@@ -407,49 +407,24 @@
                   <v-card
                     color="card"
                     elevation="3"
-                    class="ma-2"
-                    v-if="selectedTask.rubric"
+                    class="ma-2 rounded-xl"
+                    v-if="selectedTask.rubric && $store.state.site.release === 'dev'"
                   >
                     <v-toolbar color="toolbar">
                       <v-toolbar-title> Rubric </v-toolbar-title>
                     </v-toolbar>
                     <v-container>
                       <v-row>
-                        <v-col cols="12" sm="6">
+                        <v-col>
                           <v-card-text>
-                            <!-- <v-list>
+                            <v-list>
                               <v-data-table
-                                  :headers="selectedTask.rubric.criteria"
-                                  :items="selectedTask.rubric.criteria"
-                                  :single-expand="singleExpand"
-                                  :expanded.sync="expanded"
-                                  item-key="name"
-                                  show-expand
+                                  :headers="rubricHeaders"
+                                  :items="rubricItems"
                                   class="elevation-1"
                               >
-                                <template v-slot:top>
-                                  <v-toolbar flat>
-                                    <v-toolbar-title>Expandable Table</v-toolbar-title>
-                                    <v-spacer></v-spacer>
-                                    <v-switch
-                                        v-model="singleExpand"
-                                        label="Single expand"
-                                        class="mt-2"
-                                    ></v-switch>
-                                  </v-toolbar>
-                                </template>
-                                <template v-slot:expanded-item="{ headers, item }">
-                                  <td :colspan="headers.length">
-                                    More info about {{ item.name }}
-                                  </td>
-                                </template>
                               </v-data-table>
-                              <v-list-item v-for="criteria in selectedTask.rubric.criteria" :key="criteria.id">
-                                <v-list-item-title>
-                                  {{criteria.name}}
-                                </v-list-item-title>
-                              </v-list-item>
-                            </v-list>-->
+                            </v-list>
                           </v-card-text>
                         </v-col>
                       </v-row>
@@ -575,6 +550,13 @@ export default {
       },
       page: 1,
       offset: 0,
+      rubricItems: [],
+      rubricHeaders: [
+        {
+          text: "Criteria",
+          value: "name"
+        }
+        ],
       selectedTask: {
         __type: "Task:http://jdlf.com.au/ns/data/learningtasks/",
         activityId: 0,
@@ -766,7 +748,22 @@ export default {
           })
           .then((res) => {
             this.loading = false
-            this.selectedTask.rubric = res.data.d
+            this.selectedTask.rubric = res.data.d/*
+            this.rubricItems = res.data.d.criteria.map((item, index) => {
+              let ids = {}
+              item.criteria
+              return {
+                name: item.name,
+                ...ids,
+                text: "criteria",
+              }
+            })
+            this.rubricHeaders.push(...this.selectedTask.rubric.criteria[0].gradingScales.map((item) => {
+              return {
+                text: item.name,
+                value: item.ordinal
+              }
+            }))*/
             this.dialog = true
           })
       } else {
