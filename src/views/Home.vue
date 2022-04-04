@@ -451,58 +451,12 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
-              <v-card-title> 02/04/2022 - 03/04/2022</v-card-title>
+              <v-card-title> 04/04/2022 </v-card-title>
               <ul>
-                <li>
-                  BetterCompass is now
-                  <a href="https://github.com/Troplo/BetterCompass">
-                    open source</a
-                  >, licensed under GNU General Public License V3.
-                </li>
-                <li>
-                  Progress Reports now has a chart that corresponds to the
-                  selected cycle (BetterCompass Exclusive).
-                </li>
-                <li>Due date is now shown on the learning tasks table.</li>
-                <li>
-                  Subject and Activity is now shown on the User Profile Learning
-                  Tasks table. (Now sorted by activity by default)
-                </li>
-                <li>
-                  You can now see your class attendance record per class on the
-                  Attendance tab.
-                </li>
-                <li>
-                  You can now view child profiles, and your personal user
-                  profile with a Parent account.
-                </li>
-                <li>
-                  Reports, Attendance, etc now correspond to the child profile.
-                </li>
-                <li>
-                  Updated profile route scheme to /user/:id/:tab from
-                  /user/:tab.
-                </li>
-                <li>
-                  User Flags are now shown as red banners on the User Profile
-                  (Parent only).
-                </li>
-                <li>
-                  Clicking on the learning task notification warning will take
-                  you to Learning Tasks.
-                </li>
-                <li>
-                  Fixed bug where the Learning Task description would always be
-                  null on the User Profile Learning Tasks.
-                </li>
-                <li>Fixed login validation error.</li>
-                <li>Fixed & Improved Calendar AutoJump.</li>
-                <li>You can now submit URL links in Learning Tasks.</li>
-                <li>You can now see your per term attendance.</li>
-                <li>
-                  The BetterCompass gradient will appear again on the title if
-                  there is no set accent color.
-                </li>
+                <li>Fixed URL link submissions in Learning Tasks.</li>
+                <li>When submitting an item to a learning task, it will automatically refresh to display it without requiring a refresh.</li>
+                <li>Added missing learning task status codes.</li>
+                <li>Added BetterCompass about page.</li>
               </ul>
               <small
                 >BetterCompass version {{ $store.state.versioning.version }},

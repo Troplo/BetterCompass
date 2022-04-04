@@ -6,6 +6,14 @@
           <v-toolbar-title>BetterCompass Changelog</v-toolbar-title>
         </v-toolbar>
         <v-container>
+          <v-card-title> 04/04/2022 </v-card-title>
+          <ul>
+            <li>Fixed URL link submissions in Learning Tasks.</li>
+            <li>When submitting an item to a learning task, it will automatically refresh to display it without requiring a refresh.</li>
+            <li>Added missing learning task status codes.</li>
+            <li>Added BetterCompass about page.</li>
+          </ul>
+
           <v-card-title> 02/04/2022 - 03/04/2022</v-card-title>
           <ul>
             <li>
