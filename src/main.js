@@ -16,22 +16,22 @@ import ApolloClient, { InMemoryCache } from "apollo-boost"
 import VueApollo from "vue-apollo"
 const cache = new InMemoryCache()
 import VueMatomo from "vue-matomo"
-import * as Sentry from "@sentry/vue";
-import { BrowserTracing } from "@sentry/tracing";
+import * as Sentry from "@sentry/vue"
+import { BrowserTracing } from "@sentry/tracing"
 Sentry.init({
   Vue,
   dsn: process.env.VUE_APP_SENTRY_DSN,
   integrations: [
     new BrowserTracing({
       routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracingOrigins: ["localhost", "my-site-url.com", /^\//],
-    }),
+      tracingOrigins: ["localhost", "my-site-url.com", /^\//]
+    })
   ],
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-});
+  tracesSampleRate: 1.0
+})
 
 Vue.use(VueMatomo, {
   // Configure your matomo server and site by providing

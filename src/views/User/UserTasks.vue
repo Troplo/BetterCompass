@@ -653,7 +653,7 @@ export default {
         })
     },
     uploadFile() {
-      if(!this.selectedTask.students[0].submissions) {
+      if (!this.selectedTask.students[0].submissions) {
         this.selectedTask.students[0].submissions = []
       }
       this.upload.loading = true
@@ -766,7 +766,7 @@ export default {
             this.selectedTask.students[0].submissions?.findIndex(
               (x) => x.taskSubmissionItemId === submission.id
             )
-            ]
+          ]
       }
       if (
         !submittedSubmission &&

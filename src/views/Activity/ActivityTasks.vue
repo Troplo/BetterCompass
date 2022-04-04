@@ -408,7 +408,9 @@
                     color="card"
                     elevation="3"
                     class="ma-2 rounded-xl"
-                    v-if="selectedTask.rubric && $store.state.site.release === 'dev'"
+                    v-if="
+                      selectedTask.rubric && $store.state.site.release === 'dev'
+                    "
                   >
                     <v-toolbar color="toolbar">
                       <v-toolbar-title> Rubric </v-toolbar-title>
@@ -419,9 +421,9 @@
                           <v-card-text>
                             <v-list>
                               <v-data-table
-                                  :headers="rubricHeaders"
-                                  :items="rubricItems"
-                                  class="elevation-1"
+                                :headers="rubricHeaders"
+                                :items="rubricItems"
+                                class="elevation-1"
                               >
                               </v-data-table>
                             </v-list>
@@ -556,7 +558,7 @@ export default {
           text: "Criteria",
           value: "name"
         }
-        ],
+      ],
       selectedTask: {
         __type: "Task:http://jdlf.com.au/ns/data/learningtasks/",
         activityId: 0,
@@ -648,7 +650,7 @@ export default {
         })
     },
     uploadFile() {
-      if(!this.selectedTask.students[0].submissions) {
+      if (!this.selectedTask.students[0].submissions) {
         this.selectedTask.students[0].submissions = []
       }
       this.upload.loading = true
@@ -748,7 +750,7 @@ export default {
           })
           .then((res) => {
             this.loading = false
-            this.selectedTask.rubric = res.data.d/*
+            this.selectedTask.rubric = res.data.d /*
             this.rubricItems = res.data.d.criteria.map((item, index) => {
               let ids = {}
               item.criteria
