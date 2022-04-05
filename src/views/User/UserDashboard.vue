@@ -60,10 +60,18 @@
                     <b>Configure parent linking in BetterCompass settings.</b
                     ><br
                   /></template>
-                  Email: <b>{{ user.userEmail }}</b
+                  <template v-if="user.userEmail">
+                    Email: <b>{{ user.userEmail }}</b>
+                    <br />
+                  </template>
+                  <template v-if="getStaff(user.userId).ce">
+                    Staff Email: <b>{{ getStaff(user.userId).ce }}</b>
+                    <br />
+                  </template>
+                  <template v-if="user.userDetails">
+                    Age: <b>{{ user.userDetails }}</b
                   ><br />
-                  Age: <b>{{ user.userDetails }}</b
-                  ><br />
+                  </template>
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <v-chip color="indigo" v-on="on">{{
@@ -133,12 +141,12 @@
               class="mb-3"
             >
               <v-toolbar color="toolbar">
-                <v-avatar large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?forceInstance=' + $store.state.school.instance" /> </v-avatar>
+                <v-avatar @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer" large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?forceInstance=' + $store.state.school.instance" /> </v-avatar>
                 <v-toolbar-title
                   >
                   {{ item.chronicleEntries[0].templateName }}
                   <div class="subheading subtitle-1">
-                    Recorded by: {{ getStaff(item.chronicleEntries[0].userIdCreator).n }}
+                    Recorded by: <span @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer">{{ getStaff(item.chronicleEntries[0].userIdCreator).n }}</span>
                   </div>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>

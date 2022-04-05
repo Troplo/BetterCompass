@@ -457,6 +457,10 @@
                 <li>Improved QuickSwitch activation responsiveness.</li>
                 <li>You can now select a year for user chronicles.</li>
                 <li>You can now see the correct staff name, and avatar for the associated chronicle (including inactive staff members, BetterCompass Exclusive).</li>
+                <li>You can now view your teacher's profile by clicking on their name on the class/subject page.</li>
+                <li>The profile page now handles user status properly (will now show Left, Inactive, etc if applicable instead of Active).</li>
+                <li>The profile page will now display the relevant staff email if applicable.</li>
+                <li>You can now view your teacher's profile by clicking on their name on a chronicle entry.</li>
               </ul>
               <small
                 >BetterCompass version {{ $store.state.versioning.version }},
