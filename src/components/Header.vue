@@ -79,10 +79,10 @@
         style="cursor: pointer"
         >BetterCompass</v-toolbar-title
       ><v-app-bar-nav-icon
-        v-if="!$vuetify.breakpoint.mobile"
+        v-if="!$vuetify.breakpoint.mobile && $store.state.site.release !== 'stable'"
         style="z-index: 1000"
         disabled
-        >Beta</v-app-bar-nav-icon
+        >{{ $store.state.site.release }}</v-app-bar-nav-icon
       >
       <v-text-field
         ref="searchInput"
@@ -103,7 +103,7 @@
       </v-text-field>
       <button
         style="display: none"
-        v-shortkey.once="['ctrl', 'k']"
+        v-shortkey="['ctrl', 'k']"
         @shortkey="$store.commit('setSearch', true)"
       >
         Debug

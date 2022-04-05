@@ -10,9 +10,9 @@
             {{ baseRole() }}: {{ user.userFullName }} -
             {{ user.userFormGroup }} ({{ user.userHouse }}) -
             {{ user.userYearLevel }}
-            <v-chip color="success">
-              <v-icon>mdi-check</v-icon>
-              Active
+            <v-chip :color="userStatus.color">
+              <v-icon>{{userStatus.icon}}</v-icon>
+              {{userStatus.status}}
             </v-chip>
           </h1>
           <v-tabs background-color="card">
@@ -30,7 +30,7 @@
             </v-tab>
           </v-tabs>
           <v-container>
-            <router-view :chronicle="chronicle" :user="user"></router-view>
+            <router-view :user="user"></router-view>
           </v-container>
         </v-container>
       </v-card>
@@ -46,13 +46,74 @@ export default {
   data() {
     return {
       user: null,
-      loading: true,
-      chronicle: {
-        offset: 0,
-        period: 32,
-        page: 1,
-        items: []
-      }
+      loading: true
+    }
+  },
+  computed: {
+    userStatus() {
+      const userStatus = [
+        {
+          color: "green",
+          icon: "mdi-check",
+          status: "Active"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Inactive"
+        },
+        {
+          color: "orange",
+          icon: "mdi-clock",
+          status: "Future Enrollment"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Left"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Locked"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Alumni"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Deleted"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Enrollment Application"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Pending Transfer Approval"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Pending Transfer Rejection"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "Slipstream"
+        },
+        {
+          color: "red",
+          icon: "mdi-close",
+          status: "On Hold"
+        }
+      ]
+      return userStatus[this.user.userStatus -1]
     }
   },
   methods: {
@@ -82,28 +143,6 @@ export default {
         .then((res) => {
           this.loading = false
           this.user = res.data.d
-          this.axios
-            .post("/Services/ChronicleV2.svc/GetUserChronicleFeed", {
-              targetUserId:
-                this.$store.state.user?.userId ||
-                localStorage.getItem("userId"),
-              start: this.chronicle.offset,
-              pageSize: 43,
-              startDate: dayjs()
-                .subtract(this.chronicle.period, "months")
-                .toISOString(),
-              endDate: dayjs().toISOString(),
-              filterCategoryIds: [
-                2, 16, 3, 11, 4, 9, 26, 10, 5, 29, 27, 1, 8, 14, 24, 23, 13, 15,
-                20, 22, 25, 19, 12, 6, 28, 21, 7, 17
-              ],
-              asParent: true,
-              page: this.chronicle.page,
-              limit: 60
-            })
-            .then((res) => {
-              this.chronicle.items = res.data.d.data
-            })
         })
     }
   },

@@ -18,20 +18,23 @@ const cache = new InMemoryCache()
 import VueMatomo from "vue-matomo"
 import * as Sentry from "@sentry/vue"
 import { BrowserTracing } from "@sentry/tracing"
-Sentry.init({
-  Vue,
-  dsn: process.env.VUE_APP_SENTRY_DSN,
-  integrations: [
-    new BrowserTracing({
-      routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracingOrigins: ["localhost", "my-site-url.com", /^\//]
-    })
-  ],
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0
-})
+if(process.env.NODE_ENV === "production") {
+  Sentry.init({
+    Vue,
+    dsn: process.env.VUE_APP_SENTRY_DSN,
+    integrations: [
+      new BrowserTracing({
+        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+        tracingOrigins: ["bettercompass.com.au", "compass.troplo.com", /^\//]
+      })
+    ],
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0
+  })
+}
+
 
 Vue.use(VueMatomo, {
   // Configure your matomo server and site by providing

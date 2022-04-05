@@ -451,16 +451,12 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
-              <v-card-title> 04/04/2022 </v-card-title>
+              <v-card-title> 05/04/2022 </v-card-title>
               <ul>
-                <li>Fixed URL link submissions in Learning Tasks.</li>
-                <li>
-                  When submitting an item to a learning task, it will
-                  automatically refresh to display it without requiring a
-                  refresh.
-                </li>
-                <li>Added missing learning task status codes.</li>
-                <li>Added BetterCompass about page.</li>
+                <li>BetterCompass is now considered stable!</li>
+                <li>Improved QuickSwitch activation responsiveness.</li>
+                <li>You can now select a year for user chronicles.</li>
+                <li>You can now see the correct staff name, and avatar for the associated chronicle (including inactive staff members, BetterCompass Exclusive).</li>
               </ul>
               <small
                 >BetterCompass version {{ $store.state.versioning.version }},

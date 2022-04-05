@@ -6,6 +6,14 @@
           <v-toolbar-title>BetterCompass Changelog</v-toolbar-title>
         </v-toolbar>
         <v-container>
+          <v-card-title> 05/04/2022 </v-card-title>
+          <ul>
+            <li>BetterCompass is now considered stable!</li>
+            <li>Improved QuickSwitch activation responsiveness.</li>
+            <li>You can now select a year for user chronicles.</li>
+            <li>You can now see the correct staff name, and avatar for the associated chronicle (including inactive staff members, BetterCompass Exclusive).</li>
+          </ul>
+
           <v-card-title> 04/04/2022 </v-card-title>
           <ul>
             <li>Fixed URL link submissions in Learning Tasks.</li>

@@ -83,7 +83,7 @@ export default {
       this.loading = true
       this.axios
         .post("/Services/AnalyticsV2.svc/GetUserResultGridByCycleIds", {
-          userId: this.$store.state.user.userId,
+          userId: this.$route.params.id,
           cycleIds: this.selectedCycle
         })
         .then((res) => {
@@ -103,7 +103,7 @@ export default {
       this.loading = true
       this.axios
         .post("/Services/AnalyticsV2.svc/GetCycles", {
-          userIds: [this.$store.state.user.userId]
+          userIds: [this.$route.params.id]
         })
         .then((res) => {
           this.loading = false

@@ -882,7 +882,7 @@ export default {
           sort: '[{"property":"dueDateTimestamp","direction":"ASC"}]',
           start: this.offset,
           showHiddenTasks: true,
-          userId: this.$store.state.user.userId
+          userId: this.$route.params.id
         })
         .then((res) => {
           this.loading = false
@@ -897,8 +897,9 @@ export default {
             }
           })
         })
-        .catch((err) => {
-          console.log(err)
+        .catch(() => {
+          this.loading = false
+          this.$toast.error("The learning tasks could not be loaded.")
         })
     }
   },
