@@ -6,6 +6,13 @@
           <v-toolbar-title>BetterCompass Changelog</v-toolbar-title>
         </v-toolbar>
         <v-container>
+          <v-card-title> 06/04/2022 </v-card-title>
+          <ul>
+            <li>Pinned chronicles will now be pinned (bypasses year selection, unless the pin has expired), BetterCompass Exclusive.</li>
+            <li>You can now see the creation date of the chronicle.</li>
+            <li>The chronicles section will now show a loading spinner when loading.</li>
+          </ul>
+
           <v-card-title> 05/04/2022 </v-card-title>
           <ul>
             <li>BetterCompass is now considered stable!</li>

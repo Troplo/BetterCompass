@@ -451,16 +451,11 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
-              <v-card-title> 05/04/2022 </v-card-title>
+              <v-card-title> 06/04/2022 </v-card-title>
               <ul>
-                <li>BetterCompass is now considered stable!</li>
-                <li>Improved QuickSwitch activation responsiveness.</li>
-                <li>You can now select a year for user chronicles.</li>
-                <li>You can now see the correct staff name, and avatar for the associated chronicle (including inactive staff members, BetterCompass Exclusive).</li>
-                <li>You can now view your teacher's profile by clicking on their name on the class/subject page.</li>
-                <li>The profile page now handles user status properly (will now show Left, Inactive, etc if applicable instead of Active).</li>
-                <li>The profile page will now display the relevant staff email if applicable.</li>
-                <li>You can now view your teacher's profile by clicking on their name on a chronicle entry.</li>
+                <li>Pinned chronicles will now be pinned (bypasses year selection, unless the pin has expired), BetterCompass Exclusive.</li>
+                <li>You can now see the creation date of the chronicle.</li>
+                <li>The chronicles section will now show a loading spinner when loading.</li>
               </ul>
               <small
                 >BetterCompass version {{ $store.state.versioning.version }},

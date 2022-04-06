@@ -51,7 +51,7 @@
                   Name:
                   <b>{{ user.userFullName }}</b
                   ><br />
-                  Student ID (Username): <b>{{ user.userSussiID }}</b
+                  {{this.baseRole()}} ID (Username): <b>{{ user.userSussiID }}</b
                   ><br />
                   Display Code: <b>{{ user.userDisplayCode }}</b
                 ><br />
@@ -64,7 +64,7 @@
                     Email: <b>{{ user.userEmail }}</b>
                     <br />
                   </template>
-                  <template v-if="getStaff(user.userId).ce">
+                  <template v-if="getStaff(user.userId)?.ce">
                     Staff Email: <b>{{ getStaff(user.userId).ce }}</b>
                     <br />
                   </template>
@@ -117,6 +117,9 @@
       </v-col>
       <v-col>
         <v-card color="card" class="rounded-xl" elevation="7">
+          <v-overlay :value="chronicle.loading" absolute>
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay>
           <v-toolbar color="toolbar">
             <v-toolbar-title>Chronicle</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -136,6 +139,69 @@
           <v-container>
             <v-card
               color="card"
+              v-for="item in chronicle.pinned"
+              :key="item.id"
+              class="mb-3"
+            >
+              <v-toolbar color="toolbar">
+                <v-avatar @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer" large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?forceInstance=' + $store.state.school.instance" /> </v-avatar>
+                <v-toolbar-title
+                >
+                  {{ item.chronicleEntries[0].templateName }}
+                  <div class="subheading subtitle-1">
+                    Recorded by: <span @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer">{{ getStaff(item.chronicleEntries[0].userIdCreator)?.n }}</span>, on {{ $date(item.chronicleEntries[0].createdTimestamp).format('MMMM Do, YYYY') }}
+                  </div>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-chip
+                  color="indigo"
+                  class="mr-2"
+                  @click="
+                    chronicle.selected = item
+                    chronicle.info = true
+                  "
+                >Info</v-chip
+                >
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-on="on" v-bind="attrs">
+                      <div v-on="on">
+                        <v-chip
+                          disabled
+                          style="opacity: 1"
+                          @click="
+                    chronicle.selected = item
+                    chronicle.info = true
+                  "
+                        ><v-icon small>mdi-pin-outline</v-icon></v-chip
+                        >
+                      </div>
+                    </div>
+                  </template>
+                  <span v-if="item.chronicleEntries[0].attendees[0].pinExpiry">
+                    This chronicle is pinned until: {{ $date(item.chronicleEntries[0].attendees[0].pinExpiry).format('MMMM Do YYYY') }}) }}
+                  </span>
+                  <span v-else>
+                    This pin has no expiry
+                  </span>
+                </v-tooltip>
+              </v-toolbar>
+              <v-container>
+                <div
+                  v-for="input in item.chronicleEntries[0].inputFields"
+                  :key="input.id"
+                >
+                  <template v-if="JSONExtract(input.value).length">
+                    {{ getJSON(input.value) }}
+                  </template>
+                  <template v-else>
+                    {{ input.value }}
+                  </template>
+                </div>
+              </v-container>
+            </v-card>
+            <v-card
+              color="card"
               v-for="item in chronicle.items"
               :key="item.id"
               class="mb-3"
@@ -146,7 +212,7 @@
                   >
                   {{ item.chronicleEntries[0].templateName }}
                   <div class="subheading subtitle-1">
-                    Recorded by: <span @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer">{{ getStaff(item.chronicleEntries[0].userIdCreator).n }}</span>
+                    Recorded by: <span @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer">{{ getStaff(item.chronicleEntries[0].userIdCreator)?.n }}</span>, on {{ $date(item.chronicleEntries[0].createdTimestamp).format('MMMM Do, YYYY') }}
                   </div>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -189,6 +255,9 @@ export default {
   data() {
     return {
       chronicle: {
+        loading: true,
+        loadingPinned: true,
+        pinned: [],
         users: [],
         years: [],
         info: false,
@@ -202,6 +271,18 @@ export default {
     }
   },
   methods: {
+    baseRole() {
+      const userBaseRole = [
+        "Guest",
+        "Student",
+        "Staff",
+        "Parent",
+        "Admin",
+        "Visitor",
+        "Not Authenticated"
+      ]
+      return userBaseRole[this.user.userRole || 6]
+    },
     getStaff(id) {
       const user = this.chronicle.users.find(staff => staff.id === id)
       if(user?.n) {
@@ -268,7 +349,36 @@ export default {
     JSONExtract(str) {
       return JSONExtract(str)
     },
+    getAllChronicles() {
+      this.chronicle.loadingPinned = true
+      this.axios
+        .post("/Services/ChronicleV2.svc/GetUserChronicleFeed", {
+          targetUserId: this.$route.params.id,
+          start: this.chronicle.offset,
+          startDate: this.$date("01-01-2016").startOf("year").format(),
+          endDate: this.$date().endOf("year").format(),
+          pageSize: 10000,
+          filterCategoryIds: [
+            2, 16, 3, 11, 4, 9, 26, 10, 5, 29, 27, 1, 8, 14, 24, 23, 13, 15,
+            20, 22, 25, 19, 12, 6, 28, 21, 7, 17
+          ],
+          asParent: true,
+          page: this.chronicle.page,
+          limit: 10000
+        })
+        .then((res) => {
+          // find all in res.data.d.data that have chronicleEntries[0].attendees[0].pinToProfile
+          this.chronicle.pinned = res.data.d.data.filter(chronicle => {
+            if(chronicle.chronicleEntries[0].attendees[0].pinToProfile && this.$date(chronicle.chronicleEntries[0].attendees[0].pinExpiry || "01-01-9999").isAfter(this.$date())) {
+              console.log(chronicle)
+              return chronicle
+            }
+          })
+          this.chronicle.loadingPinned = false
+        })
+    },
     getChronicle() {
+      this.chronicle.loading = true
       this.axios
         .post("/Services/ChronicleV2.svc/GetUserChronicleFeed", {
           targetUserId: this.$route.params.id,
@@ -286,6 +396,7 @@ export default {
         })
         .then((res) => {
           this.chronicle.items = res.data.d.data
+          this.chronicle.loading = false
         })
     },
     getJSON(json) {
@@ -300,7 +411,7 @@ export default {
     this.getAllStaff()
     this.generateYears()
     this.getChronicle()
-    console.log(this.user)
+    this.getAllChronicles()
   },
   watch: {
     "chronicle.year"() {

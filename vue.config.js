@@ -2,6 +2,15 @@ const WebpackAutoInject = require("webpack-auto-inject-version")
 const Dotenv = require("dotenv-webpack")
 
 module.exports = {
+  chainWebpack: config => {
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .tap(options => {
+        options.compiler = require('vue-template-babel-compiler')
+        return options
+      })
+  },
   productionSourceMap: false,
   configureWebpack: {
     plugins: [
