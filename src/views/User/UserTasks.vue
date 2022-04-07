@@ -50,6 +50,7 @@
           <v-tabs background-color="card">
             <v-tab> Details </v-tab>
             <v-tab> Feedback </v-tab>
+            <v-tab v-if="selectedTask.rubric"> Rubric </v-tab>
             <v-tab-item
               :style="
                 'background-color: ' +
@@ -499,6 +500,59 @@
                 </v-col>
               </v-row>
             </v-tab-item>
+            <v-tab-item
+              v-if="selectedTask.rubric"
+              :style="
+                'background-color: ' +
+                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
+                  .card
+              ">
+              <v-card
+                color="card"
+                elevation="3"
+                class="ma-2 rounded-xl"
+                v-if="
+                      selectedTask.rubric
+                    "
+              >
+                <v-toolbar color="toolbar">
+                  <v-toolbar-title> Rubric </v-toolbar-title>
+                </v-toolbar>
+                <v-container>
+                  <v-data-table
+                    :headers="rubricHeaders"
+                    :items="rubricItems"
+                    style="white-space: pre-wrap"
+                    class="elevation-1"
+                    :style="
+                'background-color: ' +
+                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
+                  .card
+              "
+                  >
+                    <template
+                      v-slot:body="{ items }"
+                    >
+                      <tbody>
+                      <tr
+                        v-for="(item, index) in items"
+                        :key="item.name"
+                      >
+                        <td><b>{{ item.criteria }}</b></td>
+                        <td v-for="entity in removeCriteria(item)" :key="entity.id">
+                          <template>
+                            <span v-for="content in entity" :key="content.description" :class="{rubricGranted: selectedTask.students[0]?.rubricResults[index]?.rubricGradingScaleId === content.gradingScaleId}">
+                              &bullet;&nbsp;{{content.description}}<br><br>
+                            </span>
+                          </template>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </template>
+                  </v-data-table>
+                </v-container>
+              </v-card>
+            </v-tab-item>
           </v-tabs>
         </v-container>
       </v-card>
@@ -527,6 +581,9 @@
           <v-chip-group column>
             <v-chip color="red" v-if="item.important">
               <v-icon>mdi-alert-octagon-outline </v-icon> Important
+            </v-chip>
+            <v-chip color="blue" v-if="item.rubricWikiNodeIds">
+              <v-icon>mdi-format-list-bulleted </v-icon> Rubric
             </v-chip>
           </v-chip-group>
         </template>
@@ -565,6 +622,15 @@ export default {
       tasks: [],
       dialog: false,
       loading: true,
+      rubricItems: [],
+      rubricHeaders: [
+        {
+          text: "Criteria",
+          value: "criteria",
+          width: "13%",
+          sortable: false
+        }
+      ],
       upload: {
         file: null,
         loading: false,
@@ -617,6 +683,10 @@ export default {
     }
   },
   methods: {
+    removeCriteria(items) {
+      delete items.criteria
+      return items
+    },
     getGradingSchemeLength(gradingItem) {
       const scheme = this.gradingSchemes.find(
         (scheme) => scheme.measureUniqueId === gradingItem.measureUniqueId
@@ -744,6 +814,7 @@ export default {
       this.selectedTask = task
       // only supports single rubric for now, no lesson plan for multiple available.
       if (task.rubricWikiNodeIds) {
+        this.loading = true
         this.axios
           .post("/Services/Rubrics.svc/GetRubric", {
             id: null,
@@ -752,9 +823,28 @@ export default {
           .then((res) => {
             this.loading = false
             this.selectedTask.rubric = res.data.d
+            this.rubricItems = res.data.d.criteria.map((item) => {
+              let object = {
+                criteria: item.name
+              }
+              item.gradingScales.forEach((scale) => {
+                object[scale.name] = scale.contentDescriptors.map((descriptor) => {
+                  return descriptor
+                })
+              })
+              return object
+            })
+            this.rubricHeaders.push(...this.selectedTask.rubric.criteria[0].gradingScales.map((item) => {
+              return {
+                text: item.name,
+                value: "value-" + item.ordinal,
+                sortable: false
+              }
+            }))
             this.dialog = true
           })
       } else {
+
         this.dialog = true
       }
     },
@@ -910,4 +1000,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.rubricGranted {
+  color: #66BB6A;
+}
+</style>

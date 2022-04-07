@@ -527,6 +527,9 @@
               <v-chip color="red" v-if="item.important">
                 <v-icon>mdi-alert-octagon-outline </v-icon> Important
               </v-chip>
+              <v-chip color="blue" v-if="item.rubricWikiNodeIds">
+                <v-icon>mdi-format-list-bulleted </v-icon> Rubric
+              </v-chip>
             </v-chip-group>
           </template>
           <template v-slot:item.status="{ item }">
@@ -793,7 +796,6 @@ export default {
                 criteria: item.name
               }
               item.gradingScales.forEach((scale) => {
-                // all content descriptors into designated object
                 object[scale.name] = scale.contentDescriptors.map((descriptor) => {
                   return descriptor
                 })
