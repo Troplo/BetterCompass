@@ -43,7 +43,7 @@ accounts.
 - [x] Responding to feedback
 - [x] Rubric
 - [x] Viewing learning task details, such as attachments, description, etc.
-- [ ] Viewing tags (e.g. "Assessment", "Assignment", etc)
+- [x] Viewing tags (e.g. "Assessment", "Assignment", etc)
 
 #### Roll
 
@@ -69,7 +69,7 @@ accounts.
 
 - [x] Event list
 - [x] Get event details
-- [ ] Download event resources
+- [x] Download event resources
 
 ### Home
 

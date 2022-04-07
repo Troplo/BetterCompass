@@ -530,6 +530,9 @@
             <v-chip color="blue" v-if="item.rubricWikiNodeIds">
               <v-icon>mdi-format-list-bulleted </v-icon> Rubric
             </v-chip>
+            <v-chip :color="getCategory(item).color" v-if="getCategory(item)">
+              {{ getCategory(item).categoryName }}
+            </v-chip>
           </v-chip-group>
         </template>
         <template v-slot:item.status="{ item }">
@@ -628,6 +631,23 @@ export default {
     }
   },
   methods: {
+    getCategories() {
+      this.axios.post("/Services/LearningTasks.svc/GetAllTaskCategories", {
+        start: 0
+      }).then((res) => {
+        this.categories = res.data.d
+      })
+    },
+    getCategory(item) {
+      const category = this.categories.find(
+        category => category.categoryId === item.categoryId
+      )
+      const colors = ["green", "indigo", "orange", "blue", "red"]
+      return {
+        color: colors[category.categoryId - 1],
+        ...category
+      }
+    },
     rubricGranted(content) {
       const result = this.selectedTask.students[0].rubricResults.find(
         result => result.rubricGradingScaleId === content.gradingScaleId
@@ -954,6 +974,7 @@ export default {
   mounted() {
     this.getLearningSchemes()
     this.getLearningTasks()
+    this.getCategories()
   }
 }
 </script>
