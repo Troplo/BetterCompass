@@ -405,61 +405,6 @@
                       </v-simple-table>
                     </v-container>
                   </v-card>
-                  <v-card
-                    color="card"
-                    elevation="3"
-                    class="ma-2"
-                    v-if="selectedTask.rubric"
-                  >
-                    <v-toolbar color="toolbar">
-                      <v-toolbar-title> Rubric </v-toolbar-title>
-                    </v-toolbar>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12" sm="6">
-                          <v-card-text>
-                            <!-- <v-list>
-                              <v-data-table
-                                  :headers="selectedTask.rubric.criteria"
-                                  :items="selectedTask.rubric.criteria"
-                                  :single-expand="singleExpand"
-                                  :expanded.sync="expanded"
-                                  item-key="name"
-                                  show-expand
-                                  class="elevation-1"
-                              >
-                                <template v-slot:top>
-                                  <v-toolbar flat>
-                                    <v-toolbar-title>Expandable Table</v-toolbar-title>
-                                    <v-spacer></v-spacer>
-                                    <v-switch
-                                        v-model="singleExpand"
-                                        label="Single expand"
-                                        class="mt-2"
-                                    ></v-switch>
-                                  </v-toolbar>
-                                </template>
-                                <template v-slot:expanded-item="{ headers, item }">
-                                  <td :colspan="headers.length">
-                                    More info about {{ item.name }}
-                                  </td>
-                                </template>
-                              </v-data-table>
-                              <v-list-item v-for="criteria in selectedTask.rubric.criteria" :key="criteria.id">
-                                <v-list-item-title>
-                                  {{criteria.name}}
-                                </v-list-item-title>
-                              </v-list-item>
-                            </v-list>-->
-                          </v-card-text>
-                        </v-col>
-                      </v-row>
-                      <v-alert type="info">
-                        Rubric is coming soon!<br />This task has a rubric that
-                        can be accessed via real Compass.
-                      </v-alert>
-                    </v-container>
-                  </v-card>
                 </v-col>
                 <v-col>
                   <v-card color="card" class="ma-2 rounded-xl">
@@ -812,6 +757,13 @@ export default {
     taskDialog(task) {
       this.selectedTask = null
       this.selectedTask = task
+      this.rubricItems = []
+      this.rubricHeaders = [{
+        text: "Criteria",
+        value: "criteria",
+        width: "13%",
+        sortable: false
+      }]
       // only supports single rubric for now, no lesson plan for multiple available.
       if (task.rubricWikiNodeIds) {
         this.loading = true
