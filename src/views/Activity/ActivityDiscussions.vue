@@ -22,7 +22,7 @@
                         'full',
                         'square'
                       ) +
-                      '?forceInstance=' +
+                      '?compassInstance=' +
                       $store.state.school.instance
                     "
                   />
@@ -91,7 +91,7 @@
                         'full',
                         'square'
                       ) +
-                      '?forceInstance=' +
+                      '?compassInstance=' +
                       $store.state.school.instance
                     "
                   />
@@ -127,7 +127,7 @@
                             'full',
                             'square'
                           ) +
-                          '?forceInstance=' +
+                          '?compassInstance=' +
                           $store.state.school.instance
                         "
                       />

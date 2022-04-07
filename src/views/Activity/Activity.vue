@@ -59,7 +59,7 @@
         </v-tab>
       </v-tabs>
       <v-container v-if="!activity.RunningStatus">
-        <v-alert type="info" class="mx-5">
+        <v-alert type="info" class="mx-5" text>
           This session has been cancelled!
         </v-alert>
       </v-container>
@@ -103,11 +103,11 @@ export default {
               .replaceAll(/https:(.*)\.compass\.education/g, "")
               .replaceAll(
                 `<img src="/Services/FileAssets.svc/DownloadFile?`,
-                `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`
+                `<img src="/Services/FileAssets.svc/DownloadFile?compassInstance=${this.$store.state.school.instance}&`
               )
               .replaceAll(
                 `<a href="/Services/FileAssets.svc/DownloadFile?`,
-                `<a href="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`
+                `<a href="/Services/FileAssets.svc/DownloadFile?compassInstance=${this.$store.state.school.instance}&`
               )
           })
           .catch(() => {

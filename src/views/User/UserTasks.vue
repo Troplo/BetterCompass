@@ -110,7 +110,7 @@
                                   attachment.id +
                                   '&originalFileName=' +
                                   attachment.fileName +
-                                  '&forceInstance=' +
+                                  '&compassInstance=' +
                                   $store.state.school.instance
                                 "
                               >
@@ -261,7 +261,7 @@
                                       userSubmission.fileId +
                                       '&originalFileName=' +
                                       userSubmission.fileName +
-                                      '&forceInstance=' +
+                                      '&compassInstance=' +
                                       $store.state.school.instance
                                     "
                                     v-if="
@@ -280,7 +280,7 @@
                                       userSubmission.fileId +
                                       '&originalFileName=' +
                                       userSubmission.fileName +
-                                      '&forceInstance=' +
+                                      '&compassInstance=' +
                                       $store.state.school.instance
                                     "
                                     v-if="

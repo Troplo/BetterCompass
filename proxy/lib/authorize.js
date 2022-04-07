@@ -15,7 +15,7 @@ module.exports = function (req, res, next) {
             Cookie: req.headers.cookie,
             compassInstance:
               req.header("compassInstance") ||
-              req.query.forceInstance ||
+              req.query.compassInstance ||
               "devices",
             compassSchoolId: req.header("compassSchoolId")
           }
@@ -29,7 +29,7 @@ module.exports = function (req, res, next) {
               compassUserId: req.compassUser.userId,
               instance:
                 req.header("compassInstance") ||
-                req.query.forceInstance ||
+                req.query.compassInstance ||
                 "devices"
             },
             include: [
@@ -54,7 +54,7 @@ module.exports = function (req, res, next) {
               displayCode: response.data.d.data.displayCode,
               instance:
                 req.header("compassInstance") ||
-                req.query.forceInstance ||
+                req.query.compassInstance ||
                 "unknown",
               settings: {},
               compassUserHash: response.data.d.data.userHash,

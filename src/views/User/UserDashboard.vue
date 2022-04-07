@@ -144,7 +144,7 @@
               class="mb-3"
             >
               <v-toolbar color="toolbar">
-                <v-avatar @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer" large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?forceInstance=' + $store.state.school.instance" /> </v-avatar>
+                <v-avatar @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer" large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?compassInstance=' + $store.state.school.instance" /> </v-avatar>
                 <v-toolbar-title
                 >
                   {{ item.chronicleEntries[0].templateName }}
@@ -207,7 +207,7 @@
               class="mb-3"
             >
               <v-toolbar color="toolbar">
-                <v-avatar @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer" large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?forceInstance=' + $store.state.school.instance" /> </v-avatar>
+                <v-avatar @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer" large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?compassInstance=' + $store.state.school.instance" /> </v-avatar>
                 <v-toolbar-title
                   >
                   {{ item.chronicleEntries[0].templateName }}

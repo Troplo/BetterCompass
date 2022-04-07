@@ -83,7 +83,7 @@
                         selected.content.fileAssetId +
                         '&originalFileName=' +
                         selected.content.filename +
-                        '&forceInstance=' +
+                        '&compassInstance=' +
                         $store.state.school.instance
                       "
                     >
@@ -159,11 +159,11 @@ export default {
               .replaceAll(/https:(.*)\.compass\.education/g, "")
               .replaceAll(
                 `<img src="/Services/FileAssets.svc/DownloadFile?`,
-                `<img src="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`
+                `<img src="/Services/FileAssets.svc/DownloadFile?compassInstance=${this.$store.state.school.instance}&`
               )
               .replaceAll(
                 `<a href="/Services/FileAssets.svc/DownloadFile?`,
-                `<a href="/Services/FileAssets.svc/DownloadFile?forceInstance=${this.$store.state.school.instance}&`
+                `<a href="/Services/FileAssets.svc/DownloadFile?compassInstance=${this.$store.state.school.instance}&`
               )
           })
           .catch(() => {

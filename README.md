@@ -41,7 +41,7 @@ accounts.
 - [x] Uploading submission
 - [x] Viewing text feedback
 - [x] Responding to feedback
-- [ ] Rubric
+- [x] Rubric
 - [x] Viewing learning task details, such as attachments, description, etc.
 - [ ] Viewing tags (e.g. "Assessment", "Assignment", etc)
 

@@ -18,7 +18,7 @@
         <template v-slot:item.actions="{ item }">
           <v-btn
             icon
-            :href="item.l + '&forceInstance=' + $store.state.school.instance"
+            :href="item.l + '&compassInstance=' + $store.state.school.instance"
           >
             <v-icon>mdi-download</v-icon>
           </v-btn>

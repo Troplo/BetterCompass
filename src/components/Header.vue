@@ -33,6 +33,7 @@
                   v-model="feedback.text"
                   label="Enter your Feedback"
                   required
+                  @keyup.enter="submitFeedback"
                 ></v-text-field>
               </v-col>
               <small
@@ -470,8 +471,7 @@ export default {
         .post("/api/v1/feedback", {
           text: this.feedback.text,
           starRating: this.feedback.rating,
-          route: this.feedback.route,
-          sussiId: this.$store.state.user.username
+          route: this.feedback.route
         })
         .then(() => {
           this.feedback.text = ""

@@ -24,7 +24,7 @@ router.use(function (req, res, next) {
 
 const compassRouter = function (req) {
   const instance =
-    req.header("compassInstance") || req.query.forceInstance || "devices"
+    req.header("compassInstance") || req.query.compassInstance || "devices"
   console.log("Instance: " + instance)
   // this is to avoid the ability to proxy non Compass sites through the proxy.
   if (instance.match(/^[a-zA-Z0-9-]+$/)) {

@@ -9,12 +9,14 @@ The BetterCompass frontend automatically sends this information for you.
 The Compass instance can be passed to the proxy in 2 ways:
 
 - `compassInstance: "compass-instance-name"`: A header in the request.
-- `?forceInstance=compass-instance-name`: A querystring parameter in the
+- `?compassInstance=compass-instance-name`: A querystring parameter in the
   request, useful for downloads and other requests that cannot use the header.
+- `?forceInstance=compass-instance-name`: A querystring parameter in the
+    request, deprecated.
 
 The proxy validates the instance name to ensure that it resolves to
 compass.education, and not a foreign domain, however it doesn't validate whether
-the school exists, and allows for \*.compass.education, validating it will be
+the school exists, and allows for *.compass.education, validating it will be
 too slow unless cached, however this isn't much of a problem, it also doesn't
 support legacy jdlf.com.au hostnames, but those are unlikely to be used anymore.
 

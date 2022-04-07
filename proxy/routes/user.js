@@ -87,7 +87,7 @@ router.post("/create", async (req, res, next) => {
             Cookie: req.headers.cookie,
             compassInstance:
               req.header("compassInstance") ||
-              req.query.forceInstance ||
+              req.query.compassInstance ||
               "devices",
             compassSchoolId: req.header("compassSchoolId")
           }
@@ -100,7 +100,7 @@ router.post("/create", async (req, res, next) => {
           displayCode: response.data.d.data.displayCode,
           instance:
             req.header("compassInstance") ||
-            req.query.forceInstance ||
+            req.query.compassInstance ||
             "unknown",
           settings: {},
           compassUserHash: response.data.d.data.userHash,
@@ -134,7 +134,7 @@ router.post("/create/alternate", async (req, res, next) => {
             Cookie: req.headers.cookie,
             compassInstance:
               req.header("compassInstance") ||
-              req.query.forceInstance ||
+              req.query.compassInstance ||
               "devices",
             compassSchoolId: req.header("compassSchoolId")
           }
@@ -147,7 +147,7 @@ router.post("/create/alternate", async (req, res, next) => {
           displayCode: response.data.d.data.displayCode,
           instance:
             req.header("compassInstance") ||
-            req.query.forceInstance ||
+            req.query.compassInstance ||
             "unknown",
           settings: {},
           compassUserHash: response.data.d.data.userHash,

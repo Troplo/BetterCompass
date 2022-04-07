@@ -11,9 +11,11 @@ const cookieParser = require("cookie-parser")
 app.use(cookieParser())
 app.set("trust proxy", true)
 const { Feedback } = require("./models")
+const auth = require("./lib/authorize.js")
+
 const compassRouter = function (req) {
   const instance =
-    req.header("compassInstance") || req.query.forceInstance || "devices"
+    req.header("compassInstance") || req.query.compassInstance || req.query.forceInstance || "devices"
   console.log("Request from instance: " + instance)
   // this is to avoid the ability to proxy non Compass sites through the proxy.
   if (instance.match(/^[a-zA-Z0-9-]+$/)) {
@@ -118,26 +120,22 @@ app.get("/api/v1/state", async (req, res) => {
   })
 })
 
-app.post("/api/v1/feedback", async (req, res) => {
+app.post("/api/v1/feedback", auth, async (req, res, next) => {
   try {
     await Feedback.create({
       feedbackText: req.body.text,
       starRating: req.body.starRating,
       debug: {
-        client: req.body.debug,
-        ip: req.header("x-real-ip") || req.ip
+        client: req.body.debug
       },
       route: req.body.route,
-      userId: req.body.sussiId,
+      userId: req.user.id,
       tenant:
-        req.header("compassInstance") || req.query.forceInstance || "unknown"
+        req.header("compassInstance") || req.query.compassInstance || req.query.forceInstance || "unknown"
     })
     res.sendStatus(204)
   } catch (e) {
-    res.status(500)
-    res.json({
-      error: e.message
-    })
+    next(e)
   }
 })
 

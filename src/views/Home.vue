@@ -380,7 +380,7 @@
                       :key="attachment.id"
                       :href="
                         attachment.UiLink +
-                        '&forceInstance=' +
+                        '&compassInstance=' +
                         $store.state.school.instance
                       "
                       download

@@ -241,7 +241,7 @@
                         <img
                           :src="
                             item.UserImageUrl +
-                            '?forceInstance=' +
+                            '?compassInstance=' +
                             $store.state.school.instance
                           "
                         /> </v-avatar
@@ -271,7 +271,7 @@
                       color="indigo"
                       :href="
                         download.UiLink +
-                        '&forceInstance=' +
+                        '&compassInstance=' +
                         $store.state.school.instance
                       "
                     >
@@ -391,13 +391,13 @@ export default {
             "full",
             "square"
           ) +
-          "?forceInstance=" +
+          "?compassInstance=" +
           this.$store.state.school.instance
         )
       } else {
         return (
           this.activity.managers[0].ManagerPhotoPath.replace("full", "square") +
-          "?forceInstance=" +
+          "?compassInstance=" +
           this.$store.state.school.instance
         )
       }
