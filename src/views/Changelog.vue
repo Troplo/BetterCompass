@@ -6,6 +6,16 @@
           <v-toolbar-title>BetterCompass Changelog</v-toolbar-title>
         </v-toolbar>
         <v-container>
+          <v-card-title> 07/04/2022 </v-card-title>
+          <ul>
+            <li>Fixed rubric not showing teacher results.</li>
+            <li>Fixed missing rubric tab on User Learning Tasks.</li>
+            <li>Added rubric learning task tag, and Compass tags (Assessment, Assignment, etc).</li>
+            <li>Added past events to User Events.</li>
+            <li>Added event resources to User Events.</li>
+            <li>Event descriptions are now sanitized.</li>
+          </ul>
+
           <v-card-title> 06/04/2022 </v-card-title>
           <ul>
             <li>BetterCompass now has most, if not all of the student features added.</li>

@@ -451,13 +451,14 @@
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-container>
-              <v-card-title> 06/04/2022 </v-card-title>
+              <v-card-title> 07/04/2022 </v-card-title>
               <ul>
-                <li>BetterCompass now has most, if not all of the student features added.</li>
-                <li>You can now see the Rubric for Learning Tasks (in dedicated tab).</li>
-                <li>Pinned chronicles will now be pinned (bypasses year selection, unless the pin has expired), BetterCompass Exclusive.</li>
-                <li>You can now see the creation date of the chronicle.</li>
-                <li>The chronicles section will now show a loading spinner when loading.</li>
+                <li>Fixed rubric not showing teacher results.</li>
+                <li>Fixed missing rubric tab on User Learning Tasks.</li>
+                <li>Added rubric learning task tag, and Compass tags (Assessment, Assignment, etc).</li>
+                <li>Added past events to User Events.</li>
+                <li>Added event resources to User Events.</li>
+                <li>Event descriptions are now sanitized.</li>
               </ul>
               <small
                 >BetterCompass version {{ $store.state.versioning.version }},
