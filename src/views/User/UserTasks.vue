@@ -480,13 +480,13 @@
                     >
                       <tbody>
                       <tr
-                        v-for="(item, index) in items"
+                        v-for="item in items"
                         :key="item.name"
                       >
                         <td><b>{{ item.criteria }}</b></td>
                         <td v-for="entity in removeCriteria(item)" :key="entity.id">
                           <template>
-                            <span v-for="content in entity" :key="content.description" :class="{rubricGranted: selectedTask.students[0]?.rubricResults[index]?.rubricGradingScaleId === content.gradingScaleId}">
+                            <span v-for="content in entity" :key="content.description" :class="{rubricGranted: rubricGranted(content)}">
                               &bullet;&nbsp;{{content.description}}<br><br>
                             </span>
                           </template>
@@ -628,10 +628,15 @@ export default {
     }
   },
   methods: {
+    rubricGranted(content) {
+      const result = this.selectedTask.students[0].rubricResults.find(
+        result => result.rubricGradingScaleId === content.gradingScaleId
+      )
+      return !!result
+    },
     removeCriteria(items) {
-      let newItems = items
-      delete newItems.criteria
-      return newItems
+      delete items.criteria
+      return items
     },
     getGradingSchemeLength(gradingItem) {
       const scheme = this.gradingSchemes.find(
