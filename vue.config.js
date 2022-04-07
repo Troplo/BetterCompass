@@ -11,7 +11,7 @@ module.exports = {
         return options
       })
   },
-  productionSourceMap: false,
+  productionSourceMap: true,
   configureWebpack: {
     plugins: [
       new Dotenv(),

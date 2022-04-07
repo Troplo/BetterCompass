@@ -629,8 +629,9 @@ export default {
   },
   methods: {
     removeCriteria(items) {
-      delete items.criteria
-      return items
+      let newItems = items
+      delete newItems.criteria
+      return newItems
     },
     getGradingSchemeLength(gradingItem) {
       const scheme = this.gradingSchemes.find(
