@@ -96,11 +96,6 @@ export default {
     return {
       selected: [2],
       items: [],
-      files: [
-        { text: "Landing_page.zip", icon: " mdi-cloud-upload" },
-        { text: "Requirements.pdf", icon: " mdi-cloud-upload" },
-        { text: "Uwagi.docx", icon: " mdi-cloud-upload" }
-      ],
       panel: [2],
 
       password: "Password",
@@ -111,16 +106,6 @@ export default {
     }
   },
   methods: {
-    sendMessage() {
-      this.resetIcon()
-      this.clearMessage()
-    },
-    clearMessage() {
-      this.message = ""
-    },
-    resetIcon() {
-      this.iconIndex = 0
-    },
     getChats() {
       this.axios.get("/api/v1/communications").then((response) => {
         this.items = response.data
