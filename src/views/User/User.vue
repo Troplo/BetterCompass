@@ -11,8 +11,8 @@
             {{ user.userFormGroup }} ({{ user.userHouse }}) -
             {{ user.userYearLevel }}
             <v-chip :color="userStatus.color">
-              <v-icon>{{userStatus.icon}}</v-icon>
-              {{userStatus.status}}
+              <v-icon>{{ userStatus.icon }}</v-icon>
+              {{ userStatus.status }}
             </v-chip>
           </h1>
           <v-tabs background-color="card">
@@ -113,7 +113,7 @@ export default {
           status: "On Hold"
         }
       ]
-      return userStatus[this.user.userStatus -1]
+      return userStatus[this.user.userStatus - 1]
     }
   },
   methods: {

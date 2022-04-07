@@ -51,10 +51,11 @@
                   Name:
                   <b>{{ user.userFullName }}</b
                   ><br />
-                  {{this.baseRole()}} ID (Username): <b>{{ user.userSussiID }}</b
+                  {{ this.baseRole() }} ID (Username):
+                  <b>{{ user.userSussiID }}</b
                   ><br />
                   Display Code: <b>{{ user.userDisplayCode }}</b
-                ><br />
+                  ><br />
                   <template v-if="$store.state.parent"
                     >Parent ID (SussiID):
                     <b>Configure parent linking in BetterCompass settings.</b
@@ -70,7 +71,7 @@
                   </template>
                   <template v-if="user.userDetails">
                     Age: <b>{{ user.userDetails }}</b
-                  ><br />
+                    ><br />
                   </template>
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
@@ -144,12 +145,45 @@
               class="mb-3"
             >
               <v-toolbar color="toolbar">
-                <v-avatar @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer" large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?compassInstance=' + $store.state.school.instance" /> </v-avatar>
-                <v-toolbar-title
+                <v-avatar
+                  @click="
+                    $router.push(
+                      '/user/' + item.chronicleEntries[0].userIdCreator
+                    )
+                  "
+                  style="cursor: pointer"
+                  large
+                  class="mr-3"
                 >
+                  <img
+                    :src="
+                      '/download/cdn/square/' +
+                      getStaff(item.chronicleEntries[0].userIdCreator).pv +
+                      '?compassInstance=' +
+                      $store.state.school.instance
+                    "
+                  />
+                </v-avatar>
+                <v-toolbar-title>
                   {{ item.chronicleEntries[0].templateName }}
                   <div class="subheading subtitle-1">
-                    Recorded by: <span @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer">{{ getStaff(item.chronicleEntries[0].userIdCreator)?.n }}</span>, on {{ $date(item.chronicleEntries[0].createdTimestamp).format('MMMM Do, YYYY') }}
+                    Recorded by:
+                    <span
+                      @click="
+                        $router.push(
+                          '/user/' + item.chronicleEntries[0].userIdCreator
+                        )
+                      "
+                      style="cursor: pointer"
+                      >{{
+                        getStaff(item.chronicleEntries[0].userIdCreator)?.n
+                      }}</span
+                    >, on
+                    {{
+                      $date(item.chronicleEntries[0].createdTimestamp).format(
+                        "MMMM Do, YYYY"
+                      )
+                    }}
                   </div>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -160,7 +194,7 @@
                     chronicle.selected = item
                     chronicle.info = true
                   "
-                >Info</v-chip
+                  >Info</v-chip
                 >
                 <v-tooltip top>
                   <template v-slot:activator="{ on, attrs }">
@@ -170,20 +204,23 @@
                           disabled
                           style="opacity: 1"
                           @click="
-                    chronicle.selected = item
-                    chronicle.info = true
-                  "
-                        ><v-icon small>mdi-pin-outline</v-icon></v-chip
+                            chronicle.selected = item
+                            chronicle.info = true
+                          "
+                          ><v-icon small>mdi-pin-outline</v-icon></v-chip
                         >
                       </div>
                     </div>
                   </template>
                   <span v-if="item.chronicleEntries[0].attendees[0].pinExpiry">
-                    This chronicle is pinned until: {{ $date(item.chronicleEntries[0].attendees[0].pinExpiry).format('MMMM Do YYYY') }}) }}
+                    This chronicle is pinned until:
+                    {{
+                      $date(
+                        item.chronicleEntries[0].attendees[0].pinExpiry
+                      ).format("MMMM Do YYYY")
+                    }}) }}
                   </span>
-                  <span v-else>
-                    This pin has no expiry
-                  </span>
+                  <span v-else> This pin has no expiry </span>
                 </v-tooltip>
               </v-toolbar>
               <v-container>
@@ -207,12 +244,45 @@
               class="mb-3"
             >
               <v-toolbar color="toolbar">
-                <v-avatar @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer" large class="mr-3"> <img :src="'/download/cdn/square/' + getStaff(item.chronicleEntries[0].userIdCreator).pv + '?compassInstance=' + $store.state.school.instance" /> </v-avatar>
-                <v-toolbar-title
-                  >
+                <v-avatar
+                  @click="
+                    $router.push(
+                      '/user/' + item.chronicleEntries[0].userIdCreator
+                    )
+                  "
+                  style="cursor: pointer"
+                  large
+                  class="mr-3"
+                >
+                  <img
+                    :src="
+                      '/download/cdn/square/' +
+                      getStaff(item.chronicleEntries[0].userIdCreator).pv +
+                      '?compassInstance=' +
+                      $store.state.school.instance
+                    "
+                  />
+                </v-avatar>
+                <v-toolbar-title>
                   {{ item.chronicleEntries[0].templateName }}
                   <div class="subheading subtitle-1">
-                    Recorded by: <span @click="$router.push('/user/' + item.chronicleEntries[0].userIdCreator)" style="cursor: pointer">{{ getStaff(item.chronicleEntries[0].userIdCreator)?.n }}</span>, on {{ $date(item.chronicleEntries[0].createdTimestamp).format('MMMM Do, YYYY') }}
+                    Recorded by:
+                    <span
+                      @click="
+                        $router.push(
+                          '/user/' + item.chronicleEntries[0].userIdCreator
+                        )
+                      "
+                      style="cursor: pointer"
+                      >{{
+                        getStaff(item.chronicleEntries[0].userIdCreator)?.n
+                      }}</span
+                    >, on
+                    {{
+                      $date(item.chronicleEntries[0].createdTimestamp).format(
+                        "MMMM Do, YYYY"
+                      )
+                    }}
                   </div>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -284,30 +354,38 @@ export default {
       return userBaseRole[this.user.userRole || 6]
     },
     getStaff(id) {
-      const user = this.chronicle.users.find(staff => staff.id === id)
-      if(user?.n) {
-        return this.chronicle.users.find(staff => staff.id === id)
+      const user = this.chronicle.users.find((staff) => staff.id === id)
+      if (user?.n) {
+        return this.chronicle.users.find((staff) => staff.id === id)
       } else {
-        this.axios.post("/Services/User.svc/GetUserDetailsBlobByUserId", {
-          userId: this.$store.state.user.userId,
-          targetUserId: id
-        }).then(response => {
-          this.chronicle.users.push({
-            id: response.data.d.userId,
-            n: response.data.d.userFullName,
-            pv: response.data.d.userSquarePhotoPath.replace("/download/cdn/square/", "") || "nopic",
-            status: response.data.d.userStatus
+        this.axios
+          .post("/Services/User.svc/GetUserDetailsBlobByUserId", {
+            userId: this.$store.state.user.userId,
+            targetUserId: id
           })
-          return this.chronicle.users.find(staff => staff.id === id)
-        })
+          .then((response) => {
+            this.chronicle.users.push({
+              id: response.data.d.userId,
+              n: response.data.d.userFullName,
+              pv:
+                response.data.d.userSquarePhotoPath.replace(
+                  "/download/cdn/square/",
+                  ""
+                ) || "nopic",
+              status: response.data.d.userStatus
+            })
+            return this.chronicle.users.find((staff) => staff.id === id)
+          })
       }
     },
     getAllStaff() {
-      this.axios.post("/Services/User.svc/GetAllStaff", {
-        start: 0
-      }).then((res) => {
-        this.chronicle.users = res.data.d
-      })
+      this.axios
+        .post("/Services/User.svc/GetAllStaff", {
+          start: 0
+        })
+        .then((res) => {
+          this.chronicle.users = res.data.d
+        })
     },
     generateYears() {
       const currentYear = this.$date().year()
@@ -359,8 +437,8 @@ export default {
           endDate: this.$date().endOf("year").format(),
           pageSize: 10000,
           filterCategoryIds: [
-            2, 16, 3, 11, 4, 9, 26, 10, 5, 29, 27, 1, 8, 14, 24, 23, 13, 15,
-            20, 22, 25, 19, 12, 6, 28, 21, 7, 17
+            2, 16, 3, 11, 4, 9, 26, 10, 5, 29, 27, 1, 8, 14, 24, 23, 13, 15, 20,
+            22, 25, 19, 12, 6, 28, 21, 7, 17
           ],
           asParent: true,
           page: this.chronicle.page,
@@ -368,8 +446,14 @@ export default {
         })
         .then((res) => {
           // find all in res.data.d.data that have chronicleEntries[0].attendees[0].pinToProfile
-          this.chronicle.pinned = res.data.d.data.filter(chronicle => {
-            if(chronicle.chronicleEntries[0].attendees[0].pinToProfile && this.$date(chronicle.chronicleEntries[0].attendees[0].pinExpiry || "01-01-9999").isAfter(this.$date())) {
+          this.chronicle.pinned = res.data.d.data.filter((chronicle) => {
+            if (
+              chronicle.chronicleEntries[0].attendees[0].pinToProfile &&
+              this.$date(
+                chronicle.chronicleEntries[0].attendees[0].pinExpiry ||
+                  "01-01-9999"
+              ).isAfter(this.$date())
+            ) {
               console.log(chronicle)
               return chronicle
             }
@@ -384,11 +468,15 @@ export default {
           targetUserId: this.$route.params.id,
           start: this.chronicle.offset,
           pageSize: 43,
-          startDate: this.$date("01-01-" + this.chronicle.year).startOf("year").format(),
-          endDate: this.$date("01-01-" + this.chronicle.year).endOf("year").format(),
+          startDate: this.$date("01-01-" + this.chronicle.year)
+            .startOf("year")
+            .format(),
+          endDate: this.$date("01-01-" + this.chronicle.year)
+            .endOf("year")
+            .format(),
           filterCategoryIds: [
-            2, 16, 3, 11, 4, 9, 26, 10, 5, 29, 27, 1, 8, 14, 24, 23, 13, 15,
-            20, 22, 25, 19, 12, 6, 28, 21, 7, 17
+            2, 16, 3, 11, 4, 9, 26, 10, 5, 29, 27, 1, 8, 14, 24, 23, 13, 15, 20,
+            22, 25, 19, 12, 6, 28, 21, 7, 17
           ],
           asParent: true,
           page: this.chronicle.page,

@@ -455,7 +455,10 @@
               <ul>
                 <li>Fixed rubric not showing teacher results.</li>
                 <li>Fixed missing rubric tab on User Learning Tasks.</li>
-                <li>Added rubric learning task tag, and Compass tags (Assessment, Assignment, etc).</li>
+                <li>
+                  Added rubric learning task tag, and Compass tags (Assessment,
+                  Assignment, etc).
+                </li>
                 <li>Added past events to User Events.</li>
                 <li>Added event resources to User Events.</li>
                 <li>Event descriptions are now sanitized.</li>

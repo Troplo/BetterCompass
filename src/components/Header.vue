@@ -80,7 +80,9 @@
         style="cursor: pointer"
         >BetterCompass</v-toolbar-title
       ><v-app-bar-nav-icon
-        v-if="!$vuetify.breakpoint.mobile && $store.state.site.release !== 'stable'"
+        v-if="
+          !$vuetify.breakpoint.mobile && $store.state.site.release !== 'stable'
+        "
         style="z-index: 1000"
         disabled
         >{{ $store.state.site.release }}</v-app-bar-nav-icon

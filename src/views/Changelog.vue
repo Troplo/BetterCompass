@@ -10,7 +10,10 @@
           <ul>
             <li>Fixed rubric not showing teacher results.</li>
             <li>Fixed missing rubric tab on User Learning Tasks.</li>
-            <li>Added rubric learning task tag, and Compass tags (Assessment, Assignment, etc).</li>
+            <li>
+              Added rubric learning task tag, and Compass tags (Assessment,
+              Assignment, etc).
+            </li>
             <li>Added past events to User Events.</li>
             <li>Added event resources to User Events.</li>
             <li>Event descriptions are now sanitized.</li>
@@ -18,11 +21,22 @@
 
           <v-card-title> 06/04/2022 </v-card-title>
           <ul>
-            <li>BetterCompass now has most, if not all of the student features added.</li>
-            <li>You can now see the Rubric for Learning Tasks (in dedicated tab).</li>
-            <li>Pinned chronicles will now be pinned (bypasses year selection, unless the pin has expired), BetterCompass Exclusive.</li>
+            <li>
+              BetterCompass now has most, if not all of the student features
+              added.
+            </li>
+            <li>
+              You can now see the Rubric for Learning Tasks (in dedicated tab).
+            </li>
+            <li>
+              Pinned chronicles will now be pinned (bypasses year selection,
+              unless the pin has expired), BetterCompass Exclusive.
+            </li>
             <li>You can now see the creation date of the chronicle.</li>
-            <li>The chronicles section will now show a loading spinner when loading.</li>
+            <li>
+              The chronicles section will now show a loading spinner when
+              loading.
+            </li>
           </ul>
 
           <v-card-title> 05/04/2022 </v-card-title>
@@ -30,11 +44,27 @@
             <li>BetterCompass is now considered stable!</li>
             <li>Improved QuickSwitch activation responsiveness.</li>
             <li>You can now select a year for user chronicles.</li>
-            <li>You can now see the correct staff name, and avatar for the associated chronicle (including inactive staff members, BetterCompass Exclusive).</li>
-            <li>You can now view your teacher's profile by clicking on their name on the class/subject page.</li>
-            <li>The profile page now handles user status properly (will now show Left, Inactive, etc if applicable instead of Active).</li>
-            <li>The profile page will now display the relevant staff email if applicable.</li>
-            <li>You can now view your teacher's profile by clicking on their name on a chronicle entry.</li>
+            <li>
+              You can now see the correct staff name, and avatar for the
+              associated chronicle (including inactive staff members,
+              BetterCompass Exclusive).
+            </li>
+            <li>
+              You can now view your teacher's profile by clicking on their name
+              on the class/subject page.
+            </li>
+            <li>
+              The profile page now handles user status properly (will now show
+              Left, Inactive, etc if applicable instead of Active).
+            </li>
+            <li>
+              The profile page will now display the relevant staff email if
+              applicable.
+            </li>
+            <li>
+              You can now view your teacher's profile by clicking on their name
+              on a chronicle entry.
+            </li>
           </ul>
 
           <v-card-title> 04/04/2022 </v-card-title>

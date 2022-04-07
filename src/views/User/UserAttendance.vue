@@ -201,10 +201,11 @@ export default {
         .then((res) => {
           this.loading = false
           this.attendanceSummary = res.data.d
-        }).catch(() => {
-        this.loading = false
-        this.$toast.error("The attendance summary could not be loaded.")
-      })
+        })
+        .catch(() => {
+          this.loading = false
+          this.$toast.error("The attendance summary could not be loaded.")
+        })
     },
     getHalfDaySummary() {
       this.axios
@@ -220,10 +221,11 @@ export default {
               title: item.amStatusDesc || "No data."
             }
           })
-        }).catch(() => {
-        this.loading = false
-        this.$toast.error("The attendance calendar could not be loaded.")
-      })
+        })
+        .catch(() => {
+          this.loading = false
+          this.$toast.error("The attendance calendar could not be loaded.")
+        })
     }
   },
   mounted() {

@@ -18,7 +18,10 @@ const cache = new InMemoryCache()
 import VueMatomo from "vue-matomo"
 import * as Sentry from "@sentry/vue"
 import { BrowserTracing } from "@sentry/tracing"
-if(process.env.NODE_ENV === "production" && JSON.parse(process.env.VUE_APP_SENTRY_ENABLED)) {
+if (
+  process.env.NODE_ENV === "production" &&
+  JSON.parse(process.env.VUE_APP_SENTRY_ENABLED)
+) {
   Sentry.init({
     Vue,
     dsn: process.env.VUE_APP_SENTRY_DSN,
@@ -35,7 +38,7 @@ if(process.env.NODE_ENV === "production" && JSON.parse(process.env.VUE_APP_SENTR
   })
 }
 
-if(JSON.parse(process.env.VUE_APP_MATOMO_ENABLED)) {
+if (JSON.parse(process.env.VUE_APP_MATOMO_ENABLED)) {
   Vue.use(VueMatomo, {
     // Configure your matomo server and site by providing
     host: process.env.VUE_APP_MATOMO_URL,

@@ -451,14 +451,13 @@
                 'background-color: ' +
                 $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
                   .card
-              ">
+              "
+            >
               <v-card
                 color="card"
                 elevation="3"
                 class="ma-2 rounded-xl"
-                v-if="
-                      selectedTask.rubric
-                    "
+                v-if="selectedTask.rubric"
               >
                 <v-toolbar color="toolbar">
                   <v-toolbar-title> Rubric </v-toolbar-title>
@@ -470,28 +469,36 @@
                     style="white-space: pre-wrap"
                     class="elevation-1"
                     :style="
-                'background-color: ' +
-                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
-                  .card
-              "
+                      'background-color: ' +
+                      $vuetify.theme.themes[
+                        $vuetify.theme.dark ? 'dark' : 'light'
+                      ].card
+                    "
                   >
-                    <template
-                      v-slot:body="{ items }"
-                    >
+                    <template v-slot:body="{ items }">
                       <tbody>
-                      <tr
-                        v-for="item in items"
-                        :key="item.name"
-                      >
-                        <td><b>{{ item.criteria }}</b></td>
-                        <td v-for="entity in removeCriteria(item)" :key="entity.id">
-                          <template>
-                            <span v-for="content in entity" :key="content.description" :class="{rubricGranted: rubricGranted(content)}">
-                              &bullet;&nbsp;{{content.description}}<br><br>
-                            </span>
-                          </template>
-                        </td>
-                      </tr>
+                        <tr v-for="item in items" :key="item.name">
+                          <td>
+                            <b>{{ item.criteria }}</b>
+                          </td>
+                          <td
+                            v-for="entity in removeCriteria(item)"
+                            :key="entity.id"
+                          >
+                            <template>
+                              <span
+                                v-for="content in entity"
+                                :key="content.description"
+                                :class="{
+                                  rubricGranted: rubricGranted(content)
+                                }"
+                              >
+                                &bullet;&nbsp;{{ content.description
+                                }}<br /><br />
+                              </span>
+                            </template>
+                          </td>
+                        </tr>
                       </tbody>
                     </template>
                   </v-data-table>
@@ -634,7 +641,7 @@ export default {
   methods: {
     getCategory(item) {
       const category = this.categories.find(
-        category => category.categoryId === item.categoryId
+        (category) => category.categoryId === item.categoryId
       )
       const colors = ["green", "indigo", "orange", "blue", "red"]
       return {
@@ -644,7 +651,7 @@ export default {
     },
     rubricGranted(content) {
       const result = this.selectedTask.students[0].rubricResults.find(
-        result => result.rubricGradingScaleId === content.gradingScaleId
+        (result) => result.rubricGradingScaleId === content.gradingScaleId
       )
       return !!result
     },
@@ -816,19 +823,25 @@ export default {
                 criteria: item.name
               }
               item.gradingScales.forEach((scale) => {
-                object[scale.name] = scale.contentDescriptors.map((descriptor) => {
-                  return descriptor
-                })
+                object[scale.name] = scale.contentDescriptors.map(
+                  (descriptor) => {
+                    return descriptor
+                  }
+                )
               })
               return object
             })
-            this.rubricHeaders.push(...this.selectedTask.rubric.criteria[0].gradingScales.map((item) => {
-              return {
-                text: item.name,
-                value: "value-" + item.ordinal,
-                sortable: false
-              }
-            }))
+            this.rubricHeaders.push(
+              ...this.selectedTask.rubric.criteria[0].gradingScales.map(
+                (item) => {
+                  return {
+                    text: item.name,
+                    value: "value-" + item.ordinal,
+                    sortable: false
+                  }
+                }
+              )
+            )
             this.dialog = true
           })
       } else {
@@ -950,11 +963,13 @@ export default {
         })
     },
     getCategories() {
-      this.axios.post("/Services/LearningTasks.svc/GetAllTaskCategories", {
-        start: 0
-      }).then((res) => {
-        this.categories = res.data.d
-      })
+      this.axios
+        .post("/Services/LearningTasks.svc/GetAllTaskCategories", {
+          start: 0
+        })
+        .then((res) => {
+          this.categories = res.data.d
+        })
     },
     getLearningTasks() {
       this.axios
@@ -992,7 +1007,7 @@ export default {
 
 <style scoped>
 .rubricGranted {
-  color: #66BB6A;
+  color: #66bb6a;
 }
 .v-simple-table > .v-data-table__wrapper > table > thead > tr > th,
 td {

@@ -123,8 +123,12 @@
             <v-col>
               <h3>Teacher</h3>
               <h1>
-                <router-link :to="'/user/' + activity.managers[0].ManagerUserId" style="text-decoration: none; color: inherit">
-                  <v-avatar large class="mr-3"> <img :src="getTeacherPhoto" /> </v-avatar
+                <router-link
+                  :to="'/user/' + activity.managers[0].ManagerUserId"
+                  style="text-decoration: none; color: inherit"
+                >
+                  <v-avatar large class="mr-3">
+                    <img :src="getTeacherPhoto" /> </v-avatar
                   >{{ activity.ManagerTextReadable }}
                 </router-link>
               </h1>

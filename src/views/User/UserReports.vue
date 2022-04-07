@@ -200,10 +200,11 @@ export default {
         .then((response) => {
           this.cycles = response.data.d
           this.selectedCycle = this.cycles[0].id
-        }).catch(() => {
-        this.loading = false
-        this.$toast.error("The report cycles could not be loaded.")
-      })
+        })
+        .catch(() => {
+          this.loading = false
+          this.$toast.error("The report cycles could not be loaded.")
+        })
     },
     getReports() {
       this.axios
@@ -230,10 +231,11 @@ export default {
             .then((res) => {
               this.progressReports = res.data.d
             })
-        }).catch(() => {
-        this.loading = false
-        this.$toast.error("The reports overview could not be loaded.")
-      })
+        })
+        .catch(() => {
+          this.loading = false
+          this.$toast.error("The reports overview could not be loaded.")
+        })
     }
   },
   mounted() {
