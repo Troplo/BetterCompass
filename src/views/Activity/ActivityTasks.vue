@@ -667,7 +667,9 @@ export default {
       const scheme = this.gradingSchemes.find(
         (scheme) => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
-      return scheme.options.length
+      return scheme.options.filter(
+        (scale) => scale.value !== "null"
+      ).length
     },
     getGradingScheme(gradingItem, result) {
       const scheme = this.gradingSchemes.find(

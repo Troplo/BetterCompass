@@ -675,7 +675,9 @@ export default {
       const scheme = this.gradingSchemes.find(
         (scheme) => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
-      return scheme.options.length
+      return scheme.options.filter(
+        (scale) => scale.value !== "null"
+      ).length
     },
     getGradingScheme(gradingItem, result) {
       const scheme = this.gradingSchemes.find(
@@ -970,7 +972,7 @@ export default {
           sort: '[{"property":"dueDateTimestamp","direction":"ASC"}]',
           start: this.offset,
           showHiddenTasks: true,
-          userId: this.$route.params.id
+          userId: this.$route.params.id || this.$store.state.user?.userId
         })
         .then((res) => {
           this.loading = false
