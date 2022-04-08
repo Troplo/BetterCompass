@@ -537,7 +537,7 @@
             <v-chip color="blue" v-if="item.rubricWikiNodeIds">
               <v-icon>mdi-format-list-bulleted </v-icon> Rubric
             </v-chip>
-            <v-chip :color="getCategory(item).color" v-if="getCategory(item)">
+            <v-chip v-if="getCategory(item)" :color="getCategory(item).color">
               {{ getCategory(item).categoryName }}
             </v-chip>
           </v-chip-group>
@@ -651,10 +651,14 @@ export default {
       const category = this.categories.find(
         (category) => category.categoryId === item.categoryId
       )
-      const colors = ["green", "indigo", "orange", "blue", "red"]
-      return {
-        color: colors[category.categoryId - 1],
-        ...category
+      if(category) {
+        const colors = ["green", "indigo", "orange", "blue", "red"]
+        return {
+          color: colors[category.categoryId - 1],
+          ...category
+        }
+      } else {
+        return null
       }
     },
     rubricGranted(content) {

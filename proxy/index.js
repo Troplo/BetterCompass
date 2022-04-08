@@ -55,48 +55,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use(
-  "/Services",
-  createProxyMiddleware({
-    target: "devices.compass.education",
-    router: compassRouter,
-    changeOrigin: true,
-    cookieDomainRewrite: process.env.HOSTNAME
-  })
-)
-
-app.use(
-  "/services",
-  createProxyMiddleware({
-    target: "devices.compass.education",
-    router: compassRouter,
-    changeOrigin: true,
-    cookieDomainRewrite: process.env.HOSTNAME
-  })
-)
-
-app.use(
-  "/download",
-  createProxyMiddleware({
-    target: "devices.compass.education",
-    router: compassRouter,
-    changeOrigin: true,
-    cookieDomainRewrite: process.env.HOSTNAME
-  })
-)
-
-app.use(
-  "/Assets*",
-  createProxyMiddleware({
-    target: "devices.compass.education",
-    router: compassRouter,
-    changeOrigin: true,
-    cookieDomainRewrite: process.env.HOSTNAME
-  })
-)
-
-app.use(
-  "/graphql",
+app.use(["/Services", "/services", "/download", "/Assets*", "/graphql"],
   createProxyMiddleware({
     target: "devices.compass.education",
     router: compassRouter,
