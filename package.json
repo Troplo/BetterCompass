@@ -1,6 +1,6 @@
 {
   "name": "compass-vue",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "private": true,
   "license": "GPL-3.0",
   "scripts": {
@@ -42,6 +42,7 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@sentry/webpack-plugin": "^1.18.8",
     "@babel/plugin-proposal-optional-chaining": "^7.16.7",
     "@mdi/font": "6.5.95",
     "@vue/cli-plugin-babel": "~4.5.15",
