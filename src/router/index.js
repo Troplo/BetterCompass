@@ -105,7 +105,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userDashboard" */ "../views/User/UserDashboard"
-            )
+          )
       },
       {
         path: "analytics",
@@ -113,7 +113,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userAnalytics" */ "../views/User/UserAnalytics"
-            )
+          )
       },
       {
         path: "attendance",
@@ -121,7 +121,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userAttendance" */ "../views/User/UserAttendance"
-            )
+          )
       },
       {
         path: "reports",
@@ -129,7 +129,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userReports" */ "../views/User/UserReports"
-            )
+          )
       },
       {
         path: "tasks",
@@ -143,7 +143,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userEvents" */ "../views/User/UserEvents"
-            )
+          )
       },
       {
         path: "settings",
@@ -151,7 +151,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userSettings" */ "../views/User/UserSettings"
-            )
+          )
       },
       {
         path: "score",
@@ -159,7 +159,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userScore" */ "../views/User/UserCompassScore"
-            )
+          )
       }
     ],
     component: () =>
@@ -230,7 +230,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userScore" */ "../views/User/UserCompassScore"
-            )
+          )
       }
     ],
     component: () =>

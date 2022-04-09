@@ -651,7 +651,7 @@ export default {
       const category = this.categories.find(
         (category) => category.categoryId === item.categoryId
       )
-      if(category) {
+      if (category) {
         const colors = ["green", "indigo", "orange", "blue", "red"]
         return {
           color: colors[category.categoryId - 1],
@@ -675,9 +675,7 @@ export default {
       const scheme = this.gradingSchemes.find(
         (scheme) => scheme.measureUniqueId === gradingItem.measureUniqueId
       )
-      return scheme.options.filter(
-        (scale) => scale.value !== "null"
-      ).length
+      return scheme.options.filter((scale) => scale.value !== "null").length
     },
     getGradingScheme(gradingItem, result) {
       const scheme = this.gradingSchemes.find(

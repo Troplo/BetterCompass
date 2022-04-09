@@ -15,7 +15,10 @@ const auth = require("./lib/authorize.js")
 
 const compassRouter = function (req) {
   const instance =
-    req.header("compassInstance") || req.query.compassInstance || req.query.forceInstance || "devices"
+    req.header("compassInstance") ||
+    req.query.compassInstance ||
+    req.query.forceInstance ||
+    "devices"
   console.log("Request from instance: " + instance)
   // this is to avoid the ability to proxy non Compass sites through the proxy.
   if (instance.match(/^[a-zA-Z0-9-]+$/)) {
@@ -55,7 +58,8 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use(["/Services", "/services", "/download", "/Assets*", "/graphql"],
+app.use(
+  ["/Services", "/services", "/download", "/Assets*", "/graphql"],
   createProxyMiddleware({
     target: "devices.compass.education",
     router: compassRouter,
@@ -90,7 +94,10 @@ app.post("/api/v1/feedback", auth, async (req, res, next) => {
       route: req.body.route,
       userId: req.user.id,
       tenant:
-        req.header("compassInstance") || req.query.compassInstance || req.query.forceInstance || "unknown"
+        req.header("compassInstance") ||
+        req.query.compassInstance ||
+        req.query.forceInstance ||
+        "unknown"
     })
     res.sendStatus(204)
   } catch (e) {
