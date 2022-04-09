@@ -11,7 +11,8 @@ export default new Vuex.Store({
     online: true,
     versioning: {
       date: process.env.VUE_APP_BUILD_DATE,
-      version: process.env.VUE_APP_VERSION
+      version: process.env.VUE_APP_VERSION,
+      release: process.env.RELEASE
     },
     site: {
       release: "beta",

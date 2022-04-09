@@ -138,7 +138,7 @@ export default {
         .post("/Services/User.svc/GetUserDetailsBlobByUserId", {
           userId:
             this.$store.state.user?.userId || localStorage.getItem("userId"),
-          targetUserId: this.$route.params.id
+          targetUserId: this.$route.params.id || this.$store.state.user?.userId
         })
         .then((res) => {
           this.loading = false

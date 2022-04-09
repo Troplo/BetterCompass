@@ -978,6 +978,7 @@ export default {
         })
     },
     getLearningTasks() {
+      this.loading = true
       this.axios
         .post("/Services/LearningTasks.svc/GetAllLearningTasksByActivityId", {
           activityId: this.activity.ActivityId,
@@ -987,6 +988,7 @@ export default {
           start: this.offset
         })
         .then((res) => {
+          this.loading = false
           this.tasks = res.data.d.data.map((item) => {
             return {
               ...item,

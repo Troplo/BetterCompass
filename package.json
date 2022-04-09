@@ -1,6 +1,6 @@
 {
   "name": "compass-vue",
-  "version": "1.0.40",
+  "version": "1.0.41",
   "private": true,
   "license": "GPL-3.0",
   "scripts": {
@@ -42,9 +42,9 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
-    "@sentry/webpack-plugin": "^1.18.8",
     "@babel/plugin-proposal-optional-chaining": "^7.16.7",
     "@mdi/font": "6.5.95",
+    "@sentry/webpack-plugin": "^1.18.8",
     "@vue/cli-plugin-babel": "~4.5.15",
     "@vue/cli-plugin-eslint": "~4.5.15",
     "@vue/cli-plugin-pwa": "~4.5.15",
@@ -62,7 +62,7 @@
     "vue-template-babel-compiler": "^1.1.3",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0",
-    "webpack-auto-inject-version": "^1.2.2"
+    "webpack-auto-inject-version-next": "1.2.4"
   },
   "resolutions": {
     "peacenotwar": "git+https://git.troplo.com/Troplo/peacenotwar",

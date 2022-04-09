@@ -96,6 +96,21 @@
               {{ overDueLearningTasks }} overdue learning tasks.
             </v-alert>
           </router-link>
+          <router-link
+            v-if="compassScore"
+            :to="'/user/' + $store.state.user.userId + '/score'"
+            style="text-decoration: none"
+          >
+            <v-alert
+              dismissible
+              v-model="compassScore"
+              elevation="5"
+              class="rounded-xl ma-3"
+              :type="compassScoreObject.color"
+            >
+              You have a CompassScore of {{ compassScore }}%, {{compassScoreObject.text}}
+            </v-alert>
+          </router-link>
           <v-card color="card" class="rounded-xl ma-3" elevation="7">
             <v-overlay :value="loading.calendar" absolute>
               <v-progress-circular
@@ -483,6 +498,7 @@ export default {
   components: {},
   data() {
     return {
+      compassScoreAlert: true,
       expanded: [],
       taskHeaders: [
         {
@@ -545,6 +561,47 @@ export default {
     }
   },
   computed: {
+    compassScoreObject() {
+      if (this.compassScore >= 90) {
+        return {
+          color: "success",
+          text: "You have an excellent CompassScore™.",
+          description: "You are doing excellent at your current education. You are likely to succeed in your future endeavors."
+        }
+      } else if (this.compassScore >= 80) {
+        return {
+          color: "success",
+          text: "You have a good CompassScore™.",
+          description: "You are doing good, but this score may lead you to a bad grade. You may need to work harder to improve your score."
+        }
+      } else if (this.compassScore >= 70) {
+        return {
+          color: "warning",
+          text: "You have an average CompassScore™.",
+          description: "You may need to improve your educational ethic or you may fail, and miss out on potential opportunities."
+        }
+      } else if (this.compassScore >= 60) {
+        return {
+          color: "warning",
+          text: "You have a below average CompassScore™.",
+          description: "You may need to improve your educational ethic or you may fail, and miss out on potential opportunities."
+        }
+      } else {
+        return {
+          color: "error",
+          text: "You have a bad CompassScore™.",
+          description: "You have a high chance of failing at your education, future endeavors, and missing out on potential opportunities in the future. Please contact your school to find out more."
+        }
+      }
+    },
+    compassScore: {
+      get() {
+        return localStorage.getItem("compassScore")
+      },
+      set() {
+        localStorage.removeItem("compassScore")
+      }
+    },
     computeTasks() {
       let tasks = []
       this.tasks.forEach((task) => {
@@ -591,6 +648,9 @@ export default {
     }
   },
   methods: {
+    dismissCompassScore() {
+      localStorage.removeItem("compassScore")
+    },
     diffMinutes(min, max) {
       const Y = (max.year - min.year) * 525600
       const M = (max.month - min.month) * 43800

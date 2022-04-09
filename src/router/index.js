@@ -95,6 +95,77 @@ const routes = [
       )
   },
   {
+    path: "/user/",
+    name: "User",
+    redirect: "/user/dashboard",
+    children: [
+      {
+        path: "dashboard",
+        name: "User Dashboard",
+        component: () =>
+          import(
+            /* webpackChunkName: "userDashboard" */ "../views/User/UserDashboard"
+            )
+      },
+      {
+        path: "analytics",
+        name: "User Analytics",
+        component: () =>
+          import(
+            /* webpackChunkName: "userAnalytics" */ "../views/User/UserAnalytics"
+            )
+      },
+      {
+        path: "attendance",
+        name: "User Attendance",
+        component: () =>
+          import(
+            /* webpackChunkName: "userAttendance" */ "../views/User/UserAttendance"
+            )
+      },
+      {
+        path: "reports",
+        name: "User Reports",
+        component: () =>
+          import(
+            /* webpackChunkName: "userReports" */ "../views/User/UserReports"
+            )
+      },
+      {
+        path: "tasks",
+        name: "User Tasks",
+        component: () =>
+          import(/* webpackChunkName: "userTasks" */ "../views/User/UserTasks")
+      },
+      {
+        path: "events",
+        name: "User Events",
+        component: () =>
+          import(
+            /* webpackChunkName: "userEvents" */ "../views/User/UserEvents"
+            )
+      },
+      {
+        path: "settings",
+        name: "BetterCompass Settings",
+        component: () =>
+          import(
+            /* webpackChunkName: "userSettings" */ "../views/User/UserSettings"
+            )
+      },
+      {
+        path: "score",
+        name: "CompassScore",
+        component: () =>
+          import(
+            /* webpackChunkName: "userScore" */ "../views/User/UserCompassScore"
+            )
+      }
+    ],
+    component: () =>
+      import(/* webpackChunkName: "user" */ "../views/User/User.vue")
+  },
+  {
     path: "/user/:id",
     name: "User",
     redirect: "/user/:id/dashboard",
@@ -152,6 +223,14 @@ const routes = [
           import(
             /* webpackChunkName: "userSettings" */ "../views/User/UserSettings"
           )
+      },
+      {
+        path: "score",
+        name: "CompassScore",
+        component: () =>
+          import(
+            /* webpackChunkName: "userScore" */ "../views/User/UserCompassScore"
+            )
       }
     ],
     component: () =>

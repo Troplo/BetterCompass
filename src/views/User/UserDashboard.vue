@@ -431,7 +431,7 @@ export default {
       this.chronicle.loadingPinned = true
       this.axios
         .post("/Services/ChronicleV2.svc/GetUserChronicleFeed", {
-          targetUserId: this.$route.params.id,
+          targetUserId: this.$route.params.id || this.$store.state.user?.userId,
           start: this.chronicle.offset,
           startDate: this.$date("01-01-2016").startOf("year").format(),
           endDate: this.$date().endOf("year").format(),
@@ -465,7 +465,7 @@ export default {
       this.chronicle.loading = true
       this.axios
         .post("/Services/ChronicleV2.svc/GetUserChronicleFeed", {
-          targetUserId: this.$route.params.id,
+          targetUserId: this.$route.params.id || this.$store.state.user?.userId,
           start: this.chronicle.offset,
           pageSize: 43,
           startDate: this.$date("01-01-" + this.chronicle.year)
