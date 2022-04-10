@@ -17,6 +17,7 @@
             :headers="inDepthHeaders"
             :items="inDepthResults"
             style="background-color: transparent"
+            hide-default-footer
           >
           </v-data-table>
         </v-container>
@@ -387,7 +388,23 @@ export default {
           showHiddenTasks: true,
           userId: this.$route.params.id || this.$store.state.user?.userId
         })
-        .then((res) => {
+        .finally((res) => {
+          if(!res?.data) {
+            res = {
+              data: {
+                d: {
+                  data: [{
+                    students: [{
+                      submissionStatus: 0,
+                      results: [{
+                        value: 2
+                      }]
+                    }]
+                  }]
+                }
+              }
+            }
+          }
           let taskScore = 0
           let taskScoreOutOf = 0
           let score1
@@ -413,9 +430,12 @@ export default {
               } else {
                 score3 = -20
               }
-              console.log(1)
-              console.log("totalCount" + totalCount)
-              console.log(taskScore, taskScoreOutOf)
+              if(!taskScore) {
+                taskScore = 0
+              }
+              if(!taskScoreOutOf) {
+                taskScoreOutOf = 1
+              }
               score2 = (100 * taskScore) / taskScoreOutOf
               this.inDepthResults.push({
                 name: "Absence Penalty or Advantage",
@@ -425,7 +445,7 @@ export default {
               this.inDepthResults.push({
                 name: "Learning Task Results",
                 score: taskScore + "/" + taskScoreOutOf,
-                percentage: score2
+                percentage: Math.round(score2)
               })
               this.inDepthResults.push({
                 name: "Learning Task Submissions",
@@ -433,7 +453,7 @@ export default {
                   this.getStatus(null, res.data.d.data).falseCount +
                   "/" +
                   this.getStatus(null, res.data.d.data).totalCount,
-                percentage: score1
+                percentage: Math.round(score1)
               })
               this.score = Math.round((score1 + score2) / 2) + score3
               localStorage.setItem("compassScore", this.score)
@@ -454,16 +474,11 @@ export default {
                     JSON.parse(result) <
                       this.getGradingSchemeLength(gradingItem)
                   ) {
-                    console.log(
-                      this.getGradingSchemeLength(gradingItem),
-                      JSON.parse(result),
-                      item
-                    )
                     taskScore += JSON.parse(result)
                     taskScoreOutOf += this.getGradingSchemeLength(gradingItem)
                   }
                 } catch (e) {
-                  console.log(e)
+                  console.log("This is a non-numeric result.")
                 }
               }
             })

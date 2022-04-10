@@ -248,6 +248,14 @@ const routes = [
           import(
             /* webpackChunkName: "schoolResources" */ "../views/School/SchoolResources"
           )
+      },
+      {
+        path: "staff",
+        name: "School Staff",
+        component: () =>
+          import(
+            /* webpackChunkName: "schoolStaff" */ "../views/School/SchoolStaff"
+            )
       }
     ],
     component: () =>

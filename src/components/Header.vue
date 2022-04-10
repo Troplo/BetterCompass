@@ -111,6 +111,13 @@
       >
         Debug
       </button>
+      <button
+        style="display: none"
+        v-shortkey="['ctrl', 'alt', 's']"
+        @shortkey="enableCompassScore"
+      >
+        Enable CompassScore
+      </button>
       <v-spacer></v-spacer>
       <v-menu
         v-if="$store.state.user.username"
@@ -468,6 +475,10 @@ export default {
     }
   },
   methods: {
+    enableCompassScore() {
+      console.log("Enable Hidden CompassScore")
+      localStorage.setItem("compassScoreEnabled", true)
+    },
     submitFeedback() {
       this.axios
         .post("/api/v1/feedback", {

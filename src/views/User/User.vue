@@ -28,6 +28,7 @@
             >
               BetterCompass
             </v-tab>
+            <v-tab to="score" v-if="compassScore"> Compass Score </v-tab>
           </v-tabs>
           <v-container>
             <router-view :user="user"></router-view>
@@ -50,6 +51,9 @@ export default {
     }
   },
   computed: {
+    compassScore() {
+      return JSON.parse(localStorage.getItem("compassScoreEnabled"))
+    },
     userStatus() {
       const userStatus = [
         {
