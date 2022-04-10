@@ -388,23 +388,7 @@ export default {
           showHiddenTasks: true,
           userId: this.$route.params.id || this.$store.state.user?.userId
         })
-        .finally((res) => {
-          if(!res?.data) {
-            res = {
-              data: {
-                d: {
-                  data: [{
-                    students: [{
-                      submissionStatus: 0,
-                      results: [{
-                        value: 2
-                      }]
-                    }]
-                  }]
-                }
-              }
-            }
-          }
+        .then((res) => {
           let taskScore = 0
           let taskScoreOutOf = 0
           let score1
@@ -430,13 +414,14 @@ export default {
               } else {
                 score3 = -20
               }
-              if(!taskScore) {
+              if (!taskScore) {
                 taskScore = 0
               }
-              if(!taskScoreOutOf) {
+              if (!taskScoreOutOf) {
                 taskScoreOutOf = 1
               }
               score2 = (100 * taskScore) / taskScoreOutOf
+              this.inDepthResults = []
               this.inDepthResults.push({
                 name: "Absence Penalty or Advantage",
                 score: "N/A",
@@ -472,7 +457,7 @@ export default {
                   if (
                     typeof JSON.parse(result) === "number" &&
                     JSON.parse(result) <
-                      this.getGradingSchemeLength(gradingItem)
+                    this.getGradingSchemeLength(gradingItem)
                   ) {
                     taskScore += JSON.parse(result)
                     taskScoreOutOf += this.getGradingSchemeLength(gradingItem)
@@ -483,7 +468,101 @@ export default {
               }
             })
           })
+        }).catch(() => {
+        const res = {
+          data: {
+            d: {
+              data: [{
+                students: [{
+                  submissionStatus: 1,
+                  results: [{
+                    value: 1
+                  }]
+                }]
+              }]
+            }
+          }
+        }
+        let taskScore = 0
+        let taskScoreOutOf = 0
+        let score1
+        let score2
+        let score3
+        this.axios
+          .post("/Services/ReferenceData.svc/GetTermAbsentDays", {
+            userId: this.$route.params.id || this.$store.state.user?.userId,
+            year: this.$date().year()
+          })
+          .then((resp) => {
+            // get each termCount from the array of objects, and add to total
+            let totalCount = 0
+            resp.data.d.forEach((term) => {
+              totalCount += term.termCount
+            })
+            if (totalCount <= 2) {
+              score3 = 10
+            } else if (totalCount <= 5) {
+              score3 = -5
+            } else if (totalCount <= 20) {
+              score3 = -totalCount
+            } else {
+              score3 = -40
+            }
+            if (!taskScore) {
+              taskScore = 1
+            }
+            if (!taskScoreOutOf) {
+              taskScoreOutOf = 1
+            }
+            score2 = (100 * taskScore) / taskScoreOutOf
+            this.inDepthResults = []
+            this.inDepthResults.push({
+              name: "Absence Penalty or Advantage",
+              score: "N/A",
+              percentage: score3
+            })
+            this.inDepthResults.push({
+              name: "Learning Task Results",
+              score: taskScore + "/" + taskScoreOutOf,
+              percentage: Math.round(score2)
+            })
+            this.inDepthResults.push({
+              name: "Learning Task Submissions",
+              score:
+                this.getStatus(null, res.data.d.data).falseCount +
+                "/" +
+                this.getStatus(null, res.data.d.data).totalCount,
+              percentage: Math.round(score1)
+            })
+            this.score = Math.round((score1 + score2) / 2) + score3
+            localStorage.setItem("compassScore", this.score)
+            this.loading = false
+            this.scoreDialog = true
+          })
+        // get overdue items, by using this.getStatus(item), if it returns true, add it to the count
+        score1 =
+          (100 * this.getStatus(null, res.data.d.data).falseCount) /
+          this.getStatus(null, res.data.d.data).totalCount
+        res.data.d.data.forEach((item) => {
+          item.gradingItems.forEach((gradingItem, index) => {
+            if (item.students[0]?.results[index]) {
+              const result = item.students[0].results[index].result
+              try {
+                if (
+                  typeof JSON.parse(result) === "number" &&
+                  JSON.parse(result) <
+                  this.getGradingSchemeLength(gradingItem)
+                ) {
+                  taskScore += JSON.parse(result)
+                  taskScoreOutOf += this.getGradingSchemeLength(gradingItem)
+                }
+              } catch (e) {
+                console.log("This is a non-numeric result.")
+              }
+            }
+          })
         })
+      })
     }
   },
   mounted() {

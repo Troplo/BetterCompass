@@ -259,6 +259,9 @@
                   <v-list-item link to="/school/resources">
                     <v-list-item-title>School Resources</v-list-item-title>
                   </v-list-item>
+                  <v-list-item link to="/school/staff">
+                    <v-list-item-title>School Staff</v-list-item-title>
+                  </v-list-item>
                 </v-list-group>
 
                 <v-list-group no-action sub-group>

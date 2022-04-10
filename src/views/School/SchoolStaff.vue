@@ -8,14 +8,17 @@
         <v-container>
           <v-card v-for="user in staff" :key="user.id" class="mb-3" @click="$router.push('/user/' + user.id)">
             <v-container>
-              <v-avatar size="50" class="mr-4">
-                <img :src="'/download/cdn/square/' + user.pv + '?compassInstance=' + $store.state.school.instance" alt="">
-              </v-avatar>
-              {{user.nif}}
-              <v-chip :color="userStatus(user).color">
-                <v-icon>{{ userStatus(user).icon }}</v-icon>
-                {{ userStatus(user).status }}
-              </v-chip>
+              <v-card-title>
+                <v-avatar size="50" class="mr-4">
+                  <img :src="'/download/cdn/square/' + user.pv + '?compassInstance=' + $store.state.school.instance" alt="">
+                </v-avatar>
+                <v-toolbar-title>
+                  {{ user.nif }}
+                  <div class="subheading subtitle-1">
+                    Account Created: {{$date(user.start).format("dddd, MMMM Do YYYY")}}
+                  </div>
+                </v-toolbar-title>
+              </v-card-title>
             </v-container>
           </v-card>
         </v-container>
