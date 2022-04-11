@@ -221,7 +221,7 @@
                       $store.state.subjects.findIndex(
                         (x) => x.id === item.activityId
                       )
-                    ].subjectLongName
+                    ]?.subjectLongName || item.activityId + " (Unknown Activity)"
                   }}
                 </td>
                 <td :colspan="headers.length" v-else>

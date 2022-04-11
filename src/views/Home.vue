@@ -655,7 +655,7 @@
                     ></v-progress-circular>
                   </v-overlay>
                   <v-toolbar color="toolbar">
-                    <v-btn text small fab @click="changeDay('subtract')">
+                    <v-btn text small fab @click="changeDay('subtract')" v-shortkey="['d']">
                       <v-icon>mdi-arrow-left</v-icon>
                     </v-btn>
                     &nbsp;
@@ -691,12 +691,16 @@
                       small
                       fab
                       @click="
-                  $store.state.focus = $date.format()
+                  $store.state.focus = $date().format()
                   fetchEvents(false, true)
                 "
                     >
                       <v-icon>mdi-refresh</v-icon>
                     </v-btn>
+                    <button style="display: none" v-shortkey="['arrowleft']" @shortkey="changeDay('subtract')"></button>
+                    <button style="display: none" v-shortkey="['arrowright']" @shortkey="changeDay('add')"></button>
+                    <button style="display: none" v-shortkey="['shift', 'r']" @shortkey="     $store.state.focus = $date().format()
+                  fetchEvents(false, true)"></button>
                     <v-btn text small fab @click="changeDay('add')">
                       <v-icon>mdi-arrow-right</v-icon>
                     </v-btn>
@@ -768,7 +772,6 @@
                       :interval-count="11"
                       :interval-height="60"
                       :event-color="computeColor"
-                      @change="fetchEvents(false, false)"
                       @click:event="pushEvent"
                     >
                     </v-calendar>
@@ -834,7 +837,7 @@
                               $store.state.subjects.findIndex(
                                 (x) => x.id === item.activityId
                               )
-                              ].subjectLongName || "Unknown"
+                              ]?.subjectLongName || item.activityId + " (Unknown Activity)"
                           }}</template
                         >
                       </td>
@@ -934,7 +937,7 @@
                     </v-container>
                   </v-card>
                 </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.weather' && weather.name">
+                <v-card :color="color(item)" class="rounded-xl ma-3 text-center justify-center" elevation="7" v-if="item.name === 'home.weather' && weather.name">
                   <v-toolbar color="toolbar">
                     <v-spacer></v-spacer>
                     <v-toolbar-title> Weather </v-toolbar-title>
@@ -1010,7 +1013,9 @@
                 </v-card>
                 <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.compassScore'">
                   <v-toolbar :color="computeCompassScoreDescription.color">
-                    <v-toolbar-title>Your  CompassScore</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-toolbar-title>Your CompassScore</v-toolbar-title>
+                    <v-spacer></v-spacer>
                   </v-toolbar>
                   <v-container class="justify-center text-center">
                     <h1 style="font-size: 150px">{{ Math.round(computeCompassScore) }}%</h1>
@@ -1054,7 +1059,7 @@
                     </v-alert>
                   </router-link>
                 </template>
-                <v-card color="card" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.learningTasks'" max-height="600px">
+                <v-card color="card" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.learningTasks'">
                   <v-overlay v-if="loading.learningTasks" absolute>
                     <v-progress-circular indeterminate size="64"></v-progress-circular>
                   </v-overlay>
@@ -1075,7 +1080,7 @@
                     <v-data-table
                       :headers="learningTasksHeaders"
                       :items="computeLearningTasks"
-                      :items-per-page="$store.state.bcUser.rowsPerPage"
+                      :items-per-page="5"
                       class="elevation-3"
                       @click:row="learningTaskDialog"
                       style="cursor: pointer"
@@ -1357,7 +1362,8 @@ export default {
       focus: this.$date().format(),
       news: [],
       user: {},
-      weather: {}
+      weather: {},
+      score: null
     }
   },
   computed: {
@@ -1384,35 +1390,35 @@ export default {
         if (this.score >= 90) {
           return {
             color: "success",
-            text: "You have an excellent  CompassScore.",
+            text: "You have an excellent CompassScore.",
             description:
               "You are doing excellent at your current education. You are likely to succeed in your future endeavors."
           }
         } else if (this.score >= 80) {
           return {
             color: "success",
-            text: "You have a good  CompassScore.",
+            text: "You have a good CompassScore.",
             description:
               "You are doing good, but this score may lead you to a bad grade. You may need to work harder to improve your score."
           }
         } else if (this.score >= 70) {
           return {
             color: "warning",
-            text: "You have an average  CompassScore.",
+            text: "You have an average CompassScore.",
             description:
               "You may need to improve your educational ethic or you may fail, and miss out on potential opportunities."
           }
         } else if (this.score >= 60) {
           return {
             color: "warning",
-            text: "You have a below average  CompassScore.",
+            text: "You have a below average CompassScore.",
             description:
               "You may need to improve your educational ethic or you may fail, and miss out on potential opportunities."
           }
         } else {
           return {
             color: "red",
-            text: "You have a bad  CompassScore.",
+            text: "You have a bad CompassScore.",
             description:
               "You have a high chance of failing at your education, future endeavors, and missing out on potential opportunities in the future. Please contact your school to find out more."
           }
@@ -2206,6 +2212,7 @@ export default {
     }
   },
   mounted() {
+    this.score = this.computeCompassScore
     this.getCategories()
     this.getLearningSchemes()
     this.getTasks()
