@@ -6,13 +6,13 @@ will default to devices.compass.education.
 
 The BetterCompass frontend automatically sends this information for you.
 
-The Compass instance can be passed to the proxy in 2 ways:
+Proxy headers & query strings:
 
-- `compassInstance: "compass-instance-name"`: A header in the request.
+- `compassInstance: "compass-instance-name"`: A header in the request for sending the proxy instance, the proxy will proxy compass-instance-name.compass.education in this example.
 - `?compassInstance=compass-instance-name`: A querystring parameter in the
   request, useful for downloads and other requests that cannot use the header.
-- `?forceInstance=compass-instance-name`: A querystring parameter in the
-  request, deprecated.
+- `compassUserId: 123`: A header in the request for sending the proxy user id, this is used for authentication on the backend to validate the user, as it is required by the Compass API.
+- `compassSchoolId: "compass.instance.name"`: A header in the request for sending the Compass School ID, this is used for cookie authentication, it is generally the domain of the school.
 
 The proxy validates the instance name to ensure that it resolves to
 compass.education, and not a foreign domain, however it doesn't validate whether

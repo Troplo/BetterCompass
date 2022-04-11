@@ -26,7 +26,10 @@ router.put("/settings/:type", auth, async (req, res, next) => {
           minimizeHeaderEvents: req.body.minimizeHeaderEvents,
           learningTaskNotification: req.body.learningTaskNotification,
           calendarAutoJump: req.body.calendarAutoJump,
-          guidedWizard: req.body.guidedWizard
+          guidedWizard: req.body.guidedWizard,
+          hideIrrelevantTasks: req.body.hideIrrelevantTasks,
+          rowsPerPage: req.body.rowsPerPage,
+          homeGrids: req.body.homeGrids
         },
         {
           where: {

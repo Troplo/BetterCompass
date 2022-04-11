@@ -64,7 +64,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-app-bar app v-if="$store.state.user" color="dark">
+    <v-app-bar app v-if="$store.state.user" color="dark" style="z-index: 200">
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
         v-if="$vuetify.breakpoint.mobile"
@@ -479,7 +479,7 @@ export default {
   },
   methods: {
     enableCompassScore() {
-      console.log("Enable Hidden CompassScore")
+      this.$toast.success("Enabled CompassScore")
       localStorage.setItem("compassScoreEnabled", true)
     },
     submitFeedback() {

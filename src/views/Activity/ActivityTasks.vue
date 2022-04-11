@@ -466,6 +466,8 @@
                   <v-data-table
                     :headers="rubricHeaders"
                     :items="rubricItems"
+                    :items-per-page="$store.state.bcUser.rowsPerPage"
+                    @update:items-per-page="updateRows"
                     style="white-space: pre-wrap"
                     class="elevation-1"
                     :style="
@@ -513,14 +515,30 @@
       <v-card color="card" elevation="7" class="rounded-xl">
         <v-toolbar color="toolbar">
           <v-toolbar-title> Learning Tasks </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <div v-on="on" v-bind="attrs">
+                <v-checkbox
+                  v-model="hideIrrelevantTasks"
+                  hide-details
+                  single-line
+                  label="Hide Irrelevant Tasks"
+                  color="primary">
+                </v-checkbox>
+              </div>
+            </template>
+            <span> Will hide overdue/pending tasks older than 10 weeks, and submitted tasks older than 2 weeks </span>
+          </v-tooltip>
         </v-toolbar>
         <v-overlay :value="loading" absolute>
           <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
         <v-data-table
           :headers="headers"
-          :items="tasks"
-          :items-per-page="20"
+          :items="computeTasks"
+          :items-per-page="$store.state.bcUser.rowsPerPage"
+          @update:items-per-page="updateRows"
           class="elevation-3"
           @click:row="taskDialog"
           style="cursor: pointer"
@@ -574,6 +592,7 @@ export default {
   props: ["activity", "activityFull"],
   data() {
     return {
+      hideIrrelevantTasks: false,
       newFeedback: "",
       loading: false,
       tasks: [],
@@ -634,11 +653,32 @@ export default {
     }
   },
   computed: {
+    computeTasks() {
+      if (this.hideIrrelevantTasks) {
+        return this.tasks.filter(task => task.createdTimestamp > dayjs().subtract(2, "week").format() && this.getStatusBoolean(task) || task.createdTimestamp > dayjs().subtract(10, "week").format() && !this.getStatusBoolean(task))
+      } else {
+        return this.tasks
+      }
+    },
     cleanLessonPlan() {
       return this.$sanitize(this.selectedTask.description)
     }
   },
   methods: {
+    getStatusBoolean(item) {
+      if (item.students[0].submissionStatus === 1) {
+        return false
+      } else if (item.students[0].submissionStatus === 2) {
+        return false
+      } else if (item.students[0].submissionStatus === 3) {
+        return true
+      } else return item.students[0].submissionStatus === 4;
+    },
+    updateRows(val) {
+      this.$store.dispatch("saveOnlineSettings", {
+        rowsPerPage: val
+      })
+    },
     getCategory(item) {
       const category = this.categories.find(
         (category) => category.categoryId === item.categoryId
@@ -916,7 +956,16 @@ export default {
           text: "Submitted late",
           color: "warning"
         }
-      } else {
+      } else if (
+        !submittedSubmission &&
+        this.selectedTask.students[0].submissionStatus === 3
+      ) {
+        return {
+          status: "submitted",
+          text: "Marked as Submitted",
+          color: "success"
+        }
+    } else {
         return {
           status: "unknown",
           text:
@@ -1007,6 +1056,17 @@ export default {
     this.getLearningSchemes()
     this.getLearningTasks()
     this.getCategories()
+    this.hideIrrelevantTasks = this.$store.state.bcUser?.hideIrrelevantTasks
+  },
+  watch: {
+    "$store.state.bcUser"() {
+      this.hideIrrelevantTasks = this.$store.state.bcUser?.hideIrrelevantTasks
+    },
+    hideIrrelevantTasks(value) {
+      this.$store.dispatch("saveOnlineSettings", {
+        hideIrrelevantTasks: value
+      })
+    }
   }
 }
 </script>

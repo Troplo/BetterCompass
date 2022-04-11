@@ -104,6 +104,21 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
         defaultValue: null
+      },
+      rowsPerPage: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 15
+      },
+      hideIrrelevantTasks: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
+      homeGrids: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: [{"items":[{"id":7,"itemId":11,"name":"home.overdueLearningTasks","friendlyName":"Overdue Learning Tasks Warning Widget","invisible":true},{"itemId":0,"id":0,"name":"home.calendar","friendlyName":"Calendar Widget"},{"itemId":1,"id":1,"name":"home.tasks","friendlyName":"Tasks Widget"},{"itemId":2,"id":2,"name":"home.events","friendlyName":"Events Widget"}]},{"items":[{"id":6,"itemId":10,"name":"home.notifications","friendlyName":"Warnings/Notifications Widget","invisible":true},{"itemId":3,"id":3,"name":"home.news","friendlyName":"News Widget"},{"itemId":4,"id":4,"name":"home.weather","friendlyName":"Weather Widget","invisible":true},{"itemId":5,"id":5,"name":"home.features","friendlyName":"Features Widget"}]}]
       }
     },
     {

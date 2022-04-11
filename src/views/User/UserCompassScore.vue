@@ -3,7 +3,7 @@
     <v-dialog v-model="scoreDialog" max-width="600px">
       <v-card :color="computeBasedOnScore.color">
         <v-toolbar :color="computeBasedOnScore.color">
-          <v-toolbar-title>Your CompassScore™</v-toolbar-title>
+          <v-toolbar-title>Your  CompassScore</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn icon @click.native="scoreDialog = false">
             <v-icon>mdi-close</v-icon>
@@ -31,10 +31,10 @@
     <v-container>
       <v-card color="card" class="rounded-xl">
         <v-toolbar color="toolbar">
-          <v-toolbar-title>CompassScore™</v-toolbar-title>
+          <v-toolbar-title> CompassScore</v-toolbar-title>
         </v-toolbar>
         <v-container class="justify-center text-center">
-          <h1 style="font-size: 50px" class="troplo-title">CompassScore™</h1>
+          <h1 style="font-size: 50px" class="troplo-title"> CompassScore</h1>
           <p>The Score that Grades you More™</p>
         </v-container>
         <v-container>
@@ -278,35 +278,35 @@ export default {
       if (this.score >= 90) {
         return {
           color: "success",
-          text: "You have an excellent CompassScore™.",
+          text: "You have an excellent  CompassScore.",
           description:
             "You are doing excellent at your current education. You are likely to succeed in your future endeavors."
         }
       } else if (this.score >= 80) {
         return {
           color: "success",
-          text: "You have a good CompassScore™.",
+          text: "You have a good  CompassScore.",
           description:
             "You are doing good, but this score may lead you to a bad grade. You may need to work harder to improve your score."
         }
       } else if (this.score >= 70) {
         return {
           color: "warning",
-          text: "You have an average CompassScore™.",
+          text: "You have an average  CompassScore.",
           description:
             "You may need to improve your educational ethic or you may fail, and miss out on potential opportunities."
         }
       } else if (this.score >= 60) {
         return {
           color: "warning",
-          text: "You have a below average CompassScore™.",
+          text: "You have a below average  CompassScore.",
           description:
             "You may need to improve your educational ethic or you may fail, and miss out on potential opportunities."
         }
       } else {
         return {
           color: "red",
-          text: "You have a bad CompassScore™.",
+          text: "You have a bad  CompassScore.",
           description:
             "You have a high chance of failing at your education, future endeavors, and missing out on potential opportunities in the future. Please contact your school to find out more."
         }
