@@ -590,20 +590,7 @@
       </v-card>
     </v-dialog>
     <v-container>
-      <div class="text-end">
-        <v-btn text class="text-end mb-1" @click="editMode = true" v-if="!editMode">
-          <v-icon>mdi-pencil</v-icon>&nbsp;Edit
-        </v-btn>
-        <v-btn text class="text-end mb-1" @click="editMode = false; saveGrid()" v-if="editMode">
-          <v-icon>mdi-check</v-icon>&nbsp;Save
-        </v-btn>
-        <v-btn text class="text-end mb-1" @click="editMode = false; discardGrid()" v-if="editMode">
-          <v-icon>
-            mdi-close
-          </v-icon>&nbsp;Discard
-        </v-btn>
-      </div>
-      <v-card color="card ma-3" class="rounded-xl" v-if="editMode">
+      <v-card color="card ma-3" class="rounded-xl" v-if="$store.state.editMode === 'editing'">
         <v-toolbar color="toolbar lighten-3">
           <v-toolbar-title>Add Widgets</v-toolbar-title>
         </v-toolbar>
@@ -622,7 +609,7 @@
       </v-card>
       <v-row>
         <v-col v-for="(grid, index) in grids" :key="index">
-          <v-toolbar color="toolbar lighten-2" class="rounded-xl ma-3" v-if="editMode">
+          <v-toolbar color="toolbar lighten-2" class="rounded-xl ma-3" v-if="$store.state.editMode === 'editing'">
             <v-toolbar-title>
              Grid {{index + 1}}
             </v-toolbar-title>
@@ -631,9 +618,9 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-toolbar>
-          <draggable v-model="grid.items" :sort="true" group="home" :options="{disabled: !editMode}">
+          <draggable v-model="grid.items" :sort="true" group="home" :options="{disabled: $store.state.editMode !== 'editing'}">
               <div v-for="item in grid.items" :key="item.id">
-                <v-card class="rounded-xl ma-3" elevation="7" color="card" v-if="editMode">
+                <v-card class="rounded-xl ma-3" elevation="7" color="card" v-if="$store.state.editMode === 'editing'">
                   <v-toolbar color="toolbar lighten-1">
                     <v-toolbar-title>
                       {{item.friendlyName}}
@@ -1346,7 +1333,7 @@ export default {
         id: 0
       },
       loading: {
-        calendar: true,
+        calendar: false,
         tasks: true,
         learningTasks: true
       },
@@ -1461,7 +1448,7 @@ export default {
     },
     computeEvents() {
       if (this.$store.state.bcUser.minimizeHeaderEvents) {
-        return this.events.filter((event) => {
+        return this.$store.state.calendar.filter((event) => {
           return (
             event.timed ||
             event.color === "#003300" ||
@@ -1470,7 +1457,7 @@ export default {
           )
         })
       } else {
-        return this.events
+        return this.$store.state.calendar
       }
     }
   },
@@ -2179,7 +2166,7 @@ export default {
         })
         .then((res) => {
           this.$store.commit("setCalendarInit", true)
-          this.events = res.data.d.map((event) => {
+          this.$store.commit("setCalendar", res.data.d.map((event) => {
             return {
               name: this.subjectName(event),
               content: event.longTitle,
@@ -2191,7 +2178,7 @@ export default {
               activityId: event.activityId,
               instanceId: event.instanceId
             }
-          })
+          }))
           this.loading.calendar = false
         })
     },
@@ -2225,7 +2212,11 @@ export default {
     this.$store.dispatch("getUserInfo").then((res) => {
       this.user = res
       this.grids = this.$store.state.bcUser?.homeGrids
-      this.fetchEvents(true, false)
+      if(this.$store.state.calendar.length) {
+        this.fetchEvents(false, false)
+      } else {
+        this.fetchEvents(true, false)
+      }
       this.getWeather()
       this.getNews()
       this.getAlerts()
@@ -2233,6 +2224,15 @@ export default {
     })
   },
   watch: {
+    "$store.state.editMode"(val) {
+      if(val === "save") {
+        this.saveGrid()
+      } else if(val === "discard") {
+        this.$store.dispatch("getUserInfo").then(() => {
+          this.grids = this.$store.state.bcUser?.homeGrids
+        })
+      }
+    },
     "$store.state.focus"(val) {
       if(val === "2069-04-20") {
         this.$toast.success("Enabled CompassScore")
