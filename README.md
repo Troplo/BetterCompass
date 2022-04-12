@@ -1,4 +1,5 @@
 # BetterCompass
+[![BetterCompass Actions Status](https://github.com/Troplo/BetterCompass/workflows/Deploy/badge.svg)](https://github.com/Troplo/BetterCompass/actions)
 
 BetterCompass is a frontend for
 [JDLF's compass.education](http://compass.education/) written in Vue 2 and
