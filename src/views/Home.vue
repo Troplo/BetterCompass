@@ -8,7 +8,6 @@
             small
             fab
             @click="changeDay('subtract')"
-            v-shortkey="['d']"
           >
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
@@ -804,7 +803,6 @@
                     small
                     fab
                     @click="changeDay('subtract')"
-                    v-shortkey="['d']"
                   >
                     <v-icon>mdi-arrow-left</v-icon>
                   </v-btn>
