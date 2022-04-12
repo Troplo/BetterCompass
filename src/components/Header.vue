@@ -64,7 +64,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-app-bar app v-if="$store.state.user" color="dark" style="z-index: 200">
+    <v-app-bar app v-if="$store.state.user" color="dark">
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
         v-if="$vuetify.breakpoint.mobile"
@@ -120,7 +120,7 @@
       </button>
       <v-spacer></v-spacer>
       <div class="text-end" v-if="$route.name === 'Dashboard'">
-        <v-btn text class="text-end mb-1" @click="$store.commit('setEditMode', 'editing')" v-if="$store.state.editMode !== 'editing'">
+        <v-btn text class="text-end mb-1" @click="$store.commit('setEditMode', 'editing')" v-if="$store.state.editMode !== 'editing' && !$vuetify.breakpoint.mobile">
           <v-icon>mdi-pencil</v-icon>&nbsp;Edit
         </v-btn>
         <v-btn text class="text-end mb-1" @click="$store.commit('setEditMode', 'save')" v-if="$store.state.editMode === 'editing'">
