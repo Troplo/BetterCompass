@@ -459,10 +459,11 @@ export default {
             }
           })
           this.chronicle.loadingPinned = false
-        }).catch(() => {
-        this.$toast.error("Failed to load pinned chronicles.")
-        this.chronicle.loadingPinned = false
-      })
+        })
+        .catch(() => {
+          this.$toast.error("Failed to load pinned chronicles.")
+          this.chronicle.loadingPinned = false
+        })
     },
     getChronicle() {
       this.chronicle.loading = true
@@ -488,10 +489,11 @@ export default {
         .then((res) => {
           this.chronicle.items = res.data.d.data
           this.chronicle.loading = false
-        }).catch(() => {
+        })
+        .catch(() => {
           this.$toast.error("Failed to load chronicles.")
           this.chronicle.loading = false
-      })
+        })
     },
     getJSON(json) {
       const parsed = JSON.parse(json)

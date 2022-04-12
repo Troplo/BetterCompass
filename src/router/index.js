@@ -255,7 +255,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "schoolStaff" */ "../views/School/SchoolStaff"
-            )
+          )
       }
     ],
     component: () =>

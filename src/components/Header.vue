@@ -120,16 +120,31 @@
       </button>
       <v-spacer></v-spacer>
       <div class="text-end" v-if="$route.name === 'Dashboard'">
-        <v-btn text class="text-end mb-1" @click="$store.commit('setEditMode', 'editing')" v-if="$store.state.editMode !== 'editing' && !$vuetify.breakpoint.mobile">
+        <v-btn
+          text
+          class="text-end mb-1"
+          @click="$store.commit('setEditMode', 'editing')"
+          v-if="
+            $store.state.editMode !== 'editing' && !$vuetify.breakpoint.mobile
+          "
+        >
           <v-icon>mdi-pencil</v-icon>&nbsp;Edit
         </v-btn>
-        <v-btn text class="text-end mb-1" @click="$store.commit('setEditMode', 'save')" v-if="$store.state.editMode === 'editing'">
+        <v-btn
+          text
+          class="text-end mb-1"
+          @click="$store.commit('setEditMode', 'save')"
+          v-if="$store.state.editMode === 'editing'"
+        >
           <v-icon>mdi-check</v-icon>&nbsp;Save
         </v-btn>
-        <v-btn text class="text-end mb-1" @click="$store.commit('setEditMode', 'discard')" v-if="$store.state.editMode === 'editing'">
-          <v-icon>
-            mdi-close
-          </v-icon>&nbsp;Discard
+        <v-btn
+          text
+          class="text-end mb-1"
+          @click="$store.commit('setEditMode', 'discard')"
+          v-if="$store.state.editMode === 'editing'"
+        >
+          <v-icon> mdi-close </v-icon>&nbsp;Discard
         </v-btn>
       </div>
       <v-menu

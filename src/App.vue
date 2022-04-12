@@ -232,7 +232,7 @@
       <v-container
         v-if="$store.state.site.latestVersion > $store.state.versioning.version"
       >
-        <v-alert class="mx-4" type="info">
+        <v-alert class="mx-4" type="info" text>
           BetterCompass just got better. Please CTRL+R / ⌘+R to update. (You are
           on version {{ $store.state.versioning.version }}, and the latest
           version is {{ $store.state.site.latestVersion }})

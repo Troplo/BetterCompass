@@ -1,5 +1,136 @@
 <template>
   <div class="home" v-if="$store.state.user">
+    <v-dialog v-model="calendarDialog" max-width="1800px">
+      <v-card color="card">
+        <v-toolbar color="toolbar">
+          <v-btn
+            text
+            small
+            fab
+            @click="changeDay('subtract')"
+            v-shortkey="['d']"
+          >
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          &nbsp;
+          <v-menu
+            ref="menu"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn text small fab v-on="on">
+                <v-icon>mdi-calendar</v-icon>
+              </v-btn>
+            </template>
+            <v-date-picker
+              v-model="$store.state.focus"
+              @click:date="fetchEvents(false, true)"
+              no-title
+              scrollable
+              color="info"
+            >
+            </v-date-picker>
+          </v-menu>
+          <v-btn text small fab disabled> </v-btn>
+          <v-spacer></v-spacer>
+          <v-toolbar-title>{{
+            $date($store.state.focus).format("dddd, MMMM Do YYYY")
+          }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          &nbsp;
+          <v-btn text small fab @click="calendarDialog = false">
+            <v-icon>mdi-arrow-collapse-all</v-icon>
+          </v-btn>
+          <v-btn
+            text
+            small
+            fab
+            @click="
+              $store.state.focus = $date().format()
+              fetchEvents(false, true)
+            "
+          >
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
+          <button
+            style="display: none"
+            v-shortkey="['arrowleft']"
+            @shortkey="changeDay('subtract')"
+          ></button>
+          <button
+            style="display: none"
+            v-shortkey="['arrowright']"
+            @shortkey="changeDay('add')"
+          ></button>
+          <v-btn text small fab @click="changeDay('add')">
+            <v-icon>mdi-arrow-right</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-container>
+          <v-overlay :value="loading.calendar" absolute>
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay>
+          <v-card
+            color="card"
+            style="position: sticky"
+            :style="
+              'background-color: ' +
+              $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card
+            "
+          >
+            <v-tabs background-color="card" fixed-tabs v-model="tab">
+              <v-tab
+                @click="type = 'day'"
+                value="day"
+                :style="
+                  'background-color: ' +
+                  $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
+                    .card
+                "
+              >
+                Daily Schedule
+              </v-tab>
+              <v-tab
+                @click="type = 'week'"
+                value="week"
+                :style="
+                  'background-color: ' +
+                  $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
+                    .card
+                "
+              >
+                Weekly Schedule
+              </v-tab>
+            </v-tabs>
+            <v-calendar
+              :style="
+                'background-color: ' +
+                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
+                  .card
+              "
+              :class="type"
+              ref="calendar-dialog"
+              v-model="$store.state.focus"
+              :weekdays="weekday"
+              :type="type"
+              :events="computeEvents"
+              :event-overlap-mode="mode"
+              :event-overlap-threshold="30"
+              :first-interval="8"
+              :interval-minutes="60"
+              :interval-count="11"
+              :interval-height="60"
+              :event-color="computeColor"
+              @click:event="pushEvent"
+            >
+            </v-calendar>
+          </v-card>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="upload.dialog" max-width="500px" class="rounded-xl">
       <v-card color="card">
         <v-card-title class="headline">
@@ -29,14 +160,14 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="upload.dialog = false"
-          >Cancel</v-btn
+            >Cancel</v-btn
           >
           <v-btn
             color="primary"
             text
             @click="uploadFile"
             :loading="upload.loading"
-          >Upload</v-btn
+            >Upload</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -63,14 +194,14 @@
                   <v-card color="card" elevation="3" class="ma-2">
                     <v-container>
                       Name: <b>{{ selectedTask.name }}</b
-                    ><br />
+                      ><br />
                       <template v-if="selectedTask.dueDateTimestamp"
-                      >Due Date:
+                        >Due Date:
                         <b>{{
-                            $date(selectedTask.dueDateTimestamp).format(
-                              "dddd, MMMM Do YYYY, hh:mm A"
-                            )
-                          }}</b></template
+                          $date(selectedTask.dueDateTimestamp).format(
+                            "dddd, MMMM Do YYYY, hh:mm A"
+                          )
+                        }}</b></template
                       ><br />
                       Online Submission Enabled:
                       <b>{{ selectedTask.submissionItems ? "Yes" : "No" }}</b
@@ -203,60 +334,60 @@
                     >
                       <template v-slot:default>
                         <thead>
-                        <tr>
-                          <th class="text-left">Name</th>
-                          <th class="text-left">Upload Date</th>
-                          <th class="text-left">Actions</th>
-                        </tr>
+                          <tr>
+                            <th class="text-left">Name</th>
+                            <th class="text-left">Upload Date</th>
+                            <th class="text-left">Actions</th>
+                          </tr>
                         </thead>
                         <tbody>
-                        <tr
-                          v-for="userSubmission in selectedTask.students[0]
+                          <tr
+                            v-for="userSubmission in selectedTask.students[0]
                               .submissions"
-                          :key="userSubmission.id"
-                        >
-                          <template
-                            v-if="
+                            :key="userSubmission.id"
+                          >
+                            <template
+                              v-if="
                                 userSubmission.taskSubmissionItemId ===
                                 submission.id
                               "
-                          >
-                            <td
-                              style="
+                            >
+                              <td
+                                style="
                                   white-space: pre-line;
                                   overflow-wrap: anywhere;
                                 "
-                            >
-                              {{ userSubmission.fileName }}
-                            </td>
-                            <td>
-                              {{
-                                $date(userSubmission.timestamp).format(
-                                  "dddd, MMMM Do YYYY, hh:mm A"
-                                )
-                              }}
-                            </td>
-                            <td>
-                              <v-card-actions>
-                                <v-btn
-                                  text
-                                  fab
-                                  small
-                                  rounded
-                                  target="_blank"
-                                  :href="userSubmission.fileName"
-                                  v-if="
+                              >
+                                {{ userSubmission.fileName }}
+                              </td>
+                              <td>
+                                {{
+                                  $date(userSubmission.timestamp).format(
+                                    "dddd, MMMM Do YYYY, hh:mm A"
+                                  )
+                                }}
+                              </td>
+                              <td>
+                                <v-card-actions>
+                                  <v-btn
+                                    text
+                                    fab
+                                    small
+                                    rounded
+                                    target="_blank"
+                                    :href="userSubmission.fileName"
+                                    v-if="
                                       userSubmission.submissionFileType === 4
                                     "
-                                >
-                                  <v-icon> mdi-open-in-new </v-icon>
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  fab
-                                  small
-                                  rounded
-                                  :href="
+                                  >
+                                    <v-icon> mdi-open-in-new </v-icon>
+                                  </v-btn>
+                                  <v-btn
+                                    text
+                                    fab
+                                    small
+                                    rounded
+                                    :href="
                                       '/Services/FileAssets.svc/DownloadFile?id=' +
                                       userSubmission.fileId +
                                       '&originalFileName=' +
@@ -264,18 +395,18 @@
                                       '&compassInstance=' +
                                       $store.state.school.instance
                                     "
-                                  v-if="
+                                    v-if="
                                       userSubmission.submissionFileType === 7
                                     "
-                                >
-                                  <v-icon> mdi-download </v-icon>
-                                </v-btn>
-                                <v-btn
-                                  text
-                                  fab
-                                  small
-                                  rounded
-                                  :href="
+                                  >
+                                    <v-icon> mdi-download </v-icon>
+                                  </v-btn>
+                                  <v-btn
+                                    text
+                                    fab
+                                    small
+                                    rounded
+                                    :href="
                                       '/Services/FileAssets.svc/DownloadFile?id=' +
                                       userSubmission.fileId +
                                       '&originalFileName=' +
@@ -283,26 +414,26 @@
                                       '&compassInstance=' +
                                       $store.state.school.instance
                                     "
-                                  v-if="
+                                    v-if="
                                       userSubmission.submissionFileType === 1
                                     "
-                                >
-                                  <v-icon> mdi-download </v-icon>
-                                </v-btn>
-                                <v-btn
-                                  v-if="false"
-                                  text
-                                  fab
-                                  small
-                                  rounded
-                                  @click="deleteSubmission(userSubmission)"
-                                >
-                                  <v-icon> mdi-delete </v-icon>
-                                </v-btn>
-                              </v-card-actions>
-                            </td>
-                          </template>
-                        </tr>
+                                  >
+                                    <v-icon> mdi-download </v-icon>
+                                  </v-btn>
+                                  <v-btn
+                                    v-if="false"
+                                    text
+                                    fab
+                                    small
+                                    rounded
+                                    @click="deleteSubmission(userSubmission)"
+                                  >
+                                    <v-icon> mdi-delete </v-icon>
+                                  </v-btn>
+                                </v-card-actions>
+                              </td>
+                            </template>
+                          </tr>
                         </tbody>
                       </template>
                     </v-simple-table>
@@ -354,52 +485,52 @@
                       >
                         <template v-slot:default>
                           <thead>
-                          <tr>
-                            <th class="text-left">Name</th>
-                            <th class="text-left">Result</th>
-                          </tr>
+                            <tr>
+                              <th class="text-left">Name</th>
+                              <th class="text-left">Result</th>
+                            </tr>
                           </thead>
                           <tbody>
-                          <tr
-                            v-for="(
+                            <tr
+                              v-for="(
                                 gradingItem, index
                               ) in selectedTask.gradingItems"
-                            :key="gradingItem.id"
-                          >
-                            <td
-                              style="
+                              :key="gradingItem.id"
+                            >
+                              <td
+                                style="
                                   white-space: pre-line;
                                   overflow-wrap: anywhere;
                                 "
-                            >
-                              {{ gradingItem.name }}
-                            </td>
-                            <td>
-                              {{
-                                getGradingScheme(
-                                  gradingItem,
-                                  selectedTask.students[0].results[index]
-                                    .result
-                                )
-                              }}
-                              <template
-                                v-if="
+                              >
+                                {{ gradingItem.name }}
+                              </td>
+                              <td>
+                                {{
+                                  getGradingScheme(
+                                    gradingItem,
+                                    selectedTask.students[0].results[index]
+                                      .result
+                                  )
+                                }}
+                                <template
+                                  v-if="
                                     getGradingSchemeLength(gradingItem) <= 1
                                   "
-                              >
-                                {{
-                                  selectedTask.students[0].results[index]
-                                    .result
-                                }}
-                              </template>
-                              <template v-else>
-                                ({{
-                                  selectedTask.students[0].results[index]
-                                    .result
-                                }}/{{ getGradingSchemeLength(gradingItem) }})
-                              </template>
-                            </td>
-                          </tr>
+                                >
+                                  {{
+                                    selectedTask.students[0].results[index]
+                                      .result
+                                  }}
+                                </template>
+                                <template v-else>
+                                  ({{
+                                    selectedTask.students[0].results[index]
+                                      .result
+                                  }}/{{ getGradingSchemeLength(gradingItem) }})
+                                </template>
+                              </td>
+                            </tr>
                           </tbody>
                         </template>
                       </v-simple-table>
@@ -426,10 +557,10 @@
                             {{ feedback.comment }}
                           </v-list-item-content>
                           <small>{{
-                              $date(feedback.timestamp).format(
-                                "dddd, MMMM Do YYYY"
-                              )
-                            }}</small>
+                            $date(feedback.timestamp).format(
+                              "dddd, MMMM Do YYYY"
+                            )
+                          }}</small>
                         </v-container>
                       </v-card>
                       <v-text-field
@@ -479,15 +610,15 @@
                   >
                     <template v-slot:body="{ items }">
                       <tbody>
-                      <tr v-for="item in items" :key="item.name">
-                        <td>
-                          <b>{{ item.criteria }}</b>
-                        </td>
-                        <td
-                          v-for="entity in removeCriteria(item)"
-                          :key="entity.id"
-                        >
-                          <template>
+                        <tr v-for="item in items" :key="item.name">
+                          <td>
+                            <b>{{ item.criteria }}</b>
+                          </td>
+                          <td
+                            v-for="entity in removeCriteria(item)"
+                            :key="entity.id"
+                          >
+                            <template>
                               <span
                                 v-for="content in entity"
                                 :key="content.description"
@@ -498,9 +629,9 @@
                                 &bullet;&nbsp;{{ content.description
                                 }}<br /><br />
                               </span>
-                          </template>
-                        </td>
-                      </tr>
+                            </template>
+                          </td>
+                        </tr>
                       </tbody>
                     </template>
                   </v-data-table>
@@ -590,287 +721,325 @@
       </v-card>
     </v-dialog>
     <v-container>
-      <v-card color="card ma-3" class="rounded-xl" v-if="$store.state.editMode === 'editing'">
+      <v-card
+        color="card ma-3"
+        class="rounded-xl"
+        v-if="$store.state.editMode === 'editing'"
+      >
         <v-toolbar color="toolbar lighten-3">
           <v-toolbar-title>Add Widgets</v-toolbar-title>
         </v-toolbar>
         <v-container>
-          <v-btn text v-for="item in computedItems" :key="item.id" @click="addWidget(item)">
-            {{item.friendlyName}}
+          <v-btn
+            text
+            v-for="item in computedItems"
+            :key="item.id"
+            @click="addWidget(item)"
+          >
+            {{ item.friendlyName }}
           </v-btn>
           <v-divider class="ma-2"></v-divider>
           <v-btn @click="addGrid()" text :disabled="grids.length >= 3">
             Add Grid
           </v-btn>
-          <v-btn @click="restoreDefaults()" text>
-            Restore Defaults
-          </v-btn>
+          <v-btn @click="restoreDefaults()" text> Restore Defaults </v-btn>
         </v-container>
       </v-card>
       <v-row>
         <v-col v-for="(grid, index) in grids" :key="index">
-          <v-toolbar color="toolbar lighten-2" class="rounded-xl ma-3" v-if="$store.state.editMode === 'editing'">
-            <v-toolbar-title>
-             Grid {{index + 1}}
-            </v-toolbar-title>
+          <v-toolbar
+            color="toolbar lighten-2"
+            class="rounded-xl ma-3"
+            v-if="$store.state.editMode === 'editing'"
+          >
+            <v-toolbar-title> Grid {{ index + 1 }} </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click="removeGrid(index)">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-toolbar>
-          <draggable v-model="grid.items" :sort="true" group="home" :options="{disabled: $store.state.editMode !== 'editing'}">
-              <div v-for="item in grid.items" :key="item.id">
-                <v-card class="rounded-xl ma-3" elevation="7" color="card" v-if="$store.state.editMode === 'editing'">
-                  <v-toolbar color="toolbar lighten-1">
-                    <v-toolbar-title>
-                      {{item.friendlyName}}
-                      <template v-if="item.invisible">
-                        <v-icon color="grey--text" class="ml-2">mdi-eye-off</v-icon>
-                      </template>
-                    </v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="removeWidget(item, index)">
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                  </v-toolbar>
-                </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.calendar'">
-                  <v-overlay :value="loading.calendar" absolute>
-                    <v-progress-circular
-                      indeterminate
-                      size="64"
-                    ></v-progress-circular>
-                  </v-overlay>
-                  <v-toolbar color="toolbar">
-                    <v-btn text small fab @click="changeDay('subtract')" v-shortkey="['d']">
-                      <v-icon>mdi-arrow-left</v-icon>
-                    </v-btn>
-                    &nbsp;
-                    <v-menu
-                      ref="menu"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-btn text small fab v-on="on">
-                          <v-icon>mdi-calendar</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-date-picker
-                        v-model="$store.state.focus"
-                        @click:date="fetchEvents(false, true)"
-                        no-title
-                        scrollable
-                        color="info"
+          <draggable
+            v-model="grid.items"
+            :sort="true"
+            group="home"
+            :options="{ disabled: $store.state.editMode !== 'editing' }"
+          >
+            <div v-for="item in grid.items" :key="item.id">
+              <v-card
+                class="rounded-xl ma-3"
+                elevation="7"
+                color="card"
+                v-if="$store.state.editMode === 'editing'"
+              >
+                <v-toolbar color="toolbar lighten-1">
+                  <v-toolbar-title>
+                    {{ item.friendlyName }}
+                    <template v-if="item.invisible">
+                      <v-icon color="grey--text" class="ml-2"
+                        >mdi-eye-off</v-icon
                       >
-                      </v-date-picker>
-                    </v-menu>
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>{{
-                        $date($store.state.focus).format("dddd, MMMM Do YYYY")
-                      }}</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    &nbsp;
-                    <v-btn
-                      text
-                      small
-                      fab
-                      @click="
-                  $store.state.focus = $date().format()
-                  fetchEvents(false, true)
-                "
-                    >
-                      <v-icon>mdi-refresh</v-icon>
-                    </v-btn>
-                    <button style="display: none" v-shortkey="['arrowleft']" @shortkey="changeDay('subtract')"></button>
-                    <button style="display: none" v-shortkey="['arrowright']" @shortkey="changeDay('add')"></button>
-                    <button style="display: none" v-shortkey="['shift', 'r']" @shortkey="     $store.state.focus = $date().format()
-                  fetchEvents(false, true)"></button>
-                    <v-btn text small fab @click="changeDay('add')">
-                      <v-icon>mdi-arrow-right</v-icon>
-                    </v-btn>
-                  </v-toolbar>
-                  <v-card
-                    color="card"
-                    style="position: sticky"
-                    :style="
-                'background-color: ' +
-                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
-                  .card
-              "
+                    </template>
+                  </v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-btn icon @click="removeWidget(item, index)">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-toolbar>
+              </v-card>
+              <v-card
+                :color="color(item)"
+                class="rounded-xl ma-3"
+                elevation="7"
+                v-if="item.name === 'home.calendar'"
+              >
+                <v-overlay :value="loading.calendar" absolute>
+                  <v-progress-circular
+                    indeterminate
+                    size="64"
+                  ></v-progress-circular>
+                </v-overlay>
+                <v-toolbar color="toolbar">
+                  <v-btn
+                    text
+                    small
+                    fab
+                    @click="changeDay('subtract')"
+                    v-shortkey="['d']"
                   >
-                    <v-tabs background-color="card" fixed-tabs v-model="tab">
-                      <v-tab
-                        @click="type = 'day'"
-                        value="day"
-                        :style="
-                    'background-color: ' +
-                    $vuetify.theme.themes[
-                      $vuetify.theme.dark ? 'dark' : 'light'
-                    ].card
-                  "
-                      >
-                        Daily Schedule
-                      </v-tab>
-                      <v-tab
-                        @click="type = 'week'"
-                        value="week"
-                        :style="
-                    'background-color: ' +
-                    $vuetify.theme.themes[
-                      $vuetify.theme.dark ? 'dark' : 'light'
-                    ].card
-                  "
-                      >
-                        Weekly Schedule
-                      </v-tab>
-                      <v-tab
-                        @click="type = 'month'"
-                        value="month"
-                        v-if="false"
-                        :style="
-                    'background-color: ' +
-                    $vuetify.theme.themes[
-                      $vuetify.theme.dark ? 'dark' : 'light'
-                    ].card
-                  "
-                      >
-                        Monthly Schedule
-                      </v-tab>
-                    </v-tabs>
-                    <v-calendar
-                      :style="
-                  'background-color: ' +
-                  $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
-                    .card
-                "
-                      :class="type"
-                      :ref="'calendar-' + item.id"
-                      v-model="$store.state.focus"
-                      :weekdays="weekday"
-                      :type="type"
-                      :events="computeEvents"
-                      :event-overlap-mode="mode"
-                      :event-overlap-threshold="30"
-                      :first-interval="8"
-                      :interval-minutes="60"
-                      :interval-count="11"
-                      :interval-height="60"
-                      :event-color="computeColor"
-                      @click:event="pushEvent"
-                    >
-                    </v-calendar>
-                  </v-card>
-                </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.tasks'">
-                  <v-overlay :value="loading.tasks" absolute>
-                    <v-progress-circular
-                      indeterminate
-                      size="64"
-                    ></v-progress-circular>
-                  </v-overlay>
-                  <v-toolbar color="toolbar">
-                    <v-btn text fab disabled></v-btn>
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>My Tasks</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn text fab @click="editTask()"
-                    ><v-icon>mdi-plus</v-icon></v-btn
-                    >
-                  </v-toolbar>
-                  <v-data-table
-                    :headers="taskHeaders"
-                    :items="computeTasks"
-                    :expanded.sync="expanded"
-                    show-expand
-                    :style="
-                'background-color: ' +
-                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
-                  .card
-              "
+                    <v-icon>mdi-arrow-left</v-icon>
+                  </v-btn>
+                  &nbsp;
+                  <v-menu
+                    ref="menu"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
                   >
-                    <template v-slot:item.status="{ item }">
-                      <v-switch
-                        inset
-                        v-model="item.status"
-                        @click="setTaskStatus(item)"
-                      >
-                      </v-switch>
-                    </template>
-                    <template v-slot:item.dueDate="{ item }">
-                <span>{{
-                    item.dueDate
-                      ? $date(item.dueDate).format("dddd, MMMM Do YYYY")
-                      : "None"
-                  }}</span>
-                    </template>
-                    <template v-slot:item.tags="{ item }">
-                      <v-chip v-if="item.richNote"> Rich Note </v-chip>
-                    </template>
-                    <template v-slot:item.actions="{ item }">
-                      <v-btn icon @click="editTask(item)">
-                        <v-icon>mdi-pencil</v-icon>
+                    <template v-slot:activator="{ on }">
+                      <v-btn text small fab v-on="on">
+                        <v-icon>mdi-calendar</v-icon>
                       </v-btn>
                     </template>
-                    <template v-slot:expanded-item="{ headers, item }">
-                      <td :colspan="headers.length" v-if="item.richNote">
-                        <p style="white-space: pre-wrap">{{ item.description }}</p>
-                        <template v-if="item.activityId"
+                    <v-date-picker
+                      v-model="$store.state.focus"
+                      @click:date="fetchEvents(false, true)"
+                      no-title
+                      scrollable
+                      color="info"
+                    >
+                    </v-date-picker>
+                  </v-menu>
+                  <v-btn text small fab disabled> </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title>{{
+                    $date($store.state.focus).format("dddd, MMMM Do YYYY")
+                  }}</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  &nbsp;
+                  <v-btn text small fab @click="calendarDialog = true">
+                    <v-icon>mdi-arrow-expand-all</v-icon>
+                  </v-btn>
+                  <v-btn
+                    text
+                    small
+                    fab
+                    @click="
+                      $store.state.focus = $date().format()
+                      fetchEvents(false, true)
+                    "
+                  >
+                    <v-icon>mdi-refresh</v-icon>
+                  </v-btn>
+                  <button
+                    style="display: none"
+                    v-shortkey="['arrowleft']"
+                    @shortkey="changeDay('subtract')"
+                  ></button>
+                  <button
+                    style="display: none"
+                    v-shortkey="['arrowright']"
+                    @shortkey="changeDay('add')"
+                  ></button>
+                  <button
+                    style="display: none"
+                    v-shortkey="['shift', 'r']"
+                    @shortkey="
+                      $store.state.focus = $date().format()
+                      fetchEvents(false, true)
+                    "
+                  ></button>
+                  <v-btn text small fab @click="changeDay('add')">
+                    <v-icon>mdi-arrow-right</v-icon>
+                  </v-btn>
+                </v-toolbar>
+                <v-card
+                  color="card"
+                  style="position: sticky"
+                  :style="
+                    'background-color: ' +
+                    $vuetify.theme.themes[
+                      $vuetify.theme.dark ? 'dark' : 'light'
+                    ].card
+                  "
+                >
+                  <v-tabs background-color="card" fixed-tabs v-model="tab">
+                    <v-tab
+                      @click="type = 'day'"
+                      value="day"
+                      :style="
+                        'background-color: ' +
+                        $vuetify.theme.themes[
+                          $vuetify.theme.dark ? 'dark' : 'light'
+                        ].card
+                      "
+                    >
+                      Daily Schedule
+                    </v-tab>
+                    <v-tab
+                      @click="type = 'week'"
+                      value="week"
+                      :style="
+                        'background-color: ' +
+                        $vuetify.theme.themes[
+                          $vuetify.theme.dark ? 'dark' : 'light'
+                        ].card
+                      "
+                    >
+                      Weekly Schedule
+                    </v-tab>
+                    <v-tab
+                      @click="type = 'month'"
+                      value="month"
+                      v-if="false"
+                      :style="
+                        'background-color: ' +
+                        $vuetify.theme.themes[
+                          $vuetify.theme.dark ? 'dark' : 'light'
+                        ].card
+                      "
+                    >
+                      Monthly Schedule
+                    </v-tab>
+                  </v-tabs>
+                  <v-calendar
+                    :style="
+                      'background-color: ' +
+                      $vuetify.theme.themes[
+                        $vuetify.theme.dark ? 'dark' : 'light'
+                      ].card
+                    "
+                    :class="type"
+                    :ref="'calendar-' + item.id"
+                    v-model="$store.state.focus"
+                    :weekdays="weekday"
+                    :type="type"
+                    :events="computeEvents"
+                    :event-overlap-mode="mode"
+                    :event-overlap-threshold="30"
+                    :first-interval="8"
+                    :interval-minutes="60"
+                    :interval-count="11"
+                    :interval-height="60"
+                    :event-color="computeColor"
+                    @click:event="pushEvent"
+                  >
+                  </v-calendar>
+                </v-card>
+              </v-card>
+              <v-card
+                :color="color(item)"
+                class="rounded-xl ma-3"
+                elevation="7"
+                v-if="item.name === 'home.tasks'"
+              >
+                <v-overlay :value="loading.tasks" absolute>
+                  <v-progress-circular
+                    indeterminate
+                    size="64"
+                  ></v-progress-circular>
+                </v-overlay>
+                <v-toolbar color="toolbar">
+                  <v-btn text fab disabled></v-btn>
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title>My Tasks</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-btn text fab @click="editTask()"
+                    ><v-icon>mdi-plus</v-icon></v-btn
+                  >
+                </v-toolbar>
+                <v-data-table
+                  :headers="taskHeaders"
+                  :items="computeTasks"
+                  :expanded.sync="expanded"
+                  show-expand
+                  :style="
+                    'background-color: ' +
+                    $vuetify.theme.themes[
+                      $vuetify.theme.dark ? 'dark' : 'light'
+                    ].card
+                  "
+                >
+                  <template v-slot:item.status="{ item }">
+                    <v-switch
+                      inset
+                      v-model="item.status"
+                      @click="setTaskStatus(item)"
+                    >
+                    </v-switch>
+                  </template>
+                  <template v-slot:item.dueDate="{ item }">
+                    <span>{{
+                      item.dueDate
+                        ? $date(item.dueDate).format("dddd, MMMM Do YYYY")
+                        : "None"
+                    }}</span>
+                  </template>
+                  <template v-slot:item.tags="{ item }">
+                    <v-chip v-if="item.richNote"> Rich Note </v-chip>
+                  </template>
+                  <template v-slot:item.actions="{ item }">
+                    <v-btn icon @click="editTask(item)">
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                  </template>
+                  <template v-slot:expanded-item="{ headers, item }">
+                    <td :colspan="headers.length" v-if="item.richNote">
+                      <p style="white-space: pre-wrap">
+                        {{ item.description }}
+                      </p>
+                      <template v-if="item.activityId"
                         ><b>Subject:</b>
-                          {{
-                            $store.state.subjects[
-                              $store.state.subjects.findIndex(
-                                (x) => x.id === item.activityId
-                              )
-                              ]?.subjectLongName || item.activityId + " (Unknown Activity)"
-                          }}</template
-                        >
-                      </td>
-                      <td :colspan="headers.length" v-else>
-                        <span>Only rich notes are expandable.</span>
-                      </td>
-                    </template>
-                  </v-data-table>
-                </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.events'">
-                  <v-toolbar color="toolbar">
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>Upcoming Events</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                  </v-toolbar>
-                  <v-container>
-                    <v-card
-                      v-for="item in $store.state.upcomingEvents"
-                      :key="item.id"
-                      class="rounded-xl mx-2 ma-3"
-                      dense
-                      elevation="3"
-                      text
-                      color="card"
-                    >
-                      <v-container>
-                        <router-link
-                          style="text-decoration: none"
-                          :to="'/user/' + $store.state.user.userId + '/events'"
-                        >{{ item.LinkText }}</router-link
-                        ><br />
-                        <small>{{ item.Body }}</small>
-                      </v-container>
-                    </v-card>
-                  </v-container>
-                </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.news'">
-                  <v-toolbar color="toolbar">
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title
-                    >{{ $store.state.school.name }} News</v-toolbar-title
-                    >
-                    <v-spacer></v-spacer>
-                  </v-toolbar>
+                        {{
+                          $store.state.subjects[
+                            $store.state.subjects.findIndex(
+                              (x) => x.id === item.activityId
+                            )
+                          ]?.subjectLongName ||
+                          item.activityId + " (Unknown Activity)"
+                        }}</template
+                      >
+                    </td>
+                    <td :colspan="headers.length" v-else>
+                      <span>Only rich notes are expandable.</span>
+                    </td>
+                  </template>
+                </v-data-table>
+              </v-card>
+              <v-card
+                :color="color(item)"
+                class="rounded-xl ma-3"
+                elevation="7"
+                v-if="item.name === 'home.events'"
+              >
+                <v-toolbar color="toolbar">
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title>Upcoming Events</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-container>
                   <v-card
-                    v-for="item in news"
+                    v-for="item in $store.state.upcomingEvents"
                     :key="item.id"
                     class="rounded-xl mx-2 ma-3"
                     dense
@@ -878,239 +1047,328 @@
                     text
                     color="card"
                   >
-                    <v-container class="text-center align-center justify-center">
-                      <div>
-                        <v-avatar
-                          :src="$store.state.school.fqdn + item.UserImageUrl"
-                          align="center"
-                          class="text-center justify-center"
-                          justify="center"
-                          size="40"
-                        >
-                          <img :src="$store.state.school.fqdn + item.UserImageUrl" />
-                        </v-avatar>
-                        <p class="text-h5">
-                          {{ item.UserName }}
-                        </p>
-                        <div
-                          class="text-block"
-                          style="white-space: pre-line"
-                          v-html="item.Content1"
-                        ></div>
-                        <v-card-actions class="justify-center">
-                          <v-chip
-                            v-for="attachment in item.Attachments"
-                            :key="attachment.id"
-                            :href="
-                        attachment.UiLink +
-                        '&compassInstance=' +
-                        $store.state.school.instance
-                      "
-                            download
-                            color="indigo"
-                            dark
-                          >
-                            <v-icon>mdi-download</v-icon>
-                            {{ attachment.Name }}
-                          </v-chip>
-                        </v-card-actions>
-
-                        <small>{{
-                            $date(item.PostDateTime).format(
-                              "dddd, MMMM Do YYYY, hh:mm A"
-                            )
-                          }}</small>
-                      </div>
+                    <v-container>
+                      <router-link
+                        style="text-decoration: none"
+                        :to="'/user/' + $store.state.user.userId + '/events'"
+                        >{{ item.LinkText }}</router-link
+                      ><br />
+                      <small>{{ item.Body }}</small>
                     </v-container>
                   </v-card>
-                </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3 text-center justify-center" elevation="7" v-if="item.name === 'home.weather' && weather.name">
-                  <v-toolbar color="toolbar">
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title> Weather </v-toolbar-title>
-                    <v-spacer></v-spacer>
-                  </v-toolbar>
-                  <v-list-item two-line>
-                    <v-list-item-content>
-                      <v-list-item-title class="text-h5">
-                        {{ weather.name }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle
-                      >{{ $date().format("dddd, MMMM Do YYYY") }},
-                        {{ weather.weather[0].main }}:
-                        {{ weather.weather[0].description }}</v-list-item-subtitle
+                </v-container>
+              </v-card>
+              <v-card
+                :color="color(item)"
+                class="rounded-xl ma-3"
+                elevation="7"
+                v-if="item.name === 'home.news'"
+              >
+                <v-toolbar color="toolbar">
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title
+                    >{{ $store.state.school.name }} News</v-toolbar-title
+                  >
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-card
+                  v-for="item in news"
+                  :key="item.id"
+                  class="rounded-xl mx-2 ma-3"
+                  dense
+                  elevation="3"
+                  text
+                  color="card"
+                >
+                  <v-container class="text-center align-center justify-center">
+                    <div>
+                      <v-avatar
+                        :src="$store.state.school.fqdn + item.UserImageUrl"
+                        align="center"
+                        class="text-center justify-center"
+                        justify="center"
+                        size="40"
                       >
-                    </v-list-item-content>
-                  </v-list-item>
-
-                  <v-card-text>
-                    <v-row align="center">
-                      <v-col class="text-h2"> {{ weather.main.temp }}&deg;C </v-col>
-                    </v-row>
-                    <small>Feels like: {{ weather.main.feels_like }}&deg;C</small>
-                  </v-card-text>
-
-                  <v-list-item>
-                    <v-list-item-subtitle>
-                      {{ weather.wind.speed }} km/h wind speed</v-list-item-subtitle
-                    >
-                  </v-list-item>
-
-                  <v-list-item>
-                    <v-list-item-subtitle>
-                      {{ weather.main.humidity }}% humidity</v-list-item-subtitle
-                    >
-                  </v-list-item>
-                </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.features'">
-                  <v-toolbar color="toolbar">
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>What's new in BetterCompass?</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                  </v-toolbar>
-                  <v-container>
-                    <v-card-title> 07/04/2022 </v-card-title>
-                    <ul>
-                      <li>Fixed rubric not showing teacher results.</li>
-                      <li>Fixed missing rubric tab on User Learning Tasks.</li>
-                      <li>
-                        Added rubric learning task tag, and Compass tags (Assessment,
-                        Assignment, etc).
-                      </li>
-                      <li>Added past events to User Events.</li>
-                      <li>Added event resources to User Events.</li>
-                      <li>Event descriptions are now sanitized.</li>
-                    </ul>
-                    <small
-                    >BetterCompass version {{ $store.state.versioning.version }},
-                      built on {{ $store.state.versioning.date }}</small
-                    >
-                  </v-container>
-                </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.placeholder'">
-                  <v-toolbar color="toolbar">
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>Placeholder</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                  </v-toolbar>
-                  <v-container>
-                    <v-card-title> Placeholder </v-card-title>
-                    <small>Placeholder</small>
-                  </v-container>
-                </v-card>
-                <v-card :color="color(item)" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.compassScore'">
-                  <v-toolbar :color="computeCompassScoreDescription.color">
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>Your CompassScore</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                  </v-toolbar>
-                  <v-container class="justify-center text-center">
-                    <h1 style="font-size: 150px">{{ Math.round(computeCompassScore) }}%</h1>
-                    <h2>{{ computeCompassScoreDescription.text }}</h2>
-                    <p>{{ computeCompassScoreDescription.description }}</p>
-                  </v-container>
-                  <v-card-actions>
-                    <v-btn text disabled> 01/04/2022 </v-btn>
-                  </v-card-actions>
-                </v-card>
-                <template v-if="item.name === 'home.overdueLearningTasks'">
-                  <router-link
-                    v-if="learningTaskAlert"
-                    :to="'/user/' + $store.state.user.userId + '/tasks'"
-                    style="text-decoration: none"
-                  >
-                    <v-alert
-                      dismissible
-                      v-model="learningTaskAlert"
-                      elevation="5"
-                      class="rounded-xl ma-3"
-                      type="warning"
-                    >
-                      {{ overDueLearningTasks }} overdue learning tasks.
-                    </v-alert>
-                  </router-link>
-                </template>
-                <template v-if="item.name === 'home.notifications'">
-                  <router-link
-                    v-if="learningTaskAlert"
-                    :to="'/user/' + $store.state.user.userId + '/tasks'"
-                    style="text-decoration: none"
-                  >
-                    <v-alert
-                      v-for="alert in alerts"
-                      :key="alert.id"
-                      type="info"
-                      class="rounded-xl ma-3"
-                    >
-                      {{ alert.Body }}
-                    </v-alert>
-                  </router-link>
-                </template>
-                <v-card color="card" class="rounded-xl ma-3" elevation="7" v-if="item.name === 'home.learningTasks'">
-                  <v-overlay v-if="loading.learningTasks" absolute>
-                    <v-progress-circular indeterminate size="64"></v-progress-circular>
-                  </v-overlay>
-                  <v-toolbar color="toolbar">
-                    <v-spacer></v-spacer>
-                    <v-toolbar-title>Learning Tasks ({{computeLearningTasks.length}})</v-toolbar-title>&nbsp;
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-icon v-on="on" v-bind="attrs">
-                          mdi-information-outline
-                        </v-icon>
-                      </template>
-                      <span> Only shows tasks newer than 10 weeks, and submitted tasks newer than 2 weeks (relevant tasks). </span>
-                    </v-tooltip>
-                    <v-spacer></v-spacer>
-                  </v-toolbar>
-                  <v-container>
-                    <v-data-table
-                      :headers="learningTasksHeaders"
-                      :items="computeLearningTasks"
-                      :items-per-page="5"
-                      class="elevation-3"
-                      @click:row="learningTaskDialog"
-                      style="cursor: pointer"
-                      :style="
-          'background-color: ' +
-          $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card
-        "
-                    >
-                      <template v-slot:item.tags="{ item }">
-                        <v-chip-group column>
-                          <v-chip color="red" v-if="item.important">
-                            <v-icon>mdi-alert-octagon-outline </v-icon> Important
-                          </v-chip>
-                          <v-chip color="blue" v-if="item.rubricWikiNodeIds">
-                            <v-icon>mdi-format-list-bulleted </v-icon> Rubric
-                          </v-chip>
-                          <v-chip v-if="getCategory(item)" :color="getCategory(item).color">
-                            {{ getCategory(item).categoryName }}
-                          </v-chip>
-                        </v-chip-group>
-                      </template>
-                      <template v-slot:item.status="{ item }">
-                        <v-icon v-if="getStatus(item).status === 'pending'">
-                          mdi-circle-outline
-                        </v-icon>
-                        <v-icon v-if="getStatus(item).status === 'submitted'" color="green">
-                          mdi-check-circle-outline
-                        </v-icon>
-                        <v-icon
-                          v-if="getStatus(item).status === 'submittedLate'"
-                          color="orange"
+                        <img
+                          :src="$store.state.school.fqdn + item.UserImageUrl"
+                        />
+                      </v-avatar>
+                      <p class="text-h5">
+                        {{ item.UserName }}
+                      </p>
+                      <div
+                        class="text-block"
+                        style="white-space: pre-line"
+                        v-html="item.Content1"
+                      ></div>
+                      <v-card-actions class="justify-center">
+                        <v-chip
+                          v-for="attachment in item.Attachments"
+                          :key="attachment.id"
+                          :href="
+                            attachment.UiLink +
+                            '&compassInstance=' +
+                            $store.state.school.instance
+                          "
+                          download
+                          color="indigo"
+                          dark
                         >
-                          mdi-check-circle-outline
-                        </v-icon>
-                        <v-icon v-if="getStatus(item).status === 'pendingLate'" color="red">
-                          mdi-alert-circle-outline
-                        </v-icon>
-                        {{ getStatus(item).text }}
-                      </template>
-                    </v-data-table>
+                          <v-icon>mdi-download</v-icon>
+                          {{ attachment.Name }}
+                        </v-chip>
+                      </v-card-actions>
+
+                      <small>{{
+                        $date(item.PostDateTime).format(
+                          "dddd, MMMM Do YYYY, hh:mm A"
+                        )
+                      }}</small>
+                    </div>
                   </v-container>
                 </v-card>
-              </div>
+              </v-card>
+              <v-card
+                :color="color(item)"
+                class="rounded-xl ma-3 text-center justify-center"
+                elevation="7"
+                v-if="item.name === 'home.weather' && weather.name"
+              >
+                <v-toolbar color="toolbar">
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title> Weather </v-toolbar-title>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-h5">
+                      {{ weather.name }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle
+                      >{{ $date().format("dddd, MMMM Do YYYY") }},
+                      {{ weather.weather[0].main }}:
+                      {{ weather.weather[0].description }}</v-list-item-subtitle
+                    >
+                  </v-list-item-content>
+                </v-list-item>
+
+                <v-card-text>
+                  <v-row align="center">
+                    <v-col class="text-h2">
+                      {{ weather.main.temp }}&deg;C
+                    </v-col>
+                  </v-row>
+                  <small>Feels like: {{ weather.main.feels_like }}&deg;C</small>
+                </v-card-text>
+
+                <v-list-item>
+                  <v-list-item-subtitle>
+                    {{ weather.wind.speed }} km/h wind
+                    speed</v-list-item-subtitle
+                  >
+                </v-list-item>
+
+                <v-list-item>
+                  <v-list-item-subtitle>
+                    {{ weather.main.humidity }}% humidity</v-list-item-subtitle
+                  >
+                </v-list-item>
+              </v-card>
+              <v-card
+                :color="color(item)"
+                class="rounded-xl ma-3"
+                elevation="7"
+                v-if="item.name === 'home.features'"
+              >
+                <v-toolbar color="toolbar">
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title
+                    >What's new in BetterCompass?</v-toolbar-title
+                  >
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-container>
+                  <v-card-title> 07/04/2022 </v-card-title>
+                  <ul>
+                    <li>Fixed rubric not showing teacher results.</li>
+                    <li>Fixed missing rubric tab on User Learning Tasks.</li>
+                    <li>
+                      Added rubric learning task tag, and Compass tags
+                      (Assessment, Assignment, etc).
+                    </li>
+                    <li>Added past events to User Events.</li>
+                    <li>Added event resources to User Events.</li>
+                    <li>Event descriptions are now sanitized.</li>
+                  </ul>
+                  <small
+                    >BetterCompass version
+                    {{ $store.state.versioning.version }}, built on
+                    {{ $store.state.versioning.date }}</small
+                  >
+                </v-container>
+              </v-card>
+              <v-card
+                :color="color(item)"
+                class="rounded-xl ma-3"
+                elevation="7"
+                v-if="item.name === 'home.placeholder'"
+              >
+                <v-toolbar color="toolbar">
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title>Placeholder</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-container>
+                  <v-card-title> Placeholder </v-card-title>
+                  <small>Placeholder</small>
+                </v-container>
+              </v-card>
+              <v-card
+                :color="color(item)"
+                class="rounded-xl ma-3"
+                elevation="7"
+                v-if="item.name === 'home.compassScore'"
+              >
+                <v-toolbar :color="computeCompassScoreDescription.color">
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title>Your CompassScore</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-container class="justify-center text-center">
+                  <h1 style="font-size: 150px">
+                    {{ Math.round(computeCompassScore) }}%
+                  </h1>
+                  <h2>{{ computeCompassScoreDescription.text }}</h2>
+                  <p>{{ computeCompassScoreDescription.description }}</p>
+                </v-container>
+                <v-card-actions>
+                  <v-btn text disabled> 01/04/2022 </v-btn>
+                </v-card-actions>
+              </v-card>
+              <template v-if="item.name === 'home.overdueLearningTasks'">
+                <router-link
+                  v-if="learningTaskAlert"
+                  :to="'/user/' + $store.state.user.userId + '/tasks'"
+                  style="text-decoration: none"
+                >
+                  <v-alert
+                    dismissible
+                    v-model="learningTaskAlert"
+                    elevation="5"
+                    class="rounded-xl ma-3"
+                    type="warning"
+                  >
+                    {{ overDueLearningTasks }} overdue learning tasks.
+                  </v-alert>
+                </router-link>
+              </template>
+              <template v-if="item.name === 'home.notifications'">
+                <router-link
+                  v-if="learningTaskAlert"
+                  :to="'/user/' + $store.state.user.userId + '/tasks'"
+                  style="text-decoration: none"
+                >
+                  <v-alert
+                    v-for="alert in alerts"
+                    :key="alert.id"
+                    type="info"
+                    class="rounded-xl ma-3"
+                  >
+                    {{ alert.Body }}
+                  </v-alert>
+                </router-link>
+              </template>
+              <v-card
+                color="card"
+                class="rounded-xl ma-3"
+                elevation="7"
+                v-if="item.name === 'home.learningTasks'"
+              >
+                <v-overlay v-if="loading.learningTasks" absolute>
+                  <v-progress-circular
+                    indeterminate
+                    size="64"
+                  ></v-progress-circular>
+                </v-overlay>
+                <v-toolbar color="toolbar">
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title
+                    >Learning Tasks ({{
+                      computeLearningTasks.length
+                    }})</v-toolbar-title
+                  >&nbsp;
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon v-on="on" v-bind="attrs">
+                        mdi-information-outline
+                      </v-icon>
+                    </template>
+                    <span>
+                      Only shows tasks newer than 10 weeks, and submitted tasks
+                      newer than 2 weeks (relevant tasks).
+                    </span>
+                  </v-tooltip>
+                  <v-spacer></v-spacer>
+                </v-toolbar>
+                <v-container>
+                  <v-data-table
+                    :headers="learningTasksHeaders"
+                    :items="computeLearningTasks"
+                    :items-per-page="5"
+                    class="elevation-3"
+                    @click:row="learningTaskDialog"
+                    style="cursor: pointer"
+                    :style="
+                      'background-color: ' +
+                      $vuetify.theme.themes[
+                        $vuetify.theme.dark ? 'dark' : 'light'
+                      ].card
+                    "
+                  >
+                    <template v-slot:item.tags="{ item }">
+                      <v-chip-group column>
+                        <v-chip color="red" v-if="item.important">
+                          <v-icon>mdi-alert-octagon-outline </v-icon> Important
+                        </v-chip>
+                        <v-chip color="blue" v-if="item.rubricWikiNodeIds">
+                          <v-icon>mdi-format-list-bulleted </v-icon> Rubric
+                        </v-chip>
+                        <v-chip
+                          v-if="getCategory(item)"
+                          :color="getCategory(item).color"
+                        >
+                          {{ getCategory(item).categoryName }}
+                        </v-chip>
+                      </v-chip-group>
+                    </template>
+                    <template v-slot:item.status="{ item }">
+                      <v-icon v-if="getStatus(item).status === 'pending'">
+                        mdi-circle-outline
+                      </v-icon>
+                      <v-icon
+                        v-if="getStatus(item).status === 'submitted'"
+                        color="green"
+                      >
+                        mdi-check-circle-outline
+                      </v-icon>
+                      <v-icon
+                        v-if="getStatus(item).status === 'submittedLate'"
+                        color="orange"
+                      >
+                        mdi-check-circle-outline
+                      </v-icon>
+                      <v-icon
+                        v-if="getStatus(item).status === 'pendingLate'"
+                        color="red"
+                      >
+                        mdi-alert-circle-outline
+                      </v-icon>
+                      {{ getStatus(item).text }}
+                    </template>
+                  </v-data-table>
+                </v-container>
+              </v-card>
+            </div>
           </draggable>
         </v-col>
       </v-row>
@@ -1119,7 +1377,7 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+import draggable from "vuedraggable"
 import dayjs from "dayjs"
 
 export default {
@@ -1129,9 +1387,9 @@ export default {
   },
   data() {
     return {
+      calendarDialog: false,
       gradingSchemes: [],
       rowsPerPage: 10,
-      hideIrrelevantTasks: false,
       newFeedback: "",
       sortBy: "activityName",
       dialog: false,
@@ -1173,9 +1431,11 @@ export default {
         name: "PLACEHOLDER",
         parentCode: "PLACEHOLDER",
         singleResultBreakdownCols: 1,
-        students: [{
-          results: 0
-        }],
+        students: [
+          {
+            results: 0
+          }
+        ],
         subjectName: "PLACEHOLDER",
         submissionItems: []
       },
@@ -1196,12 +1456,12 @@ export default {
         {
           itemId: 0,
           name: "home.calendar",
-          friendlyName: "Calendar Widget",
+          friendlyName: "Calendar Widget"
         },
         {
           itemId: 1,
           name: "home.tasks",
-          friendlyName: "Tasks Widget",
+          friendlyName: "Tasks Widget"
         },
         {
           itemId: 2,
@@ -1211,7 +1471,7 @@ export default {
         {
           itemId: 3,
           name: "home.news",
-          friendlyName: "News Widget",
+          friendlyName: "News Widget"
         },
         {
           itemId: 4,
@@ -1222,7 +1482,7 @@ export default {
         {
           itemId: 5,
           name: "home.features",
-          friendlyName: "Features Widget",
+          friendlyName: "Features Widget"
         },
         {
           itemId: 6,
@@ -1233,7 +1493,7 @@ export default {
         {
           itemId: 7,
           name: "home.learningTasks",
-          friendlyName: "Learning Tasks Widget",
+          friendlyName: "Learning Tasks Widget"
         },
         {
           itemId: 9,
@@ -1256,38 +1516,42 @@ export default {
       ],
       grids: [
         {
-          items: [{
-            id: 0,
-            name: "home.calendar",
-            friendlyName: "Calendar Widget",
-          },
+          items: [
+            {
+              id: 0,
+              name: "home.calendar",
+              friendlyName: "Calendar Widget"
+            },
             {
               id: 1,
               name: "home.tasks",
-              friendlyName: "Tasks Widget",
+              friendlyName: "Tasks Widget"
             },
             {
               id: 2,
               name: "home.events",
               friendlyName: "Events Widget"
-            }]
+            }
+          ]
         },
         {
-          items: [{
-            id: 3,
-            name: "home.news",
-            friendlyName: "News Widget",
-          },
+          items: [
+            {
+              id: 3,
+              name: "home.news",
+              friendlyName: "News Widget"
+            },
             {
               id: 4,
               name: "home.weather",
-              friendlyName: "Weather Widget",
+              friendlyName: "Weather Widget"
             },
             {
               id: 5,
               name: "home.features",
-              friendlyName: "Features Widget",
-            }]
+              friendlyName: "Features Widget"
+            }
+          ]
         }
       ],
       expanded: [],
@@ -1358,22 +1622,28 @@ export default {
       return this.$sanitize(this.selectedTask.description)
     },
     computeLearningTasks() {
-      return this.learningTasks.filter(task => task.createdTimestamp > dayjs().subtract(2, "week").format() && this.getStatusBoolean(task) || task.createdTimestamp > dayjs().subtract(10, "week").format() && !this.getStatusBoolean(task))
+      return this.learningTasks.filter(
+        (task) =>
+          (task.createdTimestamp > dayjs().subtract(2, "week").format() &&
+            this.getStatusBoolean(task)) ||
+          (task.createdTimestamp > dayjs().subtract(10, "week").format() &&
+            !this.getStatusBoolean(task))
+      )
     },
     computedItems() {
-      return this.items.filter(item => {
+      return this.items.filter((item) => {
         return item.shown || item.shown === undefined
       })
     },
     computeCompassScore() {
-      if(localStorage.getItem("compassScore")) {
+      if (localStorage.getItem("compassScore")) {
         return JSON.parse(localStorage.getItem("compassScore"))
       } else {
         return null
       }
     },
     computeCompassScoreDescription() {
-      if(localStorage.getItem("compassScore")) {
+      if (localStorage.getItem("compassScore")) {
         if (this.score >= 90) {
           return {
             color: "success",
@@ -1684,7 +1954,7 @@ export default {
             this.selectedTask.students[0].submissions?.findIndex(
               (x) => x.taskSubmissionItemId === submission.id
             )
-            ]
+          ]
       }
       if (
         !submittedSubmission &&
@@ -1797,7 +2067,7 @@ export default {
         return false
       } else if (item.students[0].submissionStatus === 3) {
         return true
-      } else return item.students[0].submissionStatus === 4;
+      } else return item.students[0].submissionStatus === 4
     },
     getLearningSchemes() {
       this.axios
@@ -1814,7 +2084,7 @@ export default {
       })
     },
     color(item) {
-      if(item.name === "home.compassScore") {
+      if (item.name === "home.compassScore") {
         return this.computeCompassScoreDescription.color
       } else {
         return "card"
@@ -1827,10 +2097,70 @@ export default {
       this.$store.dispatch("getUserInfo")
     },
     restoreDefaults() {
-      this.grids = [{"items":[{"id":7,"itemId":11,"name":"home.overdueLearningTasks","friendlyName":"Overdue Learning Tasks Warning Widget","invisible":true},{"itemId":0,"id":0,"name":"home.calendar","friendlyName":"Calendar Widget"},{"itemId":1,"id":1,"name":"home.tasks","friendlyName":"Tasks Widget"},{"itemId":2,"id":2,"name":"home.events","friendlyName":"Events Widget"}]},{"items":[{"id":6,"itemId":10,"name":"home.notifications","friendlyName":"Warnings/Notifications Widget","invisible":true},{"itemId":3,"id":3,"name":"home.news","friendlyName":"News Widget"},{"itemId":4,"id":4,"name":"home.weather","friendlyName":"Weather Widget","invisible":true},{"itemId":5,"id":5,"name":"home.features","friendlyName":"Features Widget"}]}]
+      this.grids = [
+        {
+          items: [
+            {
+              id: 7,
+              itemId: 11,
+              name: "home.overdueLearningTasks",
+              friendlyName: "Overdue Learning Tasks Warning Widget",
+              invisible: true
+            },
+            {
+              itemId: 0,
+              id: 0,
+              name: "home.calendar",
+              friendlyName: "Calendar Widget"
+            },
+            {
+              itemId: 1,
+              id: 1,
+              name: "home.tasks",
+              friendlyName: "Tasks Widget"
+            },
+            {
+              itemId: 2,
+              id: 2,
+              name: "home.events",
+              friendlyName: "Events Widget"
+            }
+          ]
+        },
+        {
+          items: [
+            {
+              id: 6,
+              itemId: 10,
+              name: "home.notifications",
+              friendlyName: "Warnings/Notifications Widget",
+              invisible: true
+            },
+            {
+              itemId: 3,
+              id: 3,
+              name: "home.news",
+              friendlyName: "News Widget"
+            },
+            {
+              itemId: 4,
+              id: 4,
+              name: "home.weather",
+              friendlyName: "Weather Widget",
+              invisible: true
+            },
+            {
+              itemId: 5,
+              id: 5,
+              name: "home.features",
+              friendlyName: "Features Widget"
+            }
+          ]
+        }
+      ]
     },
     addGrid() {
-      this.grids.push({items: []})
+      this.grids.push({ items: [] })
     },
     removeGrid(index) {
       this.grids.splice(index, 1)
@@ -2040,7 +2370,8 @@ export default {
         .then((res) => {
           this.loading.learningTasks = false
           this.learningTasks = res.data.d.data
-          res.data.d.data.forEach((item) => {
+
+          this.computeLearningTasks.forEach((item) => {
             if (this.getStatus(item).status === "pendingLate") {
               this.overDueLearningTasks++
             }
@@ -2088,18 +2419,26 @@ export default {
       }
     },
     changeDay(type) {
-      if(this.type === "day") {
+      if (this.type === "day") {
         if (type === "add") {
-          this.$store.state.focus = this.$date(this.$store.state.focus).add(1, "day").format("YYYY-MM-DD")
+          this.$store.state.focus = this.$date(this.$store.state.focus)
+            .add(1, "day")
+            .format("YYYY-MM-DD")
         } else if (type === "subtract") {
-          this.$store.state.focus = this.$date(this.$store.state.focus).subtract(1, "day").format("YYYY-MM-DD")
+          this.$store.state.focus = this.$date(this.$store.state.focus)
+            .subtract(1, "day")
+            .format("YYYY-MM-DD")
         }
         this.fetchEvents(false, false)
-      } else if(this.type === "week") {
+      } else if (this.type === "week") {
         if (type === "add") {
-          this.$store.state.focus = this.$date(this.$store.state.focus).add(7, "day").format("YYYY-MM-DD")
+          this.$store.state.focus = this.$date(this.$store.state.focus)
+            .add(7, "day")
+            .format("YYYY-MM-DD")
         } else if (type === "subtract") {
-          this.$store.state.focus = this.$date(this.$store.state.focus).subtract(7, "day").format("YYYY-MM-DD")
+          this.$store.state.focus = this.$date(this.$store.state.focus)
+            .subtract(7, "day")
+            .format("YYYY-MM-DD")
         }
         this.fetchEvents(false, true)
       }
@@ -2131,14 +2470,18 @@ export default {
           this.$store.state.bcUser.calendarAutoJump &&
           !this.$store.state.calendarInit
         ) {
-          this.$store.state.focus = this.$date(this.$store.state.focus).add(1, "day").format("YYYY-MM-DD")
+          this.$store.state.focus = this.$date(this.$store.state.focus)
+            .add(1, "day")
+            .format("YYYY-MM-DD")
           this.fetchEvents(false, false)
         } else if (
           this.$date().day() === 6 &&
           this.$store.state.bcUser.calendarAutoJump &&
           !this.$store.state.calendarInit
         ) {
-          this.$store.state.focus = this.$date(this.$store.state.focus).add(2, "day").format("YYYY-MM-DD")
+          this.$store.state.focus = this.$date(this.$store.state.focus)
+            .add(2, "day")
+            .format("YYYY-MM-DD")
           this.fetchEvents(false, false)
         }
         this.loading.calendar = true
@@ -2166,19 +2509,22 @@ export default {
         })
         .then((res) => {
           this.$store.commit("setCalendarInit", true)
-          this.$store.commit("setCalendar", res.data.d.map((event) => {
-            return {
-              name: this.subjectName(event),
-              content: event.longTitle,
-              color: event.backgroundColor,
-              start: new Date(event.start),
-              end: new Date(event.finish),
-              timed: !event.allDay,
-              activityType: event.activityType,
-              activityId: event.activityId,
-              instanceId: event.instanceId
-            }
-          }))
+          this.$store.commit(
+            "setCalendar",
+            res.data.d.map((event) => {
+              return {
+                name: this.subjectName(event),
+                content: event.longTitle,
+                color: event.backgroundColor,
+                start: new Date(event.start),
+                end: new Date(event.finish),
+                timed: !event.allDay,
+                activityType: event.activityType,
+                activityId: event.activityId,
+                instanceId: event.instanceId
+              }
+            })
+          )
           this.loading.calendar = false
         })
     },
@@ -2212,7 +2558,7 @@ export default {
     this.$store.dispatch("getUserInfo").then((res) => {
       this.user = res
       this.grids = this.$store.state.bcUser?.homeGrids
-      if(this.$store.state.calendar.length) {
+      if (this.$store.state.calendar.length) {
         this.fetchEvents(false, false)
       } else {
         this.fetchEvents(true, false)
@@ -2225,16 +2571,16 @@ export default {
   },
   watch: {
     "$store.state.editMode"(val) {
-      if(val === "save") {
+      if (val === "save") {
         this.saveGrid()
-      } else if(val === "discard") {
+      } else if (val === "discard") {
         this.$store.dispatch("getUserInfo").then(() => {
           this.grids = this.$store.state.bcUser?.homeGrids
         })
       }
     },
     "$store.state.focus"(val) {
-      if(val === "2069-04-20") {
+      if (val === "2069-04-20") {
         this.$toast.success("Enabled CompassScore")
         localStorage.setItem("compassScoreEnabled", true)
       }

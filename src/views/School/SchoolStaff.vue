@@ -3,19 +3,33 @@
     <v-container>
       <v-card color="card" elevation="7" class="rounded-xl">
         <v-toolbar color="toolbar">
-          <v-toolbar-title> Staff ({{staff.length}}) </v-toolbar-title>
+          <v-toolbar-title> Staff ({{ staff.length }}) </v-toolbar-title>
         </v-toolbar>
         <v-container>
-          <v-card v-for="user in staff" :key="user.id" class="mb-3" @click="$router.push('/user/' + user.id)">
+          <v-card
+            v-for="user in staff"
+            :key="user.id"
+            class="mb-3"
+            @click="$router.push('/user/' + user.id)"
+          >
             <v-container>
               <v-card-title>
                 <v-avatar size="50" class="mr-4">
-                  <img :src="'/download/cdn/square/' + user.pv + '?compassInstance=' + $store.state.school.instance" alt="">
+                  <img
+                    :src="
+                      '/download/cdn/square/' +
+                      user.pv +
+                      '?compassInstance=' +
+                      $store.state.school.instance
+                    "
+                    alt=""
+                  />
                 </v-avatar>
                 <v-toolbar-title>
                   {{ user.nif }}
                   <div class="subheading subtitle-1">
-                    Account Created: {{$date(user.start).format("dddd, MMMM Do YYYY")}}
+                    Account Created:
+                    {{ $date(user.start).format("dddd, MMMM Do YYYY") }}
                   </div>
                 </v-toolbar-title>
               </v-card-title>
@@ -102,11 +116,13 @@ export default {
       return userStatus[user.userStatus - 1]
     },
     getStaff() {
-      this.axios.post("/Services/User.svc/GetAllStaff", {
-        start: 0
-      }).then(res => {
-        this.staff = res.data.d
-      });
+      this.axios
+        .post("/Services/User.svc/GetAllStaff", {
+          start: 0
+        })
+        .then((res) => {
+          this.staff = res.data.d
+        })
     }
   },
   mounted() {
@@ -115,6 +131,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

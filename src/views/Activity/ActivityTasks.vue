@@ -524,11 +524,15 @@
                   hide-details
                   single-line
                   label="Hide Irrelevant Tasks"
-                  color="primary">
+                  color="primary"
+                >
                 </v-checkbox>
               </div>
             </template>
-            <span> Will hide overdue/pending tasks older than 10 weeks, and submitted tasks older than 2 weeks </span>
+            <span>
+              Will hide overdue/pending tasks older than 10 weeks, and submitted
+              tasks older than 2 weeks
+            </span>
           </v-tooltip>
         </v-toolbar>
         <v-overlay :value="loading" absolute>
@@ -655,7 +659,13 @@ export default {
   computed: {
     computeTasks() {
       if (this.hideIrrelevantTasks) {
-        return this.tasks.filter(task => task.createdTimestamp > dayjs().subtract(2, "week").format() && this.getStatusBoolean(task) || task.createdTimestamp > dayjs().subtract(10, "week").format() && !this.getStatusBoolean(task))
+        return this.tasks.filter(
+          (task) =>
+            (task.createdTimestamp > dayjs().subtract(2, "week").format() &&
+              this.getStatusBoolean(task)) ||
+            (task.createdTimestamp > dayjs().subtract(10, "week").format() &&
+              !this.getStatusBoolean(task))
+        )
       } else {
         return this.tasks
       }
@@ -672,7 +682,7 @@ export default {
         return false
       } else if (item.students[0].submissionStatus === 3) {
         return true
-      } else return item.students[0].submissionStatus === 4;
+      } else return item.students[0].submissionStatus === 4
     },
     updateRows(val) {
       this.$store.dispatch("saveOnlineSettings", {
@@ -965,7 +975,7 @@ export default {
           text: "Marked as Submitted",
           color: "success"
         }
-    } else {
+      } else {
         return {
           status: "unknown",
           text:

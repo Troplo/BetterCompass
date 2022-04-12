@@ -42,10 +42,10 @@
         </v-toolbar-title>
       </v-toolbar>
       <Bar
-        v-if="chartData.init"
+        v-if="chartData.init && !$vuetify.breakpoint.mobile"
         :chart-options="chartOptions"
         :chart-data="chartData"
-        :height="200"
+        :height="150"
       />
       <v-data-table
         :items="progressReports.entities"
@@ -136,8 +136,7 @@ export default {
         value: friendlyName.value
       }
     },
-    randomColorGenerator() {
-      console.log(colors)
+    randomColorGenerator(index) {
       const approvedColors = [
         "green",
         "indigo",
@@ -146,15 +145,20 @@ export default {
         "blue",
         "purple",
         "amber",
-        "lightBlue",
-        "deepPurple",
+        "light-green",
+        "deep-purple",
         "yellow",
         "teal",
-        "cyan"
+        "cyan",
+        "pink",
+        "lime",
+        "grey",
+        "deep-orange",
+        "blue-grey"
       ]
       const randomColor =
         colors[
-          approvedColors[Math.floor(Math.random() * approvedColors.length)]
+          approvedColors[index % approvedColors.length]
         ]
       return randomColor.base
     },
@@ -172,8 +176,8 @@ export default {
         text: "Total",
         value: "total"
       })
-      this.progressReports.entities.forEach(function (entity) {
-        const color = this.randomColorGenerator()
+      this.progressReports.entities.forEach(function (entity, index) {
+        const color = this.randomColorGenerator(index)
         this.chartData.datasets.push({
           label: entity.name.split("<br />")[0],
           data: this.calculateFriendlyAOAForEntity(entity),
