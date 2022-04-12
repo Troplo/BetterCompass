@@ -321,8 +321,7 @@ export default {
     },
     saveSettings() {
       this.loading = true
-      this.$vuetify.theme.dark =
-        this.$store.state.bcUser?.theme === "dark" || true
+      this.$vuetify.theme.dark = this.$store.state.bcUser?.theme === "dark"
       this.$store
         .dispatch("saveOnlineSettings")
         .then(() => {

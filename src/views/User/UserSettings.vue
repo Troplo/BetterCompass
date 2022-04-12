@@ -209,6 +209,9 @@
         devices.
       </v-alert>
       <v-card-text>
+        <v-text-field v-model="$store.state.bcUser.discussionsImage" label="Avatar URL (override)" append-outer-icon="mdi-content-save" @click:append-outer="saveSettings" @keyup.enter="saveSettings"></v-text-field>
+      </v-card-text>
+      <v-card-text>
         <v-switch
           @change="saveSettings"
           v-model="$store.state.bcUser.learningTaskNotification"
@@ -731,8 +734,8 @@ export default {
     },
     saveSettings() {
       this.loading = true
-      this.$vuetify.theme.dark =
-        this.$store.state.bcUser?.theme === "dark" || true
+      this.$vuetify.theme.dark = this.$store.state.bcUser?.theme === "dark"
+
       this.$store
         .dispatch("saveOnlineSettings")
         .then(() => {

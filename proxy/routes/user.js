@@ -29,7 +29,8 @@ router.put("/settings/:type", auth, async (req, res, next) => {
           guidedWizard: req.body.guidedWizard,
           hideIrrelevantTasks: req.body.hideIrrelevantTasks,
           rowsPerPage: req.body.rowsPerPage,
-          homeGrids: req.body.homeGrids
+          homeGrids: req.body.homeGrids,
+          discussionsImage: req.body.discussionsImage
         },
         {
           where: {

@@ -42,7 +42,7 @@
             <v-row>
               <v-col sm="2">
                 <v-img
-                  :src="$store.state.school.fqdn + user.userPhotoPath"
+                  :src="getUserImage"
                   width="200"
                 ></v-img>
               </v-col>
@@ -337,6 +337,15 @@ export default {
         period: 32,
         page: 1,
         items: []
+      }
+    }
+  },
+  computed: {
+    getUserImage() {
+      if(this.$store.state.user.userId === this.user.userId && this.$store.state.bcUser.discussionsImage) {
+        return this.$store.state.bcUser.discussionsImage
+      } else {
+        return this.$store.state.school.fqdn + this.user.userPhotoPath
       }
     }
   },

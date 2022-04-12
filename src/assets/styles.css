@@ -61,7 +61,7 @@ div .theme--dark.v-calendar-events .v-event-timed {
   margin: 2px;
 }
 
-div .v-event {
+.day .v-event {
   width: 98.8% !important;
 }
 

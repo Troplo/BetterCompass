@@ -64,12 +64,10 @@
                     <v-container>
                       Name: <b>{{ selectedTask.name }}</b
                       ><br />
+                      Creation Date: <b>{{$date(selectedTask.createdTimestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</b><br>
                       <template v-if="selectedTask.dueDateTimestamp"
                         >Due Date:
-                        <b>{{
-                          $date(selectedTask.dueDateTimestamp).format(
-                            "dddd, MMMM Do YYYY, hh:mm A"
-                          )
+                        <b>{{selectedTask.dueDateTimestamp
                         }}</b></template
                       ><br />
                       Online Submission Enabled:

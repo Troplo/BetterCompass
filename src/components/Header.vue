@@ -161,9 +161,7 @@
               class="text-center"
               size="38"
             >
-              <v-icon v-if="!$store.state.user.avatar"
-                >mdi-account-circle</v-icon
-              >
+              <img :src="$store.state.bcUser.discussionsImage || $store.state.school.fqdn + '/download/cdn/square/' + $store.state.user.imageGuid">
             </v-avatar>
           </v-btn>
         </template>

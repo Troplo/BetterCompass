@@ -861,14 +861,6 @@
                     v-shortkey="['arrowright']"
                     @shortkey="changeDay('add')"
                   ></button>
-                  <button
-                    style="display: none"
-                    v-shortkey="['shift', 'r']"
-                    @shortkey="
-                      $store.state.focus = $date().format()
-                      fetchEvents(false, true)
-                    "
-                  ></button>
                   <v-btn text small fab @click="changeDay('add')">
                     <v-icon>mdi-arrow-right</v-icon>
                   </v-btn>
@@ -2448,7 +2440,11 @@ export default {
         this.$store.state.subjects[
           this.$store.state.subjects.findIndex((x) => x.name === event.title)
         ]
-      if (!subject) {
+      if (!subject && event.attendanceMode === 2 && event.allDay) {
+        return event.longTitleWithoutTime
+      } else if (!subject && event.attendanceMode === 2 && !event.allDay) {
+        return event.longTitle
+      } else if(!subject) {
         return event.longTitleWithoutTime
       } else {
         if (/<strike>.*<\/strike>&nbsp;/.test(event.longTitleWithoutTime)) {
@@ -2518,7 +2514,7 @@ export default {
                 color: event.backgroundColor,
                 start: new Date(event.start),
                 end: new Date(event.finish),
-                timed: !event.allDay,
+                timed: !event.allDay && event.attendanceMode === 1,
                 activityType: event.activityType,
                 activityId: event.activityId,
                 instanceId: event.instanceId
