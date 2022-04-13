@@ -336,7 +336,7 @@
 
                 <v-list-item-title>Changelog</v-list-item-title>
               </v-list-item>
-              <v-list-item to="/everything">
+              <v-list-item to="/everything" v-if="$store.state.site.release === 'dev'">
                 <v-list-item-icon>
                   <v-icon>mdi-magnify</v-icon>
                 </v-list-item-icon>
