@@ -115,6 +115,13 @@
       </button>
       <button
         style="display: none"
+        v-shortkey="['meta', 'k']"
+        @shortkey="$store.commit('setSearch', true)"
+      >
+        Debug
+      </button>
+      <button
+        style="display: none"
         v-shortkey="['ctrl', 'alt', 's']"
         @shortkey="enableCompassScore"
       >
