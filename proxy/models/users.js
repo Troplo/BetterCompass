@@ -184,6 +184,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: {}
+      },
+      bookmarks: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: []
       }
     },
     {

@@ -43,9 +43,11 @@
     </v-dialog>
     <v-dialog v-model="dialog" max-width="1200px" class="rounded-xl">
       <v-card color="card">
-        <v-card-title>
-          {{ selectedTask.name }}
-        </v-card-title>
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            {{selectedTask.name}}
+          </v-toolbar-title>
+        </v-toolbar>
         <v-container>
           <v-tabs background-color="card">
             <v-tab> Details </v-tab>

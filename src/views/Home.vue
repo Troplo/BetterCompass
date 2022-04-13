@@ -1,5 +1,37 @@
 <template>
   <div class="home" v-if="$store.state.user">
+    <v-dialog v-model="bookmarks.dialog" max-width="700px">
+      <v-card color="card">
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            Bookmark Creation
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-container>
+          <v-text-field
+            v-model="bookmarks.creation.name"
+            label="Name"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="bookmarks.creation.url"
+            label="URL"
+            required
+          ></v-text-field>
+        </v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="createBookmark"
+            @keyup.enter="createBookmark"
+          >
+            Create
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="calendarSettings.dialog" max-width="700px" v-if="$store.state.bcUser?.calendars">
       <v-card color="card">
         <v-toolbar color="toolbar">
@@ -1393,6 +1425,41 @@
                   </v-data-table>
                 </v-container>
               </v-card>
+              <v-card
+                color="card"
+                class="rounded-xl mb-3"
+                elevation="7"
+                v-if="item.name === 'home.bookmarks'"
+                >
+                <v-toolbar color="toolbar">
+                  <v-btn text fab disabled>
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-toolbar-title>Bookmarks</v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-btn text fab @click="bookmarks.dialog = true">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-toolbar>
+                <v-container>
+                  <v-data-table
+                    v-if="$store.state.bcUser.bookmarks"
+                    :items="$store.state.bcUser.bookmarks"
+                    :headers="bookmarks.headers"
+                  >
+                    <template v-slot:item.actions="{ item }">
+                      <v-btn icon :href="item.url" target="_blank">
+                        <v-icon> mdi-open-in-new </v-icon>
+                      </v-btn>
+                      <v-btn icon @click="removeBookmark(item)">
+                        <v-icon>
+                          mdi-delete
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                  </v-data-table>
+                </v-container>
+              </v-card>
             </div>
           </draggable>
         </v-col>
@@ -1412,6 +1479,28 @@ export default {
   },
   data() {
     return {
+      bookmarks: {
+        creation: {
+          url: "",
+          name: ""
+        },
+        dialog: false,
+        items: [],
+        headers: [
+          {
+            text: "Name",
+            value: "name"
+          },
+          {
+            text: "URL",
+            value: "url"
+          },
+          {
+            text: "Actions",
+            value: "actions"
+          }
+        ],
+      },
       calendarSettings: {
         dialog: false,
         all: false
@@ -1541,7 +1630,13 @@ export default {
           name: "home.overdueLearningTasks",
           friendlyName: "Overdue Learning Tasks Warning Widget",
           invisible: true
-        }
+        },
+        {
+          itemId: 12,
+          name: "home.bookmarks",
+          friendlyName: "Bookmarks Widget",
+          invisible: false
+        },
       ],
       grids: [
         {
@@ -1752,6 +1847,26 @@ export default {
     }
   },
   methods: {
+    handleBookmarkClick(item) {
+      window.open(item.url, "_blank")
+    },
+    createBookmark() {
+      this.$store.state.bcUser.bookmarks.push(this.bookmarks.creation)
+      this.$store.dispatch("saveOnlineSettings")
+      this.bookmarks.creation = {
+        url: "",
+        name: "",
+      }
+      this.bookmarks.dialog = false
+    },
+    removeBookmark(item) {
+      this.$store.state.bcUser.bookmarks = this.$store.state.bcUser.bookmarks.filter(
+        (bookmark) => {
+          return item.url !== bookmark.url
+        }
+      )
+      this.$store.dispatch("saveOnlineSettings")
+    },
     saveCalendars() {
       if (this.calendarSettings.all) {
         this.$store.state.bcUser.calendars = this.$store.state.calendars.reduce((acc, calendar) => {
@@ -2612,6 +2727,10 @@ export default {
     this.tab = localStorage.getItem("calendarType") === "day" ? 0 : 1
     this.grids = this.$store.state.bcUser?.homeGrids
     this.$store.dispatch("getUserInfo").then((res) => {
+      if(!this.$store.state.bcUser.bookmarks) {
+        this.$store.state.bcUser.bookmarks = []
+        this.$store.dispatch("saveOnlineSettings")
+      }
       this.getCalendars()
       this.user = res
       this.grids = this.$store.state.bcUser?.homeGrids

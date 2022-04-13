@@ -31,7 +31,8 @@ router.put("/settings/:type", auth, async (req, res, next) => {
           rowsPerPage: req.body.rowsPerPage,
           homeGrids: req.body.homeGrids,
           discussionsImage: req.body.discussionsImage,
-          calendars: req.body.calendars
+          calendars: req.body.calendars,
+          bookmarks: req.body.bookmarks
         },
         {
           where: {
