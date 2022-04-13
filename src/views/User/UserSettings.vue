@@ -209,7 +209,7 @@
         devices.
       </v-alert>
       <v-card-text>
-        <v-text-field v-model="$store.state.bcUser.discussionsImage" label="Avatar URL (override)" append-outer-icon="mdi-content-save" @click:append-outer="saveSettings" @keyup.enter="saveSettings"></v-text-field>
+        <v-text-field v-model="$store.state.bcUser.discussionsImage" label="Avatar URL (override, only visible to you)" append-outer-icon="mdi-content-save" @click:append-outer="saveSettings" @keyup.enter="saveSettings"></v-text-field>
       </v-card-text>
       <v-card-text>
         <v-switch
