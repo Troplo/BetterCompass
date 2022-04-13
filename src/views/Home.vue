@@ -1446,6 +1446,11 @@
                     v-if="$store.state.bcUser.bookmarks"
                     :items="$store.state.bcUser.bookmarks"
                     :headers="bookmarks.headers"
+                    :style="
+                'background-color: ' +
+                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
+                  .card
+              "
                   >
                     <template v-slot:item.actions="{ item }">
                       <v-btn icon :href="item.url" target="_blank">
