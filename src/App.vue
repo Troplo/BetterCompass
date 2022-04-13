@@ -208,9 +208,11 @@
     </v-dialog>
     <v-dialog v-model="$store.state.modals.search" max-width="600px">
       <v-card color="card">
-        <v-card-title>
-          <span class="headline">BetterCompass QuickSwitcher</span>
-        </v-card-title>
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            BetterCompass QuickSwitcher
+          </v-toolbar-title>
+        </v-toolbar>
         <v-container>
           <v-autocomplete
             auto-select-first
