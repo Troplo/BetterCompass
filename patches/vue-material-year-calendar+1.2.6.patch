@@ -32,7 +32,7 @@ index c5d453f..9df4725 100644
 -
 -</style>
 diff --git a/node_modules/vue-material-year-calendar/src/components/MonthCalendar.vue b/node_modules/vue-material-year-calendar/src/components/MonthCalendar.vue
-index 0bcfb9f..f9c5f6b 100644
+index 0bcfb9f..890eb72 100644
 --- a/node_modules/vue-material-year-calendar/src/components/MonthCalendar.vue
 +++ b/node_modules/vue-material-year-calendar/src/components/MonthCalendar.vue
 @@ -1,6 +1,7 @@
@@ -60,7 +60,7 @@ index 0bcfb9f..f9c5f6b 100644
 +              v-on="on"
 +              :class="classList(dayObj)">{{ dayObj.value }}</div>
 +          </template>
-+          <span>{{dayObj.title}}</span>
++          <span style="white-space: pre-line; overflow-wrap: anywhere">{{dayObj.title}}</span>
 +        </v-tooltip>
        </div>
      </div>
