@@ -218,7 +218,7 @@ export default {
             return {
               date: item.date,
               className: this.calculateStatusColor(item.amStatus),
-              title: item.amStatusDesc || "No data."
+              title: "AM: " + item.amStatusDesc + "\n PM: " + item.pmStatusDesc || "No data."
             }
           })
         })
