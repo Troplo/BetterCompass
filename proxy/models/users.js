@@ -179,6 +179,11 @@ module.exports = (sequelize, DataTypes) => {
             ]
           }
         ]
+      },
+      calendars: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: {}
       }
     },
     {

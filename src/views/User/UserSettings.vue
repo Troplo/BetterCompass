@@ -229,12 +229,7 @@
         ></v-switch>
       </v-card-text>
       <v-card-text>
-        <v-switch
-          @change="saveSettings"
-          v-model="$store.state.bcUser.minimizeHeaderEvents"
-          inset
-          label="Minimize header events (only shows current week, and due learning tasks)"
-        ></v-switch>
+        <p>Minimize header events has been replaced.<br>You can now disable individual calendars via Calendar Settings on the homepage.</p>
       </v-card-text>
       <v-card-text v-if="this.$store.state.site.release === 'dev'">
         <v-tooltip top>

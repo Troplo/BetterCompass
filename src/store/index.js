@@ -11,6 +11,7 @@ export default new Vuex.Store({
     online: true,
     editMode: false,
     calendar: [],
+    calendars: [],
     versioning: {
       date: process.env.VUE_APP_BUILD_DATE,
       version: process.env.VUE_APP_VERSION,
@@ -41,6 +42,9 @@ export default new Vuex.Store({
     quickSwitchCache: []
   },
   mutations: {
+    setCalendars(state, calendars) {
+      state.calendars = calendars
+    },
     setCalendar(state, value) {
       state.calendar = value
     },

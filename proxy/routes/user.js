@@ -30,7 +30,8 @@ router.put("/settings/:type", auth, async (req, res, next) => {
           hideIrrelevantTasks: req.body.hideIrrelevantTasks,
           rowsPerPage: req.body.rowsPerPage,
           homeGrids: req.body.homeGrids,
-          discussionsImage: req.body.discussionsImage
+          discussionsImage: req.body.discussionsImage,
+          calendars: req.body.calendars
         },
         {
           where: {

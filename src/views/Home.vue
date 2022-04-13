@@ -1,5 +1,20 @@
 <template>
   <div class="home" v-if="$store.state.user">
+    <v-dialog v-model="calendarSettings.dialog" max-width="700px" v-if="$store.state.bcUser?.calendars">
+      <v-card color="card">
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>Calendar Settings</v-toolbar-title>
+        </v-toolbar>
+        <v-container>
+          <v-switch @change="saveCalendars()" inset label="All" v-model="calendarSettings.all"></v-switch>
+          <v-switch @change="saveCalendars()" :disabled="calendarSettings.all" inset v-for="calendar in $store.state.calendars" v-model="$store.state.bcUser.calendars[calendar.id]" :key="calendar.id" :label="calendar.title"></v-switch>
+        </v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="saveCalendars(); calendarSettings.dialog = false">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="calendarDialog" max-width="1800px">
       <v-card color="card">
         <v-toolbar color="toolbar">
@@ -33,7 +48,9 @@
             >
             </v-date-picker>
           </v-menu>
-          <v-btn text small fab disabled> </v-btn>
+          <v-btn text fab @click="calendarSettings.dialog = true">
+            <v-icon>mdi-cog</v-icon>
+          </v-btn>
           <v-spacer></v-spacer>
           <v-toolbar-title>{{
             $date($store.state.focus).format("dddd, MMMM Do YYYY")
@@ -828,7 +845,9 @@
                     >
                     </v-date-picker>
                   </v-menu>
-                  <v-btn text small fab disabled> </v-btn>
+                  <v-btn text fab @click="calendarSettings.dialog = true">
+                    <v-icon>mdi-cog</v-icon>
+                  </v-btn>
                   <v-spacer></v-spacer>
                   <v-toolbar-title>{{
                     $date($store.state.focus).format("dddd, MMMM Do YYYY")
@@ -1377,6 +1396,10 @@ export default {
   },
   data() {
     return {
+      calendarSettings: {
+        dialog: false,
+        all: false
+      },
       calendarDialog: false,
       gradingSchemes: [],
       rowsPerPage: 10,
@@ -1707,21 +1730,43 @@ export default {
       return tasks
     },
     computeEvents() {
-      if (this.$store.state.bcUser.minimizeHeaderEvents) {
-        return this.$store.state.calendar.filter((event) => {
-          return (
-            event.timed ||
-            event.color === "#003300" ||
-            event.color === "#FFBB5B" ||
-            event.color === "#133897"
-          )
-        })
-      } else {
-        return this.$store.state.calendar
-      }
+      return this.$store.state.calendar.filter((event) => {
+        return this.$store.state.bcUser.calendars[event.calendarId]
+      })
     }
   },
   methods: {
+    saveCalendars() {
+      if (this.calendarSettings.all) {
+        this.$store.state.bcUser.calendars = this.$store.state.calendars.reduce((acc, calendar) => {
+          acc[calendar.id] = true
+          return acc
+        }, {})
+      }
+      this.$store.dispatch("saveOnlineSettings", {
+        calendars: this.$store.state.bcUser.calendars
+      })
+    },
+    getCalendars() {
+      this.axios.post("/Services/Calendar.svc/GetCalendarsByUser", {
+        start: 0
+      }).then((res) => {
+        this.$store.commit("setCalendars", res.data.d)
+        if(!this.$store.state.bcUser.calendars) {
+          this.$store.state.bcUser.calendars = res.data.d.reduce((acc, calendar) => {
+            acc[calendar.id] = true
+            return acc
+          }, {})
+          this.calendarSettings.all = true
+          this.$store.dispatch("saveOnlineSettings", {
+            calendars: this.$store.state.bcUser.calendars
+          })
+        }
+      }).catch((e) => {
+        console.log(e)
+        this.$toast.error("Something went wrong while loading your calendars. Error: ", e)
+      })
+    },
     updateRows(val) {
       this.$store.dispatch("saveOnlineSettings", {
         rowsPerPage: val
@@ -2515,7 +2560,8 @@ export default {
                 timed: !event.allDay && event.attendanceMode === 1,
                 activityType: event.activityType,
                 activityId: event.activityId,
-                instanceId: event.instanceId
+                instanceId: event.instanceId,
+                calendarId: event.calendarId || 0
               }
             })
           )
@@ -2550,6 +2596,7 @@ export default {
     this.tab = localStorage.getItem("calendarType") === "day" ? 0 : 1
     this.grids = this.$store.state.bcUser?.homeGrids
     this.$store.dispatch("getUserInfo").then((res) => {
+      this.getCalendars()
       this.user = res
       this.grids = this.$store.state.bcUser?.homeGrids
       if (this.$store.state.calendar.length) {
