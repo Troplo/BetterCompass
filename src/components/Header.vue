@@ -2,9 +2,11 @@
   <div id="header">
     <v-dialog v-model="feedback.modal" width="700">
       <v-card color="card" elevation="7">
-        <v-card-title>
-          <span class="text-h5">Provide Feedback</span>
-        </v-card-title>
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            Provide Feedback
+          </v-toolbar-title>
+        </v-toolbar>
         <v-card-text>
           <v-container>
             <v-row>
@@ -333,6 +335,13 @@
                 </v-list-item-icon>
 
                 <v-list-item-title>Changelog</v-list-item-title>
+              </v-list-item>
+              <v-list-item to="/everything">
+                <v-list-item-icon>
+                  <v-icon>mdi-magnify</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-title>Everything</v-list-item-title>
               </v-list-item>
               <v-list-item @click="feedback.modal = true">
                 <v-list-item-icon>
