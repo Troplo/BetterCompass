@@ -142,7 +142,7 @@
               color="card"
               v-for="item in chronicle.pinned"
               :key="item.id"
-              class="mb-3"
+              class="mb-3 rounded-xl"
             >
               <v-toolbar color="toolbar">
                 <v-avatar

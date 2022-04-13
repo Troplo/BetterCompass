@@ -1089,22 +1089,44 @@
                   text
                   color="card"
                 >
-                  <v-container class="text-center align-center justify-center">
-                    <div>
-                      <v-avatar
+                  <v-toolbar color="toolbar">
+                    <v-avatar
+                      @click="
+                    $router.push(
+                      '/user/' + item.UserId
+                    )
+                  "
+                      style="cursor: pointer"
+                      large
+                      class="mr-3"
+                    >
+                      <img
                         :src="$store.state.school.fqdn + item.UserImageUrl"
-                        align="center"
-                        class="text-center justify-center"
-                        justify="center"
-                        size="40"
-                      >
-                        <img
-                          :src="$store.state.school.fqdn + item.UserImageUrl"
-                        />
-                      </v-avatar>
-                      <p class="text-h5">
-                        {{ item.UserName }}
-                      </p>
+                      />
+                    </v-avatar>
+                    <v-toolbar-title>
+                      {{ item.Title}}
+                      <div class="subheading subtitle-1">
+                        Created by:
+                        <span
+                          @click="
+                        $router.push(
+                          '/user/' + item.UserId
+                        )
+                      "
+                          style="cursor: pointer"
+                        >{{ item.UserName }}</span
+                        >, on
+                        {{
+                          $date(item.PostDateTime).format(
+                            "dddd, MMMM Do YYYY, hh:mm A"
+                          )
+                        }}
+                      </div>
+                    </v-toolbar-title>
+                  </v-toolbar>
+                  <v-container>
+                    <div>
                       <div
                         class="text-block"
                         style="white-space: pre-line"
@@ -1120,19 +1142,13 @@
                             $store.state.school.instance
                           "
                           download
-                          color="indigo"
+                          color="calendarNormalActivity"
                           dark
                         >
                           <v-icon>mdi-download</v-icon>
                           {{ attachment.Name }}
                         </v-chip>
                       </v-card-actions>
-
-                      <small>{{
-                        $date(item.PostDateTime).format(
-                          "dddd, MMMM Do YYYY, hh:mm A"
-                        )
-                      }}</small>
                     </div>
                   </v-container>
                 </v-card>

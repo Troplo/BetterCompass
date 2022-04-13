@@ -228,6 +228,23 @@
           label="Show weather widget"
         ></v-switch>
       </v-card-text>
+      <v-card-text v-if="compassScoreEnabled">
+        <v-alert type="error">
+          Seizure warning.
+        </v-alert>
+        <v-slider
+          v-model="slider"
+          hint="Speed"
+          max="2000"
+          min="10"
+        ></v-slider>
+        <v-btn @click="randomColorTheme()">
+          Set
+        </v-btn>
+        <v-btn @click="stopColorTheme()">
+          Stop
+        </v-btn>
+      </v-card-text>
       <v-card-text>
         <p>Minimize header events has been replaced.<br>You can now disable individual calendars via Calendar Settings on the homepage.</p>
       </v-card-text>
@@ -414,6 +431,7 @@ export default {
       defineAccent: false,
       alternateCreationType: false,
       createAccountDialog: false,
+      slider: 300,
       agree: false,
       loading: false,
       accent: null,
@@ -465,10 +483,18 @@ export default {
       createTheme: false,
       name: "",
       creatorType: "create",
-      themes: []
+      themes: [],
+      interval: null
     }
   },
   computed: {
+    compassScoreEnabled() {
+      if(localStorage.getItem("compassScoreEnabled")) {
+        return JSON.parse(localStorage.getItem('compassScoreEnabled'))
+      } else {
+        return false
+      }
+    },
     computeThemes() {
       let array = []
       if (this.$vuetify.theme.dark) {
@@ -486,6 +512,66 @@ export default {
     }
   },
   methods: {
+    stopColorTheme() {
+      clearInterval(this.interval)
+    },
+    randomColorTheme() {
+      clearInterval(this.interval)
+      this.interval = setInterval(() => {
+        this.$vuetify.theme.themes.light = {
+          primary: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          secondary: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          accent: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          error: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          info: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          success: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          warning: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          card: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          toolbar: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          sheet: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          text: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          dark: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          bg: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarNormalActivity:
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarActivityType7:
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarActivityType8:
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarActivityType10:
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarExternalActivity: Math.floor(Math.random() * 16777215).toString(
+            16
+          )
+        }
+        this.$vuetify.theme.themes.dark = {
+          primary: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          secondary: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          accent: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          error: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          info: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          success: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          warning: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          card: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          toolbar: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          sheet: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          text: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          dark: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          bg: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarNormalActivity:
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarActivityType7:
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarActivityType8:
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarActivityType10:
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
+          calendarExternalActivity: Math.floor(Math.random() * 16777215).toString(
+            16
+          )
+        }
+      }, this.slider)
+    },
     randomizeTheme() {
       this.creator.light = {
         primary: "#" + Math.floor(Math.random() * 16777215).toString(16),
