@@ -765,7 +765,7 @@
         <v-col v-for="(grid, index) in grids" :key="index">
           <v-toolbar
             color="toolbar lighten-2"
-            class="rounded-xl ma-3"
+            class="rounded-xl mb-3"
             v-if="$store.state.editMode === 'editing'"
           >
             <v-toolbar-title> Grid {{ index + 1 }} </v-toolbar-title>
@@ -782,7 +782,7 @@
           >
             <div v-for="item in grid.items" :key="item.id">
               <v-card
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 color="card"
                 v-if="$store.state.editMode === 'editing'"
