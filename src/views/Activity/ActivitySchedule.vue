@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container>
-      <v-card color="card" class="rounded-xl ma-3" elevation="7">
+      <v-card color="card" class="rounded-xl mb-3" elevation="7">
         <v-overlay :value="loading" absolute>
           <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
@@ -19,21 +19,6 @@
           <v-icon @click="changeDay('add')">mdi-arrow-right</v-icon>
         </v-toolbar>
         <v-sheet color="sheet" style="position: sticky">
-          <!--  <vue-cal :today-button="true" :twelveHour="true" :timeStep="30"
-                     :disable-views="['month', 'years', 'year']" :time="true" hide-weekends :events="computeEvents">
-              <template v-slot:event="{ event }">
-                <div tabindex="0" draggable="false" class="vuecal__event" style="background: transparent" :style="{backgroundColor: computeColor(event)}">
-                  <div class="vuecal__event-title" v-html="event.title"></div>
-                  <div class="vuecal__event-time">{{event.start.formatTime()}}<span>&nbsp;- {{event.end.formatTime()}}</span>
-                  </div>
-                </div>
-                <div class="event-content" :style="{ backgroundColor: computeColor(event), color: computeTextColor(event) }">
-                  <div class="vuecal__event-title" v-html="event.title"></div>
-                  <hr/><em class="vuecal__event-time"><strong>Event start: </strong><span>{{ event.start.formatTime() }}</span><br/><strong>Event end: </strong><span>{{ event.end.formatTime() }}</span></em>
-                </div>
-              </template>
-            </vue-cal>-->
-          <!-- small chips for computeAllDayEvents -->
           <v-tabs background-color="card" fixed-tabs>
             <v-tab @click="type = 'week'" :active="type === 'week'">
               Weekly Schedule
