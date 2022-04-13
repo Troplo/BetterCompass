@@ -738,7 +738,7 @@
     </v-dialog>
     <v-container>
       <v-card
-        color="card ma-3"
+        color="card mb-3"
         class="rounded-xl"
         v-if="$store.state.editMode === 'editing'"
       >
@@ -804,7 +804,7 @@
               </v-card>
               <v-card
                 :color="color(item)"
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.calendar'"
               >
@@ -958,7 +958,7 @@
               </v-card>
               <v-card
                 :color="color(item)"
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.tasks'"
               >
@@ -1037,7 +1037,7 @@
               </v-card>
               <v-card
                 :color="color(item)"
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.events'"
               >
@@ -1069,7 +1069,7 @@
               </v-card>
               <v-card
                 :color="color(item)"
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.news'"
               >
@@ -1139,7 +1139,7 @@
               </v-card>
               <v-card
                 :color="color(item)"
-                class="rounded-xl ma-3 text-center justify-center"
+                class="rounded-xl mb-3 text-center justify-center"
                 elevation="7"
                 v-if="item.name === 'home.weather' && weather.name"
               >
@@ -1185,7 +1185,7 @@
               </v-card>
               <v-card
                 :color="color(item)"
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.features'"
               >
@@ -1218,7 +1218,7 @@
               </v-card>
               <v-card
                 :color="color(item)"
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.placeholder'"
               >
@@ -1234,7 +1234,7 @@
               </v-card>
               <v-card
                 :color="color(item)"
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.compassScore'"
               >
@@ -1264,7 +1264,7 @@
                     dismissible
                     v-model="learningTaskAlert"
                     elevation="5"
-                    class="rounded-xl ma-3"
+                    class="rounded-xl mb-3"
                     type="warning"
                   >
                     {{ overDueLearningTasks }} overdue learning tasks.
@@ -1289,7 +1289,7 @@
               </template>
               <v-card
                 color="card"
-                class="rounded-xl ma-3"
+                class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.learningTasks'"
               >
