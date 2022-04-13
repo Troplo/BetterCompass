@@ -5,8 +5,8 @@
     </v-overlay>
     <v-container v-if="user">
       <v-card color="card" elevation="7" class="rounded-xl">
-        <v-container>
-          <h1>
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
             {{ baseRole() }}: {{ user.userFullName }} -
             {{ user.userFormGroup }} ({{ user.userHouse }}) -
             {{ user.userYearLevel }}
@@ -14,25 +14,25 @@
               <v-icon>{{ userStatus.icon }}</v-icon>
               {{ userStatus.status }}
             </v-chip>
-          </h1>
-          <v-tabs background-color="card">
-            <v-tab to="dashboard"> Dashboard </v-tab>
-            <v-tab to="tasks"> Learning Tasks </v-tab>
-            <v-tab to="attendance"> Attendance </v-tab>
-            <v-tab to="reports"> Reports </v-tab>
-            <v-tab to="analytics"> Analytics </v-tab>
-            <v-tab to="events"> Events </v-tab>
-            <v-tab
-              to="settings"
-              v-if="user.userId === $store.state.user.userId"
-            >
-              BetterCompass
-            </v-tab>
-            <v-tab to="score" v-if="compassScore"> Compass Score </v-tab>
-          </v-tabs>
-          <v-container>
-            <router-view :user="user"></router-view>
-          </v-container>
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-tabs background-color="card">
+          <v-tab to="dashboard"> Dashboard </v-tab>
+          <v-tab to="tasks"> Learning Tasks </v-tab>
+          <v-tab to="attendance"> Attendance </v-tab>
+          <v-tab to="reports"> Reports </v-tab>
+          <v-tab to="analytics"> Analytics </v-tab>
+          <v-tab to="events"> Events </v-tab>
+          <v-tab
+            to="settings"
+            v-if="user.userId === $store.state.user.userId"
+          >
+            BetterCompass
+          </v-tab>
+          <v-tab to="score" v-if="compassScore"> Compass Score </v-tab>
+        </v-tabs>
+        <v-container>
+          <router-view :user="user"></router-view>
         </v-container>
       </v-card>
     </v-container>
