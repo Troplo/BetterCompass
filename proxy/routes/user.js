@@ -15,6 +15,17 @@ router.get("/", auth, (req, res, next) => {
   }
 })
 
+router.post("/logout", auth, (req, res, next) => {
+  try {
+    res.clearCookie("ASP.NET_SessionId")
+    res.clearCookie("cpssid_" + req.header("compassSchoolId"))
+    res.clearCookie("cpsdid")
+    res.sendStatus(204)
+  } catch (e) {
+    next(e)
+  }
+})
+
 router.put("/settings/:type", auth, async (req, res, next) => {
   try {
     if (req.params.type === "full") {

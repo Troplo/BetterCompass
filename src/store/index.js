@@ -106,6 +106,26 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    logout(context) {
+      Vue.axios.post("/api/v1/user/logout").then(() => {
+        context.commit("setUser", null)
+        context.commit("setToken", null)
+        context.commit("setSchool", null)
+        context.commit("setCalendar", null)
+        context.commit("setCalendars", [])
+        context.commit("setEditMode", false)
+        context.commit("setCalendarInit", false)
+        context.commit("setEvents", [])
+        context.commit("setUpcomingEvents", [])
+        context.commit("setAlerts", [])
+        context.commit("setSubjects", [])
+        localStorage.removeItem("apiKey")
+        localStorage.removeItem("userId")
+        Vue.axios.defaults.headers.common["CompassAPIKey"] = null
+      }).catch(() => {
+        Vue.$toast.error("Failed to logout.")
+      })
+    },
     generateCache(context) {
       function subjectName(event) {
         const subject =
