@@ -89,23 +89,26 @@
         disabled
         >{{ $store.state.site.release }}</v-app-bar-nav-icon
       >
-      <v-text-field
-        ref="searchInput"
-        autocomplete="off"
-        class="mx-2 mx-md-4"
-        dense
-        hide-details
-        outlined
-        placeholder="English"
-        :label="
+      <button class="search-button" @click="$store.commit('setSearch', true)" text>
+        <v-text-field
+          ref="searchInput"
+          autocomplete="off"
+          class="mx-2 mx-md-4"
+          dense
+          hide-details
+          disabled
+          outlined
+          placeholder="English"
+          :label="
           $vuetify.breakpoint.mobile
             ? 'Search BetterCompass...'
             : 'Search BetterCompass... (CTRL + K)'
         "
-        @click="$store.commit('setSearch', true)"
-        style="max-width: 450px"
-      >
-      </v-text-field>
+          @click="$store.commit('setSearch', true)"
+          style="opacity: 1; max-width: 450px"
+        >
+        </v-text-field>
+      </button>
       <button
         style="display: none"
         v-shortkey="['ctrl', 'k']"

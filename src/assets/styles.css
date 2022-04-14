@@ -1,3 +1,9 @@
+.search-button {
+  width: 400px
+}
+.search-button:focus {
+  outline: none
+}
 .v-btn {
   text-transform: capitalize !important;
 }
@@ -64,6 +70,7 @@ div .theme--dark.v-calendar-events .v-event-timed {
 .day .v-event {
   width: 98.8% !important;
 }
+
 
 .vuecal__cell {
   height: 50px !important;
