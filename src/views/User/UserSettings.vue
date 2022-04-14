@@ -228,7 +228,7 @@
           label="Show weather widget"
         ></v-switch>
       </v-card-text>
-      <v-card-text v-if="compassScoreEnabled">
+      <v-card-text v-if="debugModeEnabled">
         <v-alert type="error">
           Seizure warning.
         </v-alert>
@@ -488,9 +488,9 @@ export default {
     }
   },
   computed: {
-    compassScoreEnabled() {
-      if(localStorage.getItem("compassScoreEnabled")) {
-        return JSON.parse(localStorage.getItem('compassScoreEnabled'))
+    debugModeEnabled() {
+      if(localStorage.getItem("debugModeEnabled")) {
+        return JSON.parse(localStorage.getItem('debugModeEnabled'))
       } else {
         return false
       }
