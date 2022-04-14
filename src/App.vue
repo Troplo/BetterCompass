@@ -271,6 +271,7 @@
 <script>
 import Header from "./components/Header.vue"
 import AjaxErrorHandler from "@/lib/errorHandler"
+import Vue from "vue"
 export default {
   name: "App",
   components: {
@@ -399,6 +400,8 @@ export default {
     }
   },
   mounted() {
+    Vue.axios.defaults.headers.common["CompassAPIKey"] =
+      localStorage.getItem("apiKey")
     console.log(this.$date().format())
     document.title = this.$route.name
       ? this.$route.name + " - BetterCompass"

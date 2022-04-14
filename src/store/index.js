@@ -259,6 +259,8 @@ export default new Vuex.Store({
       })
     },
     getUserInfo(context) {
+      Vue.axios.defaults.headers.common["CompassAPIKey"] =
+        localStorage.getItem("apiKey")
       Vue.axios.defaults.headers.common["compassInstance"] =
         localStorage.getItem("schoolInstance")
       Vue.axios.defaults.headers.common["compassSchoolId"] =

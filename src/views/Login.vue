@@ -135,6 +135,8 @@
 </template>
 
 <script>
+import Vue from "vue"
+
 export default {
   name: "Login",
   data() {
@@ -263,6 +265,8 @@ export default {
           if (res.data.d) {
             this.loading = false
             localStorage.setItem("apiKey", res.data.d)
+            Vue.axios.defaults.headers.common["CompassAPIKey"] =
+              localStorage.getItem("apiKey")
             this.$store.commit("setToken", res.data.d)
             this.$router.push("/")
           } else {

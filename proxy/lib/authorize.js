@@ -3,30 +3,28 @@ const axios = require("axios")
 
 module.exports = function (req, res, next) {
   try {
-    axios
-      .post(
-        "http://localhost:23994/services/mobile.svc/GetExtendedUser",
-        {
-          userId: req.header("compassUserId")
-        },
-        {
-          withCredentials: true,
-          headers: {
-            Cookie: req.headers.cookie,
-            compassInstance:
-              req.header("compassInstance") ||
-              req.query.compassInstance ||
-              "devices",
-            compassSchoolId: req.header("compassSchoolId")
-          }
-        }
-      )
-      .then(async (response) => {
-        if (response.data.d.data) {
-          req.compassUser = response.data.d.data
+    axios.post("http://localhost:23994/graphql", {
+      query: `
+      query UserData {
+  currentUser {
+    id
+    username
+  }
+}`
+    }, {
+      headers: {
+        CompassApiKey: req.header("CompassApiKey") || "",
+        compassInstance: req.header("compassInstance") ||
+          req.query.compassInstance ||
+          "devices"
+      }
+    }).then(async (response) => {
+        if (response.data.data) {
+          response.data.data.currentUser.id = JSON.parse(response.data.data.currentUser.id)
+          req.compassUser = response.data.data.currentUser
           const user = await User.findOne({
             where: {
-              compassUserId: req.compassUser.userId,
+              compassUserId: req.compassUser.id,
               instance:
                 req.header("compassInstance") ||
                 req.query.compassInstance ||
@@ -43,21 +41,21 @@ module.exports = function (req, res, next) {
             req.user = user
             next()
           } else {
-            req.compassUser = response.data.d.data
+            req.compassUser = response.data.data.currentUser
             console.log(
               "Creating account for user: " + req.compassUser.userId,
               req.compassUser.sussiId
             )
             req.user = await User.create({
-              sussiId: response.data.d.data.sussiId,
-              compassUserId: response.data.d.data.userId,
-              displayCode: response.data.d.data.displayCode,
+              sussiId: response.data.data.currentUser.username,
+              compassUserId: response.data.data.currentUser.id,
+              displayCode: response.data.data.currentUser.username,
               instance:
                 req.header("compassInstance") ||
                 req.query.compassInstance ||
                 "unknown",
               settings: {},
-              compassUserHash: response.data.d.data.userHash,
+              compassUserHash: response.data.data.currentUser.userHash,
               theme: "dark",
               settingsSync: true
             })
@@ -74,7 +72,7 @@ module.exports = function (req, res, next) {
         }
       })
       .catch((e) => {
-        console.log(e?.response?.data)
+        console.log(e)
         res.status(500).json({
           errors: [
             {

@@ -66,6 +66,45 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="route.modal" width="700">
+      <v-card color="card" elevation="7">
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            Go to Route
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <v-container>
+            <v-text-field
+              class="rounded-xl"
+              v-model="route.value"
+              autofocus
+              @keyup.enter="goToRoute()"
+              label="Route"
+              required
+            ></v-text-field>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            class="rounded-xl"
+            text
+            @click="feedback.modal = false"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            class="rounded-xl"
+            color="blue darken-1"
+            text
+            @click="goToRoute()"
+          >
+            Go
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-app-bar app v-if="$store.state.user" color="dark">
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
@@ -367,6 +406,13 @@
 
                 <v-list-item-title>About BetterCompass</v-list-item-title>
               </v-list-item>
+              <v-list-item @click="route.modal = true">
+                <v-list-item-icon>
+                  <v-icon>mdi-bug</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-title>Go to Route</v-list-item-title>
+              </v-list-item>
             </template>
             <template v-if="$store.state.site.release === 'dev'">
               <v-list-item
@@ -444,6 +490,10 @@ export default {
   name: "Header",
   data() {
     return {
+      route: {
+        modal: false,
+        value: "",
+      },
       feedback: {
         modal: false,
         route: "",
@@ -530,6 +580,11 @@ export default {
     }
   },
   methods: {
+    goToRoute() {
+      this.$router.push(this.route.value)
+      this.route.modal = false
+      this.route.value = ""
+    },
     saveGrid() {
       this.$store.dispatch("saveOnlineSettings", {
         homeGrids: this.$store.state.bcUser.homeGrids

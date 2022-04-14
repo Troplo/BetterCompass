@@ -10,7 +10,8 @@
             Class Roll
           </v-toolbar-title>
         </v-toolbar>
-        <v-data-table :headers="headers" :items="users" :items-per-page="-1"
+        <v-data-table :headers="headers" :items="users" :items-per-page="-1" @click:row="handleClick"
+                      style="cursor: pointer"
                       :style="
           'background-color: ' +
           $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card
@@ -59,6 +60,9 @@ export default {
     }
   },
   methods: {
+    handleClick(item) {
+      this.$router.push("/user/" + item.uid);
+    },
     getUsers() {
       this.loading = true
       this.axios
