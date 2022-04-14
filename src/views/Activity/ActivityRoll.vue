@@ -1,16 +1,23 @@
 <template>
   <div>
-    <v-card
-      color="card"
-      v-for="user in users"
-      :key="user.ii"
-      class="rounded-xl ma-3"
-    >
-      <v-card-text
-        >{{ user.n.split(", ")[1] }} {{ user.n.split(", ")[0] }} ({{ user.ii }},
-        {{ user.yln }}, {{ user.f }})</v-card-text
-      >
-    </v-card>
+    <v-container>
+      <v-card color="card" class="rounded-xl" elevation="7">
+        <v-overlay :value="loading" absolute>
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            Class Roll
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-data-table :headers="headers" :items="users" :items-per-page="-1"
+                      :style="
+          'background-color: ' +
+          $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card
+        ">
+        </v-data-table>
+      </v-card>
+    </v-container>
   </div>
 </template>
 
@@ -20,11 +27,40 @@ export default {
   props: ["activity"],
   data() {
     return {
-      users: []
+      loading: true,
+      users: [],
+      headers: [
+        {
+          text: "Name",
+          align: "left",
+          value: "name"
+        },
+        {
+          text: "Code",
+          align: "left",
+          value: "ii"
+        },
+        {
+          text: "Year Level",
+          align: "left",
+          value: "yl"
+        },
+        {
+          text: "Form Group",
+          align: "left",
+          value: "f"
+        },
+        {
+          text: "User ID",
+          align: "left",
+          value: "uid"
+        }
+      ]
     }
   },
   methods: {
-    async getUsers() {
+    getUsers() {
+      this.loading = true
       this.axios
         .post("/Services/Activity.svc/GetEnrolmentsByActivityId", {
           activityId: this.activity.ActivityId,
@@ -33,23 +69,19 @@ export default {
           start: 0
         })
         .then((res) => {
-          this.users = res.data.d
+          // strip out duplicate users
+          let users = []
+          res.data.d.forEach((user) => {
+            if (users.findIndex((u) => u.uid === user.uid) === -1) {
+              users.push({
+                name: user.n.split(", ")[1] + " " + user.n.split(", ")[0],
+                ...user
+              })
+            }
+          })
+          this.users = users
+          this.loading = false
         })
-      /*this.activity.AttendeeUserIdList.forEach(userId => {
-       this.axios.post("/Services/Mobile.svc/GetUsersNameById", {
-         "userId": userId
-       }).then((res) => {
-         this.users.push(res.data.d);
-       })
-     })
-      /*this.axios.post("/Services/User.svc/GetNameById", {
-        "userIds": this.activity.AttendeeUserIdList,
-        limit: 1000,
-        page: 1,
-        start: 0
-      }).then((res) => {
-        this.users = res.data.d
-      })*/
     }
   },
   mounted() {
