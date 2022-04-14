@@ -17,7 +17,8 @@ module.exports = function (req, res, next) {
         compassInstance: req.header("compassInstance") ||
           req.query.compassInstance ||
           "devices"
-      }
+      },
+      timeout: 900
     }).then(async (response) => {
         if (response.data.data) {
           response.data.data.currentUser.id = JSON.parse(response.data.data.currentUser.id)
@@ -72,7 +73,6 @@ module.exports = function (req, res, next) {
         }
       })
       .catch((e) => {
-        console.log(e)
         res.status(500).json({
           errors: [
             {
