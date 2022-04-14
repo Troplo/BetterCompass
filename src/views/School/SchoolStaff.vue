@@ -11,6 +11,7 @@
             :key="user.id"
             class="mb-3"
             @click="$router.push('/user/' + user.id)"
+            color="card"
           >
             <v-container>
               <v-card-title>

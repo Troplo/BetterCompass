@@ -346,7 +346,7 @@
 
                 <v-list-item-title>Changelog</v-list-item-title>
               </v-list-item>
-              <v-list-item to="/everything" v-if="$store.state.site.release === 'dev'">
+              <v-list-item to="/everything" v-if="debugModeEnabled">
                 <v-list-item-icon>
                   <v-icon>mdi-magnify</v-icon>
                 </v-list-item-icon>
@@ -514,6 +514,13 @@ export default {
     }
   },
   computed: {
+    debugModeEnabled() {
+      if(localStorage.getItem("debugModeEnabled")) {
+        return JSON.parse(localStorage.getItem('debugModeEnabled'))
+      } else {
+        return false
+      }
+    },
     navColor() {
       if (this.$vuetify.theme.dark) {
         return "#181818"

@@ -229,7 +229,7 @@
         ></v-switch>
       </v-card-text>
       <v-card-text v-if="debugModeEnabled">
-        <v-alert type="error">
+        <v-alert type="error" text>
           Seizure warning.
         </v-alert>
         <v-slider
@@ -238,7 +238,7 @@
           max="2000"
           min="10"
         ></v-slider>
-        <v-btn @click="randomColorTheme()">
+        <v-btn class="mr-2" @click="randomColorTheme()">
           Set
         </v-btn>
         <v-btn @click="stopColorTheme()">

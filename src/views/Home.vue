@@ -2767,6 +2767,10 @@ export default {
         this.$toast.success("Enabled CompassScore")
         localStorage.setItem("compassScoreEnabled", true)
       }
+      if (val === "1969-04-20") {
+        this.$toast.success("Enabled debug mode")
+        localStorage.setItem("debugModeEnabled", true)
+      }
     },
     type() {
       this.fetchEvents(false, false)

@@ -40,7 +40,7 @@
         <v-container>
           <v-row>
             <v-col md="6">
-              <v-card outlined>
+              <v-card outlined color="card">
                 <v-list-item three-line>
                   <v-list-item-content>
                     <div class="text-overline">AT A GLANCE</div>
@@ -73,7 +73,7 @@
               </v-card>
             </v-col>
             <v-col md="6">
-              <v-card outlined>
+              <v-card outlined color="card">
                 <v-list-item three-line>
                   <v-list-item-content>
                     <div class="text-overline">INFORMATION</div>
@@ -108,7 +108,7 @@
           </v-row>
           <v-row>
             <v-col md="6">
-              <v-card outlined>
+              <v-card outlined color="card">
                 <v-list-item three-line>
                   <v-list-item-content>
                     <div class="text-overline">FAQ</div>
@@ -141,7 +141,7 @@
               </v-card>
             </v-col>
             <v-col md="6">
-              <v-card outlined>
+              <v-card outlined color="card">
                 <v-list-item three-line>
                   <v-list-item-content>
                     <div class="text-overline">FAQ</div>
@@ -177,7 +177,7 @@
           </v-row>
           <v-row>
             <v-col md="6">
-              <v-card outlined>
+              <v-card outlined color="card">
                 <v-list-item three-line>
                   <v-list-item-content>
                     <div class="text-overline">FAQ</div>
@@ -209,7 +209,7 @@
               </v-card>
             </v-col>
             <v-col md="6">
-              <v-card outlined>
+              <v-card outlined color="card">
                 <v-list-item three-line>
                   <v-list-item-content>
                     <div class="text-overline">FAQ</div>

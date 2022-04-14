@@ -16,7 +16,7 @@
             </v-chip>
           </v-toolbar-title>
         </v-toolbar>
-        <v-tabs background-color="card">
+        <v-tabs background-color="transparent" class="ml-3">
           <v-tab to="dashboard"> Dashboard </v-tab>
           <v-tab to="tasks"> Learning Tasks </v-tab>
           <v-tab to="attendance"> Attendance </v-tab>
