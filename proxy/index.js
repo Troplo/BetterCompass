@@ -29,26 +29,6 @@ const compassRouter = function (req) {
   }
 }
 app.use(function (req, res, next) {
-  if (req.header("compassSchoolId")) {
-    res.cookie(
-      "cpssid_" + req.header("compassSchoolId"),
-      req.cookies["cpssid_" + req.header("compassSchoolId")],
-      {
-        expires: new Date(253402300000000),
-        httpOnly: true,
-        secure: true,
-        domain: process.env.HOSTNAME
-      }
-    )
-  }
-  if (req.cookies["ASP.NET_SessionId"]) {
-    res.cookie("ASP.NET_SessionId", req.cookies["ASP.NET_SessionId"], {
-      expires: new Date(253402300000000),
-      httpOnly: true,
-      secure: true,
-      domain: process.env.HOSTNAME
-    })
-  }
   res.header("Access-Control-Allow-Origin", process.env.HOSTNAME)
   res.header("Access-Control-Allow-Methods", "*")
   res.header(
@@ -125,7 +105,7 @@ app.get("/api/v1/weather", (req, res) => {
             res.send(response2.data)
           })
           .catch((error) => {
-            res.send("Weather widget API failure: " + error.response.data)
+            res.json({message: "Weather widget API failure.", error: error.response.data})
           })
       })
       .catch(() => {

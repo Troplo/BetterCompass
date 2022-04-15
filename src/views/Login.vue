@@ -65,7 +65,6 @@
                   Login to <span class="troplo-title">BetterCompass</span>
                 </p>
                 <v-autocomplete
-                  @keyup.enter="doLogin()"
                   v-model="searchValue"
                   :items="schools"
                   :loading="loading"
@@ -90,6 +89,7 @@
                   label="Password"
                   type="password"
                 ></v-text-field>
+                <v-switch inset label="Remember Me" v-model="rememberMe"></v-switch>
                 <small
                   >By logging in you agree to the
                   <a @click="usageDisclaimer = true">
@@ -141,6 +141,7 @@ export default {
   name: "Login",
   data() {
     return {
+      rememberMe: false,
       usageDisclaimer: false,
       privacyPolicy: false,
       username: "",
@@ -219,61 +220,31 @@ export default {
       this.$store.commit("setSchool", this.school)
       this.loading = true
       this.axios
-        .post("/services/admin.svc/AuthenticateUserCredentials", {
+        .post("/api/v1/user/login", {
           password: this.password,
           username: this.username,
-          schoolId: this.$store.state.school.id
+          schoolId: this.$store.state.school.id,
+          rememberMe: this.rememberMe
         })
         .then((res) => {
-          if (!res.data.d.success) {
+          if (!res.data.success) {
             this.$toast.error("Invalid username or password.")
             this.loading = false
           } else {
-            console.log(res.data.d?.roles[0].userId)
-            localStorage.setItem("userId", res.data.d?.roles[0].userId)
-            this.axios
-              .post("/services/mobile.svc/GetPersonalDetails", {
-                userId: res.data.d?.roles[0].userId
-              })
-              .then((response) => {
-                localStorage.setItem("userId", response.data.d.data.userId)
-                this.$store.dispatch("getUserInfo").then(() => {
-                  this.$router.push("/")
-                })
-              })
-              .catch(() => {
-                console.log("Login security error, doing hacky login.")
-                this.$store.dispatch("getUserInfo").finally(() => {
-                  this.$store.dispatch("getUserInfo").finally(() => {
-                    this.$router.push("/")
-                    this.$forceUpdate()
-                  })
-                })
-              })
-          }
-        })
-        .catch(() => {
-          this.$toast.error("Something went wrong, perhaps Compass is down?")
-        })
-      this.axios
-        .post("/services/admin.svc/GetApiKey", {
-          password: this.password,
-          schoolId: this.$store.state.school.id,
-          sussiId: this.username
-        })
-        .then((res) => {
-          if (res.data.d) {
+            localStorage.setItem("userId", res.data.userId)
             this.loading = false
-            localStorage.setItem("apiKey", res.data.d)
+            localStorage.setItem("apiKey", res.data.token)
             Vue.axios.defaults.headers.common["CompassAPIKey"] =
               localStorage.getItem("apiKey")
-            this.$store.commit("setToken", res.data.d)
-            this.$router.push("/")
-          } else {
-            this.loading = false
-            this.$toast.error("Invalid username or password.")
+            this.$store.commit("setToken", res.data.token)
+            this.$store.dispatch("getUserInfo").then(() => {
+              this.$router.push("/")
+            })
           }
-        })
+        }).catch(() => {
+        this.$toast.error("Invalid username or password.")
+        this.loading = false
+      })
     }
   },
   mounted() {

@@ -465,7 +465,7 @@
                   <v-data-table
                     :headers="learningTasks.rubricHeaders"
                     :items="learningTasks.rubricItems"
-                    :items-per-page="$store.state.bcUser.rowsPerPage"
+                    :items-per-page="$store.state.user.bcUser.rowsPerPage"
                     @update:items-per-page="updateRows"
                     style="white-space: pre-wrap"
                     class="elevation-1"

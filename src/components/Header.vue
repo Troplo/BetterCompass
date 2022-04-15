@@ -105,7 +105,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-app-bar app v-if="$store.state.user" color="dark">
+    <v-app-bar app v-if="$store.state.user.bcUser" color="dark">
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
         v-if="$vuetify.breakpoint.mobile"
@@ -116,7 +116,7 @@
           'color: ' +
           $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].primary
         "
-        :class="{ 'troplo-title': !$store.state.bcUser.accentColor }"
+        :class="{ 'troplo-title': !$store.state.user.bcUser.accentColor }"
         @click="$router.push('/')"
         style="cursor: pointer"
         >BetterCompass</v-toolbar-title
@@ -212,7 +212,7 @@
               class="text-center"
               size="38"
             >
-              <img :src="$store.state.bcUser.discussionsImage || $store.state.school.fqdn + '/download/cdn/square/' + $store.state.user.imageGuid">
+              <img :src="$store.state.user.bcUser.discussionsImage || $store.state.school.fqdn + '/download/cdn/square/' + $store.state.user.imageGuid">
             </v-avatar>
           </v-btn>
         </template>
@@ -257,7 +257,7 @@
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
-      v-if="$store.state.user"
+      v-if="$store.state.user.bcUser"
       app
       color="dark"
       floating
@@ -273,7 +273,7 @@
                 $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
                   .primary
               "
-              :class="{ 'troplo-title': !$store.state.bcUser.accentColor }"
+              :class="{ 'troplo-title': !$store.state.user.bcUser.accentColor }"
               @click="$router.push('/')"
               style="cursor: pointer"
               >BetterCompass</v-toolbar-title
@@ -283,7 +283,7 @@
       </v-list-item>
       <v-divider></v-divider>
       <v-list dense nav>
-        <v-list v-if="$store.state.user">
+        <v-list v-if="$store.state.user.bcUser">
           <v-list>
             <template>
               <v-list-item to="/">
@@ -293,20 +293,21 @@
 
                 <v-list-item-title>Home</v-list-item-title>
               </v-list-item>
-
-              <v-list-item
-                v-for="user in $store.state.user.children"
-                :key="user.userId"
-                :to="'/user/' + user.userId"
-              >
-                <v-list-item-icon>
-                  <v-icon>mdi-account-child</v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-title
-                  >{{ user.firstName }}'s Profile</v-list-item-title
+              <template v-if="$store.state.user.baseRole !== 'STUDENT'">
+                <v-list-item
+                  v-for="user in $store.state.user.children"
+                  :key="user.userId"
+                  :to="'/user/' + user.userId"
                 >
-              </v-list-item>
+                  <v-list-item-icon>
+                    <v-icon>mdi-account-child</v-icon>
+                  </v-list-item-icon>
+
+                  <v-list-item-title
+                  >{{ user.firstName }}'s Profile</v-list-item-title
+                  >
+                </v-list-item>
+              </template>
 
               <v-list-item :to="'/user/' + $store.state.user.userId">
                 <v-list-item-icon>
@@ -588,7 +589,7 @@ export default {
     },
     saveGrid() {
       this.$store.dispatch("saveOnlineSettings", {
-        homeGrids: this.$store.state.bcUser.homeGrids
+        homeGrids: this.$store.state.user.bcUser.homeGrids
       })
       this.$store.dispatch("getUserInfo")
     },
@@ -641,7 +642,7 @@ export default {
     $route(to) {
       this.feedback.route = to.path
     },
-    "$store.state.user"() {
+    "$store.state.user.bcUser"() {
       this.menus.dropdownAuthenticated = [
         {
           id: 7,

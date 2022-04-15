@@ -562,13 +562,13 @@ export default {
           `,
           variables: {
             avatarUrl:
-              this.$store.state.bcUser?.discussionsImage ||
+              this.$store.state.user.bcUser?.discussionsImage ||
               "/download/cdn/full/" + this.$store.state.user.imageGuid + ".jpg",
             firstName:
-              this.$store.state.bcUser?.discussionsFirstName ||
+              this.$store.state.user.bcUser?.discussionsFirstName ||
               this.$store.state.user.firstName,
             lastName:
-              this.$store.state.bcUser?.discussionsLastName ||
+              this.$store.state.user.bcUser?.discussionsLastName ||
               this.$store.state.user.lastName
           }
         })

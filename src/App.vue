@@ -8,7 +8,7 @@
     <v-overlay :value="$store.state.site.loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <!--<v-overlay :value="!$store.state.online && !$store.state.bcUser.cache">
+    <!--<v-overlay :value="!$store.state.online && !$store.state.user.bcUser.cache">
       <v-card color="card">
         <v-toolbar color="toolbar">
           <v-toolbar-title>
@@ -28,8 +28,8 @@
       </v-card>
     </v-overlay>-->
     <v-dialog
-      v-if="$store.state.bcUser"
-      v-model="$store.state.bcUser.guidedWizard"
+      v-if="$store.state.user.bcUser"
+      v-model="$store.state.user.bcUser.guidedWizard"
       max-width="600px"
     >
       <v-card color="card" class="text-center justify-center">
@@ -84,7 +84,7 @@
               <v-layout column align-center>
                 <v-switch
                   inset
-                  v-model="$store.state.bcUser.theme"
+                  v-model="$store.state.user.bcUser.theme"
                   @change="saveSettings"
                   true-value="dark"
                   false-value="light"
@@ -152,20 +152,20 @@
               <v-layout column align-center>
                 <v-switch
                   @change="saveSettings"
-                  v-model="$store.state.bcUser.learningTaskNotification"
+                  v-model="$store.state.user.bcUser.learningTaskNotification"
                   inset
                   label="Show overdue learning task warning"
                   color="warning"
                 ></v-switch>
                 <v-switch
                   @change="saveSettings"
-                  v-model="$store.state.bcUser.weather"
+                  v-model="$store.state.user.bcUser.weather"
                   inset
                   label="Show weather widget"
                 ></v-switch>
                 <v-switch
                   @change="saveSettings"
-                  v-model="$store.state.bcUser.minimizeHeaderEvents"
+                  v-model="$store.state.user.bcUser.minimizeHeaderEvents"
                   inset
                   label="Minimize header events"
                 ></v-switch>
@@ -174,7 +174,7 @@
                     <div v-on="on" v-bind="attrs">
                       <v-switch
                         @change="saveSettings"
-                        v-model="$store.state.bcUser.calendarAutoJump"
+                        v-model="$store.state.user.bcUser.calendarAutoJump"
                         inset
                         label="Calendar Auto Jump"
                       ></v-switch>
@@ -240,7 +240,7 @@
           version is {{ $store.state.site.latestVersion }})
         </v-alert>
       </v-container>
-      <v-container v-if="$store.state.site.notification && $store.state.user">
+      <v-container v-if="$store.state.site.notification && $store.state.user.bcUser">
         <v-alert class="mx-4" type="info">
           {{ $store.state.site.notification }}
         </v-alert>
@@ -311,20 +311,15 @@ export default {
   },
   methods: {
     baseRole() {
-      const userBaseRole = [
-        "Guest",
-        "Student",
-        "Staff",
-        "Parent",
-        "Admin",
-        "Visitor",
-        "Not Authenticated"
-      ]
-      return userBaseRole[this.$store.state.user?.baseRole || 6]
+      if(this.$store.state.user?.baseRole) {
+        return this.$store.state.user.baseRole.toLowerCase().charAt(0).toUpperCase() + this.$store.state.user.baseRole.toLowerCase().slice(1)
+      } else {
+        return "Not Authenticated"
+      }
     },
     saveSettings() {
       this.loading = true
-      this.$vuetify.theme.dark = this.$store.state.bcUser?.theme === "dark"
+      this.$vuetify.theme.dark = this.$store.state.user.bcUser?.theme === "dark"
       this.$store
         .dispatch("saveOnlineSettings")
         .then(() => {
@@ -371,9 +366,9 @@ export default {
       if (this.accent && this.defineAccent) {
         this.$vuetify.theme.themes.light.primary = this.accent
         this.$vuetify.theme.themes.dark.primary = this.accent
-        this.$store.state.bcUser.accentColor = this.accent
+        this.$store.state.user.bcUser.accentColor = this.accent
       } else {
-        this.$store.state.bcUser.accentColor = null
+        this.$store.state.user.bcUser.accentColor = null
       }
       this.name = name
       this.axios
@@ -412,7 +407,7 @@ export default {
       localStorage.removeItem("settings")
     }
     this.$vuetify.theme.dark =
-      this.$store.state.bcUser?.theme === "dark" || true
+      this.$store.state.user.bcUser?.theme === "dark" || true
     this.$store.commit("setSchool", {
       name: localStorage.getItem("schoolName"),
       id: localStorage.getItem("schoolId"),
@@ -429,7 +424,7 @@ export default {
       .dispatch("getUserInfo")
       .then(() => {
         // eslint-disable-next-line no-undef
-        _paq.push(["setUserId", this.$store.state.bcUser.id])
+        _paq.push(["setUserId", this.$store.state.user.bcUser.id])
         // eslint-disable-next-line no-undef
         _paq.push(["trackPageView"])
         this.$store.dispatch("updateQuickSwitch")
@@ -440,9 +435,9 @@ export default {
       })
   },
   watch: {
-    "$store.state.bcUser.theme": {
+    "$store.state.user.bcUser.theme": {
       handler() {
-        this.$vuetify.theme.dark = this.$store.state.bcUser.theme === "dark"
+        this.$vuetify.theme.dark = this.$store.state.user.bcUser.theme === "dark"
       },
       deep: true
     },

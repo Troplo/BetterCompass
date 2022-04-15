@@ -82,23 +82,23 @@ export default {
     computeColor(event) {
       if (event.color === "#003300") {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarActivityType8
       } else if (event.activityType === 7 || event.color === "#f4dcdc") {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarActivityType7
       } else if (event.color === "#dce6f4") {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarNormalActivity
       } else if (event.activityType === 10) {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarActivityType10
       } else {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarNormalActivity
       }
     },

@@ -208,13 +208,54 @@
         Your settings (including themes) now synchronize throughout all of your
         devices.
       </v-alert>
+      <v-card-title>Email & Push Notifications</v-card-title>
       <v-card-text>
-        <v-text-field v-model="$store.state.bcUser.discussionsImage" label="Avatar URL (override, only visible to you)" append-outer-icon="mdi-content-save" @click:append-outer="saveSettings" @keyup.enter="saveSettings"></v-text-field>
+        <v-text-field v-model="$store.state.user.email" label="Compass Email" disabled></v-text-field>
+      </v-card-text>
+      <v-card-text>
+        <v-text-field v-model="$store.state.user.email" label="BetterCompass Email"></v-text-field>
       </v-card-text>
       <v-card-text>
         <v-switch
           @change="saveSettings"
-          v-model="$store.state.bcUser.learningTaskNotification"
+          v-model="$store.state.user.bcUser.emailNotifications"
+          inset
+          label="Send email notifications for new learning tasks"
+          color="info"
+        ></v-switch>
+      </v-card-text>
+      <v-card-text>
+        <v-switch
+          @change="saveSettings"
+          inset
+          label="Send email notifications for learning task feedback responses"
+          color="info"
+        ></v-switch>
+      </v-card-text>
+      <v-card-text>
+        <v-switch
+          @change="saveSettings"
+          inset
+          label="Send email notifications for school news & announcement posts."
+          color="info"
+        ></v-switch>
+      </v-card-text>
+      <v-card-text>
+        <v-switch
+          @change="saveSettings"
+          inset
+          label="Send email notifications for room & teacher changes."
+          color="info"
+        ></v-switch>
+      </v-card-text>
+      <v-card-title>Website Settings</v-card-title>
+      <v-card-text>
+        <v-text-field v-model="$store.state.user.bcUser.discussionsImage" label="Avatar URL (override, only visible to you)" append-outer-icon="mdi-content-save" @click:append-outer="saveSettings" @keyup.enter="saveSettings"></v-text-field>
+      </v-card-text>
+      <v-card-text>
+        <v-switch
+          @change="saveSettings"
+          v-model="$store.state.user.bcUser.learningTaskNotification"
           inset
           label="Show overdue learning task warning"
           color="warning"
@@ -223,7 +264,7 @@
       <v-card-text>
         <v-switch
           @change="saveSettings"
-          v-model="$store.state.bcUser.weather"
+          v-model="$store.state.user.bcUser.weather"
           inset
           label="Show weather widget"
         ></v-switch>
@@ -254,7 +295,7 @@
             <div v-on="on" v-bind="attrs">
               <v-switch
                 @change="saveSettings"
-                v-model="$store.state.bcUser.cache"
+                v-model="$store.state.user.bcUser.cache"
                 inset
                 label="Offline caching"
               ></v-switch>
@@ -274,7 +315,7 @@
             <div v-on="on" v-bind="attrs">
               <v-switch
                 @change="saveSettings"
-                v-model="$store.state.bcUser.calendarAutoJump"
+                v-model="$store.state.user.bcUser.calendarAutoJump"
                 inset
                 label="Calendar Auto Jump"
               ></v-switch>
@@ -286,7 +327,7 @@
       <v-card-title>Theming and Personalization</v-card-title>
       <v-card-text>
         <v-switch
-          v-model="$store.state.bcUser.theme"
+          v-model="$store.state.user.bcUser.theme"
           true-value="dark"
           false-value="light"
           @change="saveSettings"
@@ -345,7 +386,7 @@
                   fab
                   small
                   @click="initEditTheme(theme)"
-                  v-if="theme.userId === $store.state.bcUser.id"
+                  v-if="theme.userId === $store.state.user.bcUser.id"
                 >
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
@@ -354,7 +395,7 @@
                   fab
                   small
                   @click="doDeleteTheme(theme)"
-                  v-if="theme.userId === $store.state.bcUser.id"
+                  v-if="theme.userId === $store.state.user.bcUser.id"
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
@@ -781,9 +822,9 @@ export default {
       if (this.accent && this.defineAccent) {
         this.$vuetify.theme.themes.light.primary = this.accent
         this.$vuetify.theme.themes.dark.primary = this.accent
-        this.$store.state.bcUser.accentColor = this.accent
+        this.$store.state.user.bcUser.accentColor = this.accent
       } else {
-        this.$store.state.bcUser.accentColor = null
+        this.$store.state.user.bcUser.accentColor = null
       }
       this.name = name
       this.axios
@@ -815,7 +856,7 @@ export default {
     },
     saveSettings() {
       this.loading = true
-      this.$vuetify.theme.dark = this.$store.state.bcUser?.theme === "dark"
+      this.$vuetify.theme.dark = this.$store.state.user.bcUser?.theme === "dark"
 
       this.$store
         .dispatch("saveOnlineSettings")
@@ -829,8 +870,8 @@ export default {
     }
   },
   mounted() {
-    this.defineAccent = this.$store.state.bcUser?.accentColor !== null
-    this.accent = this.$store.state.bcUser?.accentColor
+    this.defineAccent = this.$store.state.user.bcUser?.accentColor !== null
+    this.accent = this.$store.state.user.bcUser?.accentColor
     this.name = this.$vuetify.theme.themes.name
     this.getThemes()
   },
@@ -851,12 +892,12 @@ export default {
           )
         )
       } else {
-        this.accent = this.$store.state.bcUser?.accentColor || "#0190ea"
+        this.accent = this.$store.state.user.bcUser?.accentColor || "#0190ea"
       }
     },
-    "$store.state.bcUser.theme": {
+    "$store.state.user.bcUser.theme": {
       handler() {
-        this.$vuetify.theme.dark = this.$store.state.bcUser.theme === "dark"
+        this.$vuetify.theme.dark = this.$store.state.user.bcUser.theme === "dark"
       },
       deep: true
     }

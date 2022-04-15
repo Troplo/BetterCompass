@@ -7,9 +7,106 @@ const { User, Session, Theme } = require("../models")
 const cryptoRandomString = require("crypto-random-string")
 const { Op } = require("sequelize")
 
+router.post("/login", (req, res, next) => {
+  try {
+    axios.post("http://localhost:23994/services/admin.svc/AuthenticateUserCredentials", {
+      schoolId: req.body.schoolId,
+      username: req.body.username,
+      password: req.body.password
+    }, {
+      headers: {
+        compassInstance: req.header("compassInstance") ||
+          req.query.compassInstance ||
+          "devices"
+      },
+      withCredentials: true
+    }).then((response) => {
+      axios
+        .post("http://localhost:23994/services/admin.svc/GetApiKey", {
+          password: req.body.password,
+          schoolId: req.body.schoolId,
+          sussiId: req.body.username
+        }, {
+          headers: {
+            compassInstance: req.header("compassInstance") ||
+              req.query.compassInstance ||
+              "devices"
+          }
+        }).then((response2) => {
+        if (!response.data.d.success) {
+          res.status(401)
+          res.json({
+            errors: [{
+              name: "invalidUserOrPassword",
+              message: "Invalid Invalid username or password.",
+              status: 401
+            }]
+          })
+        } else {
+          console.log(response.headers["set-cookie"])
+          console.log(1000 * 60 * 60 * 24 * 365)
+          if(req.body.rememberMe) {
+            res.cookie("ASP.NET_SessionId", response.headers["set-cookie"][0].split(";")[0].split("=")[1], {
+              maxAge: 1000 * 60 * 60 * 24 * 365,
+              httpOnly: true,
+              secure: true,
+              domain: process.env.HOSTNAME,
+              sameSite: "strict"
+            })
+          } else {
+            res.cookie("ASP.NET_SessionId", response.headers["set-cookie"][0].split(";")[0].split("=")[1], {
+              httpOnly: true,
+              secure: true,
+              domain: process.env.HOSTNAME,
+              sameSite: "strict"
+            })
+          }
+          res.json({
+            success: true,
+            cookieToken: response.headers["set-cookie"][0].split(";")[0].split("=")[1],
+            token: response2.data.d,
+            userId: response.data.d?.roles[0].userId
+          })
+        }
+      }).catch((e) => {
+        console.log(e)
+      })
+    })
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.get("/", auth, (req, res, next) => {
   try {
-    res.json(req.user)
+    axios.post("http://localhost:23994/graphql", {
+      query: `query UserData{currentUser{id username firstName lastName idPhotoGuidVersioned reportName personalEmail dateOfBirth groupA groupB groupC groupD groupE middleName communicationsEmail baseRole children{id username firstName lastName idPhotoGuidVersioned reportName personalEmail dateOfBirth groupA groupB groupC groupD groupE middleName communicationsEmail baseRole}}}`
+    }, {
+      headers: {
+        CompassAPIKey: req.header("CompassAPIKey") || "",
+        compassInstance: req.header("compassInstance") ||
+          req.query.compassInstance ||
+          "devices"
+      }
+    }).then((response) => {
+      // legacy fields
+      response.data.data.currentUser.userId = JSON.parse(response.data.data.currentUser.id)
+      response.data.data.currentUser.sussiId = response.data.data.currentUser.username
+      response.data.data.currentUser.id = JSON.parse(response.data.data.currentUser.id)
+      if (response.data.data.currentUser.children?.length) {
+        response.data.data.currentUser.children.forEach((child) => {
+          child.id = JSON.parse(child.id)
+          child.userId = JSON.parse(child.id)
+        })
+      }
+
+      res.json({
+        bcUser: req.user,
+        ...response.data.data.currentUser
+      })
+    }).catch((e) => {
+      next(e)
+    })
   } catch (e) {
     next(e)
   }
@@ -94,7 +191,7 @@ router.post("/create", async (req, res, next) => {
   try {
     axios
       .post(
-        "http://localhost:8080/services/mobile.svc/GetPersonalDetails",
+        "http://localhost:23994/services/mobile.svc/GetPersonalDetails",
         {
           userId: req.header("compassUserId")
         },
@@ -141,7 +238,7 @@ router.post("/create/alternate", async (req, res, next) => {
   try {
     axios
       .post(
-        "http://localhost:8080/services/mobile.svc/GetPersonalDetails",
+        "http://localhost:23994/services/mobile.svc/GetPersonalDetails",
         {
           userId: req.header("compassUserId")
         },

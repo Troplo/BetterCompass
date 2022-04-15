@@ -21,8 +21,10 @@ export default new Vuex.Store({
       release: "beta",
       loading: true
     },
-    user: null,
-    bcUser: null,
+    user: {
+      bcUser: null,
+      loggedIn: false
+    },
     parent: null,
     upcomingEvents: [],
     alerts: [],
@@ -59,9 +61,6 @@ export default new Vuex.Store({
     },
     setOnline(state, online) {
       state.online = online
-    },
-    setBetterCompassUser(state, user) {
-      state.bcUser = user
     },
     setUser(state, user) {
       state.user = user
@@ -291,62 +290,51 @@ export default new Vuex.Store({
         Vue.axios
           .get("/api/v1/user")
           .then((res) => {
-            context.commit("setBetterCompassUser", res.data)
-            const name = res.data.themeObject.id
-            const dark = res.data.themeObject.theme.dark
-            const light = res.data.themeObject.theme.light
+            context.commit("setUser", res.data)
+            const name = res.data.bcUser.themeObject.id
+            const dark = res.data.bcUser.themeObject.theme.dark
+            const light = res.data.bcUser.themeObject.theme.light
             if (res.data.accentColor) {
-              res.data.themeObject.theme.dark.primary = res.data.accentColor
-              res.data.themeObject.theme.light.primary = res.data.accentColor
+              res.data.bcUser.themeObject.theme.dark.primary = res.data.accentColor
+              res.data.bcUser.themeObject.theme.light.primary = res.data.accentColor
             }
             Vuetify.framework.theme.themes.dark = dark
             Vuetify.framework.theme.themes.light = light
             Vuetify.framework.theme.themes.name = name
             Vuetify.framework.theme.themes.primaryType =
-              res.data.themeObject.theme.primaryType
+              res.data.bcUser.themeObject.theme.primaryType
             Vue.axios
-              .post("/services/mobile.svc/GetPersonalDetails", {
-                userId: localStorage.getItem("userId")
+              .post("/Services/NewsFeed.svc/GetMyUpcoming", {
+                userId: context.state.user.userId
               })
               .then((res) => {
-                context.commit("setUser", res.data.d.data)
-                Vue.axios
-                  .post("/Services/NewsFeed.svc/GetMyUpcoming", {
-                    userId: context.state.user.userId
-                  })
-                  .then((res) => {
-                    context.commit("setUpcomingEvents", res.data.d)
-                  })
-                  .catch(() => {})
-                Vue.axios
-                  .post("/Services/NewsFeed.svc/GetMyAlerts")
-                  .then((res) => {
-                    context.commit("setAlerts", res.data.d)
-                  })
-                  .catch(() => {})
-                Vue.axios
-                  .post(
-                    "/Services/Subjects.svc/GetStandardClassesOfUserInAcademicGroup",
-                    {
-                      userId: context.state.user.userId,
-                      limit: 100,
-                      start: 0,
-                      page: 1,
-                      academicGroupId: -1
-                    }
-                  )
-                  .then((res) => {
-                    context.commit("setSubjects", res.data.d.data)
-                  })
-                  .catch(() => {})
-                context.commit("setLoading", false)
-                context.commit("setOnline", true)
-                resolve(res.data.d.data)
+                context.commit("setUpcomingEvents", res.data.d)
               })
-              .catch((e) => {
-                context.commit("setLoading", false)
-                reject(e)
+              .catch(() => {})
+            Vue.axios
+              .post("/Services/NewsFeed.svc/GetMyAlerts")
+              .then((res) => {
+                context.commit("setAlerts", res.data.d)
               })
+              .catch(() => {})
+            Vue.axios
+              .post(
+                "/Services/Subjects.svc/GetStandardClassesOfUserInAcademicGroup",
+                {
+                  userId: context.state.user.userId,
+                  limit: 100,
+                  start: 0,
+                  page: 1,
+                  academicGroupId: -1
+                }
+              )
+              .then((res) => {
+                context.commit("setSubjects", res.data.d.data)
+              })
+              .catch(() => {})
+            context.commit("setLoading", false)
+            context.commit("setOnline", true)
+            resolve(res.data)
           })
           .catch((e) => {
             const theme = {

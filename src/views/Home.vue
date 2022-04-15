@@ -1,5 +1,5 @@
 <template>
-  <div class="home" v-if="$store.state.user">
+  <div class="home" v-if="$store.state.user.bcUser">
     <v-dialog v-model="bookmarks.dialog" max-width="700px">
       <v-card color="card">
         <v-toolbar color="toolbar">
@@ -32,14 +32,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="calendarSettings.dialog" max-width="700px" v-if="$store.state.bcUser?.calendars">
+    <v-dialog v-model="calendarSettings.dialog" max-width="700px" v-if="$store.state.user.bcUser?.calendars">
       <v-card color="card">
         <v-toolbar color="toolbar">
           <v-toolbar-title>Calendar Settings</v-toolbar-title>
         </v-toolbar>
         <v-container>
           <v-switch @change="saveCalendars()" inset label="All" v-model="calendarSettings.all"></v-switch>
-          <v-switch @change="saveCalendars()" :disabled="calendarSettings.all" inset v-for="calendar in $store.state.calendars" v-model="$store.state.bcUser.calendars[calendar.id]" :key="calendar.id" :label="calendar.title"></v-switch>
+          <v-switch @change="saveCalendars()" :disabled="calendarSettings.all" inset v-for="calendar in $store.state.calendars" v-model="$store.state.user.bcUser.calendars[calendar.id]" :key="calendar.id" :label="calendar.title"></v-switch>
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -647,7 +647,7 @@
                   <v-data-table
                     :headers="rubricHeaders"
                     :items="rubricItems"
-                    :items-per-page="$store.state.bcUser.rowsPerPage"
+                    :items-per-page="$store.state.user.bcUser.rowsPerPage"
                     @update:items-per-page="updateRows"
                     style="white-space: pre-wrap"
                     class="elevation-1"
@@ -1445,8 +1445,8 @@
                 </v-toolbar>
                 <v-container>
                   <v-data-table
-                    v-if="$store.state.bcUser.bookmarks"
-                    :items="$store.state.bcUser.bookmarks"
+                    v-if="$store.state.user.bcUser.bookmarks"
+                    :items="$store.state.user.bcUser.bookmarks"
                     :headers="bookmarks.headers"
                     :style="
                 'background-color: ' +
@@ -2050,7 +2050,7 @@ export default {
     },
     computeEvents() {
       return this.$store.state.calendar.filter((event) => {
-        return this.$store.state.bcUser.calendars[event.calendarId]
+        return this.$store.state.user.bcUser.calendars[event.calendarId]
       })
     }
   },
@@ -2177,7 +2177,7 @@ export default {
       window.open(item.url, "_blank")
     },
     createBookmark() {
-      this.$store.state.bcUser.bookmarks.push(this.bookmarks.creation)
+      this.$store.state.user.bcUser.bookmarks.push(this.bookmarks.creation)
       this.$store.dispatch("saveOnlineSettings")
       this.bookmarks.creation = {
         url: "",
@@ -2186,7 +2186,7 @@ export default {
       this.bookmarks.dialog = false
     },
     removeBookmark(item) {
-      this.$store.state.bcUser.bookmarks = this.$store.state.bcUser.bookmarks.filter(
+      this.$store.state.user.bcUser.bookmarks = this.$store.state.user.bcUser.bookmarks.filter(
         (bookmark) => {
           return item.url !== bookmark.url
         }
@@ -2195,13 +2195,13 @@ export default {
     },
     saveCalendars() {
       if (this.calendarSettings.all) {
-        this.$store.state.bcUser.calendars = this.$store.state.calendars.reduce((acc, calendar) => {
+        this.$store.state.user.bcUser.calendars = this.$store.state.calendars.reduce((acc, calendar) => {
           acc[calendar.id] = true
           return acc
         }, {})
       }
       this.$store.dispatch("saveOnlineSettings", {
-        calendars: this.$store.state.bcUser.calendars
+        calendars: this.$store.state.user.bcUser.calendars
       })
     },
     getCalendars() {
@@ -2209,14 +2209,14 @@ export default {
         start: 0
       }).then((res) => {
         this.$store.commit("setCalendars", res.data.d)
-        if(!this.$store.state.bcUser.calendars) {
-          this.$store.state.bcUser.calendars = res.data.d.reduce((acc, calendar) => {
+        if(!this.$store.state.user.bcUser.calendars) {
+          this.$store.state.user.bcUser.calendars = res.data.d.reduce((acc, calendar) => {
             acc[calendar.id] = true
             return acc
           }, {})
           this.calendarSettings.all = true
           this.$store.dispatch("saveOnlineSettings", {
-            calendars: this.$store.state.bcUser.calendars
+            calendars: this.$store.state.user.bcUser.calendars
           })
         }
       }).catch((e) => {
@@ -2572,7 +2572,7 @@ export default {
     },
     discardGrid() {
       this.$store.dispatch("getUserInfo").then(() => {
-        this.grids = this.$store.state.bcUser?.homeGrids
+        this.grids = this.$store.state.user.bcUser?.homeGrids
       })
     },
     color(item) {
@@ -2841,7 +2841,7 @@ export default {
         })
     },
     getWeather() {
-      if (this.$store.state.bcUser.weather) {
+      if (this.$store.state.user.bcUser.weather) {
         this.axios.get("/api/v1/weather").then((res) => {
           this.weather = res.data
         })
@@ -2870,7 +2870,7 @@ export default {
           })
           if (
             this.overDueLearningTasks > 0 &&
-            this.$store.state.bcUser.learningTaskNotification
+            this.$store.state.user.bcUser.learningTaskNotification
           ) {
             this.learningTaskAlert = true
           }
@@ -2886,27 +2886,27 @@ export default {
     computeColor(event) {
       if (event.color === "#003300") {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarActivityType8
       } else if (event.color === "#133897") {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarExternalActivity
       } else if (event.activityType === 7 || event.color === "#f4dcdc") {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarActivityType7
       } else if (event.color === "#dce6f4") {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarNormalActivity
       } else if (event.activityType === 10) {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarActivityType10
       } else {
         return this.$vuetify.theme.themes[
-          this.$store.state.bcUser.theme || "dark"
+          this.$store.state.user.bcUser.theme || "dark"
         ].calendarNormalActivity
       }
     },
@@ -2963,7 +2963,7 @@ export default {
       if (init) {
         if (
           this.$date().day() === 0 &&
-          this.$store.state.bcUser.calendarAutoJump &&
+          this.$store.state.user.bcUser.calendarAutoJump &&
           !this.$store.state.calendarInit
         ) {
           this.$store.state.focus = this.$date(this.$store.state.focus)
@@ -2972,7 +2972,7 @@ export default {
           this.fetchEvents(false, false)
         } else if (
           this.$date().day() === 6 &&
-          this.$store.state.bcUser.calendarAutoJump &&
+          this.$store.state.user.bcUser.calendarAutoJump &&
           !this.$store.state.calendarInit
         ) {
           this.$store.state.focus = this.$date(this.$store.state.focus)
@@ -3052,17 +3052,17 @@ export default {
     }
     this.type = localStorage.getItem("calendarType") || "day"
     this.tab = localStorage.getItem("calendarType") === "day" ? 0 : 1
-    this.grids = this.$store.state.bcUser?.homeGrids
+    this.grids = this.$store.state.user.bcUser?.homeGrids
     this.$store.dispatch("getUserInfo").then((res) => {
-      if(!this.$store.state.bcUser.bookmarks) {
-        this.$store.state.bcUser.bookmarks = []
+      if(!this.$store.state.user.bcUser.bookmarks) {
+        this.$store.state.user.bcUser.bookmarks = []
         this.$store.dispatch("saveOnlineSettings")
       }
       this.getCalendars()
       this.user = res
       this.getChronicle()
       this.getAllChronicles()
-      this.grids = this.$store.state.bcUser?.homeGrids
+      this.grids = this.$store.state.user.bcUser?.homeGrids
       if (this.$store.state.calendar.length) {
         this.fetchEvents(false, false)
       } else {
@@ -3083,7 +3083,7 @@ export default {
         this.saveGrid()
       } else if (val === "discard") {
         this.$store.dispatch("getUserInfo").then(() => {
-          this.grids = this.$store.state.bcUser?.homeGrids
+          this.grids = this.$store.state.user.bcUser?.homeGrids
         })
       }
     },

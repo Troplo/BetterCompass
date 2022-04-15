@@ -342,8 +342,8 @@ export default {
   },
   computed: {
     getUserImage() {
-      if(this.$store.state.user.userId === this.user.userId && this.$store.state.bcUser.discussionsImage) {
-        return this.$store.state.bcUser.discussionsImage
+      if(this.$store.state.user.userId === this.user.userId && this.$store.state.user.bcUser.discussionsImage) {
+        return this.$store.state.user.bcUser.discussionsImage
       } else {
         return this.$store.state.school.fqdn + this.user.userPhotoPath
       }

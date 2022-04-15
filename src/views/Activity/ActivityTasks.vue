@@ -465,7 +465,7 @@
                   <v-data-table
                     :headers="rubricHeaders"
                     :items="rubricItems"
-                    :items-per-page="$store.state.bcUser.rowsPerPage"
+                    :items-per-page="$store.state.user.bcUser.rowsPerPage"
                     @update:items-per-page="updateRows"
                     style="white-space: pre-wrap"
                     class="elevation-1"
@@ -540,7 +540,7 @@
         <v-data-table
           :headers="headers"
           :items="computeTasks"
-          :items-per-page="$store.state.bcUser.rowsPerPage"
+          :items-per-page="$store.state.user.bcUser.rowsPerPage"
           @update:items-per-page="updateRows"
           class="elevation-3"
           @click:row="taskDialog"
@@ -1065,11 +1065,11 @@ export default {
     this.getLearningSchemes()
     this.getLearningTasks()
     this.getCategories()
-    this.hideIrrelevantTasks = this.$store.state.bcUser?.hideIrrelevantTasks
+    this.hideIrrelevantTasks = this.$store.state.user.bcUser?.hideIrrelevantTasks
   },
   watch: {
-    "$store.state.bcUser"() {
-      this.hideIrrelevantTasks = this.$store.state.bcUser?.hideIrrelevantTasks
+    "$store.state.user.bcUser"() {
+      this.hideIrrelevantTasks = this.$store.state.user.bcUser?.hideIrrelevantTasks
     },
     hideIrrelevantTasks(value) {
       this.$store.dispatch("saveOnlineSettings", {
