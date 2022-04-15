@@ -212,7 +212,7 @@
               class="text-center"
               size="38"
             >
-              <img :src="$store.state.user.bcUser.discussionsImage || $store.state.school.fqdn + '/download/cdn/square/' + $store.state.user.imageGuid">
+              <img :src="$store.state.user.bcUser.discussionsImage || $store.state.school.fqdn + '/download/cdn/square/' + $store.state.user.idPhotoGuidVersioned">
             </v-avatar>
           </v-btn>
         </template>
