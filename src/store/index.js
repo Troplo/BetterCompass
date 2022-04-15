@@ -254,7 +254,7 @@ export default new Vuex.Store({
         if (setting) {
           Vue.axios
             .put("/api/v1/user/settings/full", {
-              ...context.state.bcUser,
+              ...context.state.user.bcUser,
               ...setting
             })
             .then((res) => {
@@ -266,7 +266,7 @@ export default new Vuex.Store({
         } else {
           Vue.axios
             .put("/api/v1/user/settings/full", {
-              ...context.state.bcUser
+              ...context.state.user.bcUser
             })
             .then((res) => {
               resolve(res.data)
