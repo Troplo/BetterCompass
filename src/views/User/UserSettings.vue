@@ -208,46 +208,6 @@
         Your settings (including themes) now synchronize throughout all of your
         devices.
       </v-alert>
-      <v-card-title>Email & Push Notifications</v-card-title>
-      <v-card-text>
-        <v-text-field v-model="$store.state.user.email" label="Compass Email" disabled></v-text-field>
-      </v-card-text>
-      <v-card-text>
-        <v-text-field v-model="$store.state.user.email" label="BetterCompass Email"></v-text-field>
-      </v-card-text>
-      <v-card-text>
-        <v-switch
-          @change="saveSettings"
-          v-model="$store.state.user.bcUser.emailNotifications"
-          inset
-          label="Send email notifications for new learning tasks"
-          color="info"
-        ></v-switch>
-      </v-card-text>
-      <v-card-text>
-        <v-switch
-          @change="saveSettings"
-          inset
-          label="Send email notifications for learning task feedback responses"
-          color="info"
-        ></v-switch>
-      </v-card-text>
-      <v-card-text>
-        <v-switch
-          @change="saveSettings"
-          inset
-          label="Send email notifications for school news & announcement posts."
-          color="info"
-        ></v-switch>
-      </v-card-text>
-      <v-card-text>
-        <v-switch
-          @change="saveSettings"
-          inset
-          label="Send email notifications for room & teacher changes."
-          color="info"
-        ></v-switch>
-      </v-card-text>
       <v-card-title>Website Settings</v-card-title>
       <v-card-text>
         <v-text-field v-model="$store.state.user.bcUser.discussionsImage" label="Avatar URL (override, only visible to you)" append-outer-icon="mdi-content-save" @click:append-outer="saveSettings" @keyup.enter="saveSettings"></v-text-field>
