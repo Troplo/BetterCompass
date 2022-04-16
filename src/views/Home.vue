@@ -1114,6 +1114,9 @@
                   >
                   <v-spacer></v-spacer>
                 </v-toolbar>
+                <v-card-text class="text-center justify-center" v-if="!news.length">
+                  There are no news items to display.
+                </v-card-text>
                 <v-card
                   v-for="item in news"
                   :key="item.id"
