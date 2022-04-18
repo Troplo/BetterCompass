@@ -293,7 +293,7 @@
 
                 <v-list-item-title>Home</v-list-item-title>
               </v-list-item>
-              <template v-if="$store.state.user.baseRole !== 'STUDENT'">
+              <template v-if="$store.state.user.baseRole !== 'STUDENT' && $store.state.online">
                 <v-list-item
                   v-for="user in $store.state.user.children"
                   :key="user.userId"
@@ -309,7 +309,7 @@
                 </v-list-item>
               </template>
 
-              <v-list-item :to="'/user/' + $store.state.user.userId">
+              <v-list-item :to="'/user/' + $store.state.user.userId" v-if="$store.state.online">
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
                 </v-list-item-icon>
@@ -317,7 +317,7 @@
                 <v-list-item-title>Your Profile</v-list-item-title>
               </v-list-item>
 
-              <v-list-group prepend-icon="mdi-pen">
+              <v-list-group prepend-icon="mdi-pen" v-if="$store.state.online">
                 <template v-slot:activator>
                   <v-list-item-title>Curriculum</v-list-item-title>
                 </template>
@@ -372,6 +372,7 @@
               </v-list-item>
               <v-list-item
                 :to="'/user/' + $store.state.user.userId + '/events'"
+                v-if="$store.state.online"
               >
                 <v-list-item-icon>
                   <v-icon>mdi-swim</v-icon>
@@ -393,7 +394,7 @@
 
                 <v-list-item-title>Everything</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="feedback.modal = true">
+              <v-list-item @click="feedback.modal = true" v-if="$store.state.online">
                 <v-list-item-icon>
                   <v-icon>mdi-bug</v-icon>
                 </v-list-item-icon>

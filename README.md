@@ -18,6 +18,17 @@ your own instance.
 BetterCompass may have missing features that are out of scope, this is likely
 because I do not have full access to the Compass platform, and feature
 availability can differ between different instances.
+## Screenshots
+<img src="https://i.troplo.com/i/5da430fb.png" alt="Homepage" width="45%"></img>
+<img src="https://i.troplo.com/i/74103ed9.png" alt="Homepage with AMOLED Theme" width="45%"></img>
+<img src="https://i.troplo.com/i/733cc7e6.png" alt="Homepage with AMOLED Theme and maximized weekly calendar view with settings" width="45%"></img>
+<img src="https://i.troplo.com/i/8b6ce99b.png" alt="Homepage customization with AMOLED Theme" width="45%"></img>
+<img src="https://i.troplo.com/i/bf089e97.png" alt="Homepage with light theme" width="45%"></img>
+<img src="https://i.troplo.com/i/200e3553.png" alt="Activities with QuickSwitcher" width="45%"></img>
+<img src="https://i.troplo.com/i/fb6afe86.png" alt="Activities" width="45%"></img>
+<img src="https://i.troplo.com/i/42b6be87.png" alt="Learning Task" width="45%"></img>
+<img src="https://i.troplo.com/i/47779e67.png" alt="User Profile Settings" width="45%"></img>
+<img src="https://i.troplo.com/i/182718d2.png" alt="User Profile" width="45%"></img>
 
 ## Supported Compass features
 
@@ -91,16 +102,10 @@ accounts.
 ### Misc
 
 - [x] School Resources
-- [ ] BetterCompass cache for offline usage on PWA (BetterCompass Exclusive)
+- [x] BetterCompass cache for offline usage on PWA (BetterCompass Exclusive)
 - [x] Ability to hide excess calendar header events (BetterCompass Exclusive)
 - [x] See overdue learning task amount on homepage (BetterCompass Exclusive)
 
-Home: ![BetterCompass Home](https://i.troplo.com/i/5da430fb.png)
-
-Subject: ![BetterCompass Activity Page](https://i.troplo.com/i/fb6afe86.png)
-
-Subject Learning Task:
-![BetterCompass Learning Task](https://i.troplo.com/i/42b6be87.png)
 BetterCompass uses a proxy for the Compass API to allow for a seamless
 integration with BetterCompass.<br> This can be found in `/proxy`, and can be
 run with `node .`, view setup instructions in proxy/README.md.

@@ -162,7 +162,7 @@ export default {
         ]
       return randomColor.base
     },
-    async progressReportTable() {
+    progressReportTable() {
       this.progressReports.aoas.forEach(function (area) {
         this.chartData.labels.push(area.title)
         this.headers.progress.push({
@@ -221,8 +221,7 @@ export default {
             .post("/Services/Reports.svc/GetMyReportsList", {
               userId: this.user.userId
             })
-            .then(async (res) => {
-              await this.progressReportTable().then(() => {})
+            .then((res) => {
               this.reports = res.data.d
               this.loading = false
             })
@@ -234,6 +233,7 @@ export default {
             })
             .then((res) => {
               this.progressReports = res.data.d
+              this.progressReportTable()
             })
         })
         .catch(() => {

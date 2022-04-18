@@ -241,7 +241,7 @@
         </v-alert>
       </v-container>
       <v-container v-if="$store.state.site.notification && $store.state.user.bcUser">
-        <v-alert class="mx-4" type="info">
+        <v-alert text class="mx-4" type="info">
           {{ $store.state.site.notification }}
         </v-alert>
       </v-container>
@@ -253,11 +253,6 @@
           BetterCompass yet.
         </v-alert>
       </v-container>
-      <!--<v-container v-if="!$store.state.online">
-        <v-alert class="mx-4" type="warning">
-          You are currently offline, BetterCompass functionality will be limited.
-        </v-alert>
-      </v-container>-->
       <router-view
         :style="
           'background-color: ' +
@@ -397,15 +392,10 @@ export default {
   mounted() {
     Vue.axios.defaults.headers.common["CompassAPIKey"] =
       localStorage.getItem("apiKey")
-    console.log(this.$date().format())
     document.title = this.$route.name
       ? this.$route.name + " - BetterCompass"
       : "BetterCompass"
     this.$store.commit("setLoading", true)
-    this.$store.commit("setSettings", this.settings)
-    if (localStorage.getItem("settings")) {
-      localStorage.removeItem("settings")
-    }
     this.$vuetify.theme.dark =
       this.$store.state.user.bcUser?.theme === "dark" || true
     this.$store.commit("setSchool", {
@@ -418,6 +408,16 @@ export default {
       localStorage.getItem("schoolInstance")
     this.axios.defaults.headers.common["compassSchoolId"] =
       localStorage.getItem("schoolId")
+    if(localStorage.getItem("calendarCache")?.length) {
+      console.log(1)
+      this.$store.commit("setCalendar", JSON.parse(localStorage.getItem("calendarCache")).map((event) => {
+        return {
+          ...event,
+          start: new Date(event.start),
+          end: new Date(event.finish)
+        }
+      }))
+    }
     this.getThemes()
     this.$store.dispatch("getState")
     this.$store

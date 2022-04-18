@@ -463,7 +463,6 @@ export default {
                   "01-01-9999"
               ).isAfter(this.$date())
             ) {
-              console.log(chronicle)
               return chronicle
             }
           })

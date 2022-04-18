@@ -31,11 +31,8 @@ export default new Vuex.Store({
     token: null,
     subjects: [],
     events: [],
-    focus: dayjs().format(),
+    focus: dayjs().format("YYYY-MM-DD"),
     calendarInit: false,
-    settings: {
-      dark: true
-    },
     modals: {
       guidedWizard: true,
       settings: false,
@@ -88,9 +85,6 @@ export default new Vuex.Store({
     },
     showSettings(state, value) {
       state.modals.settings = value
-    },
-    setSettings(state, settings) {
-      state.settings = settings
     },
     setSearch(state, value) {
       state.modals.search = value
@@ -187,6 +181,12 @@ export default new Vuex.Store({
           context.commit("setLoading", false)
         })
         .catch(() => {
+          context.commit("setSite", {
+            release: "stable",
+            loading: false,
+            notification: "You are offline. BetterCompass functionality is limited.",
+            latestVersion: "1.0.0"
+          })
           context.commit("setOnline", false)
           context.commit("setLoading", false)
         })
@@ -291,12 +291,13 @@ export default new Vuex.Store({
           .get("/api/v1/user")
           .then((res) => {
             context.commit("setUser", res.data)
+            localStorage.setItem("userCache", JSON.stringify(res.data))
             const name = res.data.bcUser.themeObject.id
             const dark = res.data.bcUser.themeObject.theme.dark
             const light = res.data.bcUser.themeObject.theme.light
-            if (res.data.accentColor) {
-              res.data.bcUser.themeObject.theme.dark.primary = res.data.accentColor
-              res.data.bcUser.themeObject.theme.light.primary = res.data.accentColor
+            if (res.data.bcUser.accentColor) {
+              res.data.bcUser.themeObject.theme.dark.primary = res.data.bcUser.accentColor
+              res.data.bcUser.themeObject.theme.light.primary = res.data.bcUser.accentColor
             }
             Vuetify.framework.theme.themes.dark = dark
             Vuetify.framework.theme.themes.light = light
@@ -337,61 +338,81 @@ export default new Vuex.Store({
             resolve(res.data)
           })
           .catch((e) => {
-            const theme = {
-              id: 1,
-              name: "BetterCompass Classic",
-              primaryType: "all",
-              dark: {
-                primary: "#0190ea",
-                secondary: "#757575",
-                accent: "#000000",
-                error: "#ff1744",
-                info: "#2196F3",
-                success: "#4CAF50",
-                warning: "#ff9800",
-                card: "#151515",
-                toolbar: "#191919",
-                sheet: "#181818",
-                text: "#000000",
-                dark: "#151515",
-                bg: "#151515",
-                calendarNormalActivity: "#3f51b5",
-                calendarActivityType7: "#f44336",
-                calendarActivityType8: "#4caf50",
-                calendarActivityType10: "#ff9800",
-                calendarExternalActivity: "#2196f3"
-              },
-              light: {
-                primary: "#0190ea",
-                secondary: "#757575",
-                accent: "#000000",
-                error: "#ff1744",
-                info: "#2196F3",
-                success: "#4CAF50",
-                warning: "#ff9800",
-                card: "#f8f8f8",
-                toolbar: "#f8f8f8",
-                sheet: "#f8f8f8",
-                text: "#000000",
-                dark: "#f8f8f8",
-                bg: "#f8f8f8",
-                calendarNormalActivity: "#3f51b5",
-                calendarActivityType7: "#f44336",
-                calendarActivityType8: "#4caf50",
-                calendarActivityType10: "#ff9800",
-                calendarExternalActivity: "#2196f3"
+            if(JSON.parse(localStorage.getItem("userCache"))?.bcUser.id) {
+              const user = JSON.parse(localStorage.getItem("userCache"))
+              const name = user.bcUser.themeObject.id
+              const dark = user.bcUser.themeObject.theme.dark
+              const light = user.bcUser.themeObject.theme.light
+              if (user.bcUser.accentColor) {
+                user.bcUser.themeObject.theme.dark.primary = user.bcUser.accentColor
+                user.bcUser.themeObject.theme.light.primary = user.bcUser.accentColor
               }
+              Vuetify.framework.theme.themes.dark = dark
+              Vuetify.framework.theme.themes.light = light
+              Vuetify.framework.theme.themes.name = name
+              Vuetify.framework.theme.themes.primaryType = user.bcUser.themeObject.theme.primaryType
+              context.commit("setLoading", false)
+              context.commit("setOnline", false)
+              context.commit("setUser", user)
+              resolve(user)
+            } else {
+              context.commit("setUser", JSON.parse(localStorage.getItem("userCache")))
+              const theme = {
+                id: 1,
+                name: "BetterCompass Classic",
+                primaryType: "all",
+                dark: {
+                  primary: "#0190ea",
+                  secondary: "#757575",
+                  accent: "#000000",
+                  error: "#ff1744",
+                  info: "#2196F3",
+                  success: "#4CAF50",
+                  warning: "#ff9800",
+                  card: "#151515",
+                  toolbar: "#191919",
+                  sheet: "#181818",
+                  text: "#000000",
+                  dark: "#151515",
+                  bg: "#151515",
+                  calendarNormalActivity: "#3f51b5",
+                  calendarActivityType7: "#f44336",
+                  calendarActivityType8: "#4caf50",
+                  calendarActivityType10: "#ff9800",
+                  calendarExternalActivity: "#2196f3"
+                },
+                light: {
+                  primary: "#0190ea",
+                  secondary: "#757575",
+                  accent: "#000000",
+                  error: "#ff1744",
+                  info: "#2196F3",
+                  success: "#4CAF50",
+                  warning: "#ff9800",
+                  card: "#f8f8f8",
+                  toolbar: "#f8f8f8",
+                  sheet: "#f8f8f8",
+                  text: "#000000",
+                  dark: "#f8f8f8",
+                  bg: "#f8f8f8",
+                  calendarNormalActivity: "#3f51b5",
+                  calendarActivityType7: "#f44336",
+                  calendarActivityType8: "#4caf50",
+                  calendarActivityType10: "#ff9800",
+                  calendarExternalActivity: "#2196f3"
+                }
+              }
+              const name = theme.id
+              const dark = theme.dark
+              const light = theme.light
+              Vuetify.framework.theme.themes.dark = dark
+              Vuetify.framework.theme.themes.light = light
+              Vuetify.framework.theme.themes.name = name
+              this.name = name
+              console.log("Failed to load BetterCompass Account")
+              context.user = null
+              reject(e)
             }
-            const name = theme.id
-            const dark = theme.dark
-            const light = theme.light
-            Vuetify.framework.theme.themes.dark = dark
-            Vuetify.framework.theme.themes.light = light
-            Vuetify.framework.theme.themes.name = name
-            this.name = name
-            console.log("Failed to load BetterCompass Account")
-            context.user = null
-            reject(e)
           })
       })
     }

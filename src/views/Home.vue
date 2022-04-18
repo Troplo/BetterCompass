@@ -994,7 +994,7 @@
                 :color="color(item)"
                 class="rounded-xl mb-3"
                 elevation="7"
-                v-if="item.name === 'home.tasks'"
+                v-if="item.name === 'home.tasks' && $store.state.online"
               >
                 <v-overlay :value="loading.tasks" absolute>
                   <v-progress-circular
@@ -1073,7 +1073,7 @@
                 :color="color(item)"
                 class="rounded-xl mb-3"
                 elevation="7"
-                v-if="item.name === 'home.events'"
+                v-if="item.name === 'home.events' && $store.state.online"
               >
                 <v-toolbar color="toolbar">
                   <v-spacer></v-spacer>
@@ -1105,7 +1105,7 @@
                 :color="color(item)"
                 class="rounded-xl mb-3"
                 elevation="7"
-                v-if="item.name === 'home.news'"
+                v-if="item.name === 'home.news' && $store.state.online"
               >
                 <v-toolbar color="toolbar">
                   <v-spacer></v-spacer>
@@ -1344,7 +1344,7 @@
                 color="card"
                 class="rounded-xl mb-3"
                 elevation="7"
-                v-if="item.name === 'home.learningTasks'"
+                v-if="item.name === 'home.learningTasks' && $store.state.online"
               >
                 <v-overlay v-if="loading.learningTasks" absolute>
                   <v-progress-circular
@@ -2058,6 +2058,41 @@ export default {
     }
   },
   methods: {
+    fetchEventsForCache() {
+      this.axios
+        .post("/Services/Calendar.svc/GetCalendarEventsByUser", {
+          activityId: null,
+          endDate: this.$date()
+            .add(7, "day")
+            .format("YYYY-MM-DD"),
+          homePage: true,
+          limit: 25,
+          locationId: null,
+          page: 1,
+          staffIds: null,
+          start: 0,
+          startDate: this.$date()
+            .subtract(7, "day")
+            .format("YYYY-MM-DD"),
+          userId:
+            this.$store.state.user?.userId || localStorage.getItem("userId")
+        }).then((res) => {
+          localStorage.setItem("calendarCache", JSON.stringify(res.data.d.map((event) => {
+            return {
+              name: this.subjectName(event),
+              content: event.longTitle,
+              color: event.backgroundColor,
+              start: event.start,
+              finish: event.finish,
+              timed: event.timed,
+              activityType: event.activityType,
+              activityId: event.activityId,
+              instanceId: event.instanceId,
+              calendarId: event.calendarId
+            }
+          })))
+      }).catch(() => {})
+    },
     getJSON(json) {
       const parsed = JSON.parse(json)
       const indexed = parsed[parsed.findIndex((x) => x.isChecked)]
@@ -2126,7 +2161,6 @@ export default {
           limit: 10000
         })
         .then((res) => {
-          // find all in res.data.d.data that have chronicleEntries[0].attendees[0].pinToProfile
           this.chronicle.pinned = res.data.d.data.filter((chronicle) => {
             if (
               chronicle.chronicleEntries[0].attendees[0].pinToProfile &&
@@ -2135,14 +2169,12 @@ export default {
                 "01-01-9999"
               ).isAfter(this.$date())
             ) {
-              console.log(chronicle)
               return chronicle
             }
           })
           this.chronicle.loadingPinned = false
         })
         .catch(() => {
-          this.$toast.error("Failed to load pinned chronicles.")
           this.chronicle.loadingPinned = false
         })
     },
@@ -2172,7 +2204,6 @@ export default {
           this.chronicle.loading = false
         })
         .catch(() => {
-          this.$toast.error("Failed to load chronicles.")
           this.chronicle.loading = false
         })
     },
@@ -2222,9 +2253,7 @@ export default {
             calendars: this.$store.state.user.bcUser.calendars
           })
         }
-      }).catch((e) => {
-        console.log(e)
-        this.$toast.error("Something went wrong while loading your calendars. Error: ", e)
+      }).catch(() => {
       })
     },
     updateRows(val) {
@@ -2855,7 +2884,7 @@ export default {
       this.axios
         .post("/Services/LearningTasks.svc/GetAllLearningTasksByUserId", {
           forceTaskId: 0,
-          limit: 2000,
+          limit: 20,
           page: 1,
           sort: '[{"property":"dueDateTimestamp","direction":"ASC"}]',
           start: 0,
@@ -3057,6 +3086,7 @@ export default {
     this.tab = localStorage.getItem("calendarType") === "day" ? 0 : 1
     this.grids = this.$store.state.user.bcUser?.homeGrids
     this.$store.dispatch("getUserInfo").then((res) => {
+      this.fetchEventsForCache()
       if(!this.$store.state.user.bcUser.bookmarks) {
         this.$store.state.user.bcUser.bookmarks = []
         this.$store.dispatch("saveOnlineSettings")
