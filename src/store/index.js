@@ -114,6 +114,9 @@ export default new Vuex.Store({
         context.commit("setSubjects", [])
         localStorage.removeItem("apiKey")
         localStorage.removeItem("userId")
+        localStorage.removeItem("calendarCache")
+        localStorage.removeItem("userCache")
+        localStorage.removeItem("compassScore")
         Vue.axios.defaults.headers.common["CompassAPIKey"] = null
       }).catch(() => {
         Vue.$toast.error("Failed to logout.")
