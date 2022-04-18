@@ -289,7 +289,7 @@
         <v-list v-if="$store.state.user.bcUser">
           <v-list>
             <template>
-              <v-list-item to="/">
+              <v-list-item to="/" :color="active('')">
                 <v-list-item-icon>
                   <v-icon>mdi-home</v-icon>
                 </v-list-item-icon>
@@ -303,6 +303,7 @@
                 "
               >
                 <v-list-item
+                  :color="active('/user/' + user.userId)"
                   v-for="user in $store.state.user.children"
                   :key="user.userId"
                   :to="'/user/' + user.userId"
@@ -318,14 +319,15 @@
               </template>
 
               <v-list-item
-                :to="'/user/' + $store.state.user.userId"
+                :to="'/user'"
                 v-if="$store.state.online"
+                :color="active('/user')"
               >
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
                 </v-list-item-icon>
 
-                <v-list-item-title>Your Profile</v-list-item-title>
+                <v-list-item-title>My Profile</v-list-item-title>
               </v-list-item>
 
               <v-list-group prepend-icon="mdi-pen" v-if="$store.state.online">
@@ -374,6 +376,7 @@
               <v-list-item
                 to="/communications"
                 v-if="$store.state.site.release === 'dev'"
+                :color="active('/communications')"
               >
                 <v-list-item-icon>
                   <v-icon>mdi-android-messages</v-icon>
@@ -382,8 +385,9 @@
                 <v-list-item-title>Communications</v-list-item-title>
               </v-list-item>
               <v-list-item
-                :to="'/user/' + $store.state.user.userId + '/events'"
+                :to="'/user/events'"
                 v-if="$store.state.online"
+                :color="active('/user/events')"
               >
                 <v-list-item-icon>
                   <v-icon>mdi-swim</v-icon>
@@ -391,14 +395,14 @@
 
                 <v-list-item-title>Events</v-list-item-title>
               </v-list-item>
-              <v-list-item to="/changelog">
+              <v-list-item to="/changelog" :color="active('/changelog')">
                 <v-list-item-icon>
                   <v-icon>mdi-git</v-icon>
                 </v-list-item-icon>
 
                 <v-list-item-title>Changelog</v-list-item-title>
               </v-list-item>
-              <v-list-item to="/everything" v-if="debugModeEnabled">
+              <v-list-item to="/everything" v-if="debugModeEnabled" :color="active('/everything')">
                 <v-list-item-icon>
                   <v-icon>mdi-magnify</v-icon>
                 </v-list-item-icon>
@@ -415,7 +419,7 @@
 
                 <v-list-item-title>Provide Feedback</v-list-item-title>
               </v-list-item>
-              <v-list-item to="/about">
+              <v-list-item to="/about" :color="active('/about')">
                 <v-list-item-icon>
                   <v-icon>mdi-information</v-icon>
                 </v-list-item-icon>
@@ -428,42 +432,6 @@
                 </v-list-item-icon>
 
                 <v-list-item-title>Go to Route</v-list-item-title>
-              </v-list-item>
-            </template>
-            <template v-if="$store.state.site.release === 'dev'">
-              <v-list-item
-                v-for="(item, index) in menus.debug"
-                :key="item.id"
-                :to="item.path"
-                link
-                @click="handleClick(index)"
-              >
-                <v-list-item-icon>
-                  <v-icon
-                    v-bind:class="{
-                      gradient:
-                        item.name === $route.name &&
-                        !$store.state.site.whitelabel
-                    }"
-                    >{{ item.icon }}
-                  </v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  <v-list-item-title
-                    >{{ item.name }}
-                    <v-chip
-                      v-if="item.preview"
-                      class="ma-2"
-                      color="success"
-                      outlined
-                      rounded
-                      x-small
-                    >
-                      <v-icon>mdi-flask</v-icon>
-                    </v-chip>
-                  </v-list-item-title>
-                </v-list-item-content>
               </v-list-item>
             </template>
           </v-list>
@@ -636,8 +604,8 @@ export default {
       this.menus.dropdownAuthenticated[index].click.call(this)
     },
     active(path) {
-      if (path === this.$route.name) {
-        return "#007aff"
+      if (path === this.$route?.matched[0]?.path || path === this.$route?.path) {
+        return this.$vuetify.theme.themes[this.$vuetify.theme.dark ? "dark" : "light"].primary
       } else {
         return null
       }

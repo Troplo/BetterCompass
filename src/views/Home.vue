@@ -832,7 +832,7 @@
             v-model="grid.items"
             :sort="true"
             group="home"
-            :options="{ disabled: $store.state.editMode !== 'editing' }"
+            :disabled="$store.state.editMode !== 'editing'"
           >
             <div v-for="item in grid.items" :key="item.id">
               <v-card
