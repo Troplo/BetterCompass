@@ -156,10 +156,7 @@ export default {
         "deep-orange",
         "blue-grey"
       ]
-      const randomColor =
-        colors[
-          approvedColors[index % approvedColors.length]
-        ]
+      const randomColor = colors[approvedColors[index % approvedColors.length]]
       return randomColor.base
     },
     progressReportTable() {

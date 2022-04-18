@@ -89,7 +89,11 @@
                   label="Password"
                   type="password"
                 ></v-text-field>
-                <v-switch inset label="Remember Me" v-model="rememberMe"></v-switch>
+                <v-switch
+                  inset
+                  label="Remember Me"
+                  v-model="rememberMe"
+                ></v-switch>
                 <small
                   >By logging in you agree to the
                   <a @click="usageDisclaimer = true">
@@ -241,10 +245,11 @@ export default {
               this.$router.push("/")
             })
           }
-        }).catch(() => {
-        this.$toast.error("Invalid username or password.")
-        this.loading = false
-      })
+        })
+        .catch(() => {
+          this.$toast.error("Invalid username or password.")
+          this.loading = false
+        })
     }
   },
   mounted() {

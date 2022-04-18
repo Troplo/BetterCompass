@@ -3,9 +3,7 @@
     <v-dialog v-model="bookmarks.dialog" max-width="700px">
       <v-card color="card">
         <v-toolbar color="toolbar">
-          <v-toolbar-title>
-            Bookmark Creation
-          </v-toolbar-title>
+          <v-toolbar-title> Bookmark Creation </v-toolbar-title>
         </v-toolbar>
         <v-container>
           <v-text-field
@@ -32,30 +30,50 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="calendarSettings.dialog" max-width="700px" v-if="$store.state.user.bcUser?.calendars">
+    <v-dialog
+      v-model="calendarSettings.dialog"
+      max-width="700px"
+      v-if="$store.state.user.bcUser?.calendars"
+    >
       <v-card color="card">
         <v-toolbar color="toolbar">
           <v-toolbar-title>Calendar Settings</v-toolbar-title>
         </v-toolbar>
         <v-container>
-          <v-switch @change="saveCalendars()" inset label="All" v-model="calendarSettings.all"></v-switch>
-          <v-switch @change="saveCalendars()" :disabled="calendarSettings.all" inset v-for="calendar in $store.state.calendars" v-model="$store.state.user.bcUser.calendars[calendar.id]" :key="calendar.id" :label="calendar.title"></v-switch>
+          <v-switch
+            @change="saveCalendars()"
+            inset
+            label="All"
+            v-model="calendarSettings.all"
+          ></v-switch>
+          <v-switch
+            @change="saveCalendars()"
+            :disabled="calendarSettings.all"
+            inset
+            v-for="calendar in $store.state.calendars"
+            v-model="$store.state.user.bcUser.calendars[calendar.id]"
+            :key="calendar.id"
+            :label="calendar.title"
+          ></v-switch>
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="saveCalendars(); calendarSettings.dialog = false">OK</v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="
+              saveCalendars()
+              calendarSettings.dialog = false
+            "
+            >OK</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="calendarDialog" max-width="1800px">
       <v-card color="card">
         <v-toolbar color="toolbar">
-          <v-btn
-            text
-            small
-            fab
-            @click="changeDay('subtract')"
-          >
+          <v-btn text small fab @click="changeDay('subtract')">
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           &nbsp;
@@ -224,7 +242,7 @@
       <v-card color="card">
         <v-toolbar color="toolbar">
           <v-toolbar-title>
-            {{selectedTask.name}}
+            {{ selectedTask.name }}
           </v-toolbar-title>
         </v-toolbar>
         <v-container>
@@ -517,9 +535,9 @@
                         Any assessment results provided below are raw scores and
                         may change during school or state based statistical
                         assessment moderation. The statistical, state based,
-                        moderation process is used to ensure that schools’
+                        moderation process is used to ensure that schools'
                         assessments are comparable throughout the state. It
-                        involves adjusting each schools’ coursework scores for
+                        involves adjusting each schools' coursework scores for
                         that study to match the level and spread of the combined
                         examination and GAT scores for the students in that
                         school doing that study. For more information on
@@ -694,9 +712,11 @@
     </v-dialog>
     <v-dialog v-model="taskDialog" max-width="600px">
       <v-card color="card" elevation="7">
-        <v-card-title>
-          <span class="headline">{{ task.editing ? "Edit" : "Add" }} Task</span>
-        </v-card-title>
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            {{ task.editing ? "Edit" : "Add" }} Task
+          </v-toolbar-title>
+        </v-toolbar>
         <v-card-text>
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
@@ -849,12 +869,7 @@
                   ></v-progress-circular>
                 </v-overlay>
                 <v-toolbar color="toolbar">
-                  <v-btn
-                    text
-                    small
-                    fab
-                    @click="changeDay('subtract')"
-                  >
+                  <v-btn text small fab @click="changeDay('subtract')">
                     <v-icon>mdi-arrow-left</v-icon>
                   </v-btn>
                   &nbsp;
@@ -1081,6 +1096,12 @@
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-container>
+                  <v-card-text
+                    class="text-center justify-center"
+                    v-if="!$store.state.upcomingEvents.length"
+                  >
+                    There are no upcoming events to display.
+                  </v-card-text>
                   <v-card
                     v-for="item in $store.state.upcomingEvents"
                     :key="item.id"
@@ -1114,7 +1135,10 @@
                   >
                   <v-spacer></v-spacer>
                 </v-toolbar>
-                <v-card-text class="text-center justify-center" v-if="!news.length">
+                <v-card-text
+                  class="text-center justify-center"
+                  v-if="!news.length"
+                >
                   There are no news items to display.
                 </v-card-text>
                 <v-card
@@ -1128,11 +1152,7 @@
                 >
                   <v-toolbar color="toolbar">
                     <v-avatar
-                      @click="
-                    $router.push(
-                      '/user/' + item.UserId
-                    )
-                  "
+                      @click="$router.push('/user/' + item.UserId)"
                       style="cursor: pointer"
                       large
                       class="mr-3"
@@ -1142,17 +1162,13 @@
                       />
                     </v-avatar>
                     <v-toolbar-title>
-                      {{ item.Title}}
+                      {{ item.Title }}
                       <div class="subheading subtitle-1">
                         Created by:
                         <span
-                          @click="
-                        $router.push(
-                          '/user/' + item.UserId
-                        )
-                      "
+                          @click="$router.push('/user/' + item.UserId)"
                           style="cursor: pointer"
-                        >{{ item.UserName }}</span
+                          >{{ item.UserName }}</span
                         >, on
                         {{
                           $date(item.PostDateTime).format(
@@ -1250,17 +1266,125 @@
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-container>
-                  <v-card-title> 07/04/2022 </v-card-title>
+                  <v-card-title> 08/04/2022 - 18/04/2022 </v-card-title>
                   <ul>
-                    <li>Fixed rubric not showing teacher results.</li>
-                    <li>Fixed missing rubric tab on User Learning Tasks.</li>
                     <li>
-                      Added rubric learning task tag, and Compass tags
-                      (Assessment, Assignment, etc).
+                      You can now select what particular calendars show on your
+                      homepage calendar with the cog/settings icon located on
+                      the calendar card which replaces minimize header events.
                     </li>
-                    <li>Added past events to User Events.</li>
-                    <li>Added event resources to User Events.</li>
-                    <li>Event descriptions are now sanitized.</li>
+                    <li>
+                      You can now customize your homepage/dashboard with the use
+                      of widgets that you can add, remove, and move.
+                    </li>
+                    <li>
+                      The calendar is cached to the state to avoid unnecessary
+                      reloading of the calendar after page initialization.
+                    </li>
+                    <li>
+                      The calendar (2 weeks) and some user data now gets stored
+                      locally so BetterCompass can be used offline in a limited
+                      fashion on the PWA app.
+                    </li>
+                    <li>
+                      You can now navigate the calendar on the homepage with the
+                      arrow keys.
+                    </li>
+                    <li>
+                      The progression report graph no longer appears on mobile,
+                      and the colors will not be the same for multiple classes.
+                    </li>
+                    <li>
+                      You can now expand the calendar view to make it easier to
+                      see the weekly view on lower resolution devices.
+                    </li>
+                    <li>You can now view what staff attend your school.</li>
+                    <li>
+                      There is now a learning task widget so you can view
+                      relevant learning tasks, and submit them if
+                      pending/overdue.
+                    </li>
+                    <li>
+                      Using the learning task dialog, you can now see the
+                      creation date of the learning task.
+                    </li>
+                    <li>
+                      You can see learning task submissions as a parent, or when
+                      the learning task would otherwise be in an "expired" or
+                      disabled state, also applies for feedback.
+                    </li>
+                    <li>
+                      You can now change the profile picture shown on your
+                      profile (only visible to you).
+                    </li>
+                    <li>
+                      The icon in the top right corner now shows your profile
+                      picture, this may encourage you to change it.
+                    </li>
+                    <li>
+                      Fixed BetterCompass bug where the Learning Tasks do not
+                      show a due date.
+                    </li>
+                    <li>
+                      Fixed a bug where events that should be shown as a header
+                      event, were shown as a normal event.
+                    </li>
+                    <li>
+                      Fixed bug where header events extending longer than a day
+                      wouldn't continue to the next day.
+                    </li>
+                    <li>
+                      Adding a task to an unknown activity will no longer break
+                      tasks.
+                    </li>
+                    <li>
+                      You can now hide tasks that are irrelevant (older than 10
+                      weeks if pending, or 2 weeks if submitted).
+                    </li>
+                    <li>
+                      Rows per page on tables throughout BetterCompass now
+                      persist.
+                    </li>
+                    <li>
+                      Attendance calendar now shows the AM/PM status when you
+                      hover over it.
+                    </li>
+                    <li>
+                      The chronicle no longer infinitely loads when viewing a
+                      staff account when you do not have access to view it.
+                    </li>
+                    <li>
+                      The learning task results no longer include irrelevant
+                      grading scheme options.
+                    </li>
+                    <li>
+                      Fixed an inconsistency in the homepage where the spacing
+                      was different at the top of the screen.
+                    </li>
+                    <li>
+                      Redesigned news widget to match the chronicles feed to
+                      improve on consistency.
+                    </li>
+                    <li>Cards now have toolbars to improve consistency.</li>
+                    <li>
+                      More optimizations to make BetterCompass more consistent.
+                    </li>
+                    <li>Fixed progress reports infinite load due to graph.</li>
+                    <li>
+                      You can now log-out of BetterCompass using the account
+                      dropdown menu in the navigation bar.
+                    </li>
+                    <li>There is now a bookmarks widget.</li>
+                    <li>There is now a chronicles widget.</li>
+                    <li>
+                      Fixed a bug where you couldn't update tasks that don't
+                      have a due date.
+                    </li>
+                    <li>
+                      Redesigned the subject/class roll to match the other
+                      pages.
+                    </li>
+                    <li>Additional Performance & Bug fixes.</li>
                   </ul>
                   <small
                     >BetterCompass version
@@ -1372,73 +1496,70 @@
                   </v-tooltip>
                   <v-spacer></v-spacer>
                 </v-toolbar>
-                <v-container>
-                  <v-data-table
-                    :headers="learningTasksHeaders"
-                    :items="computeLearningTasks"
-                    :items-per-page="5"
-                    class="elevation-3"
-                    @click:row="learningTaskDialog"
-                    style="cursor: pointer"
-                    :style="
-                      'background-color: ' +
-                      $vuetify.theme.themes[
-                        $vuetify.theme.dark ? 'dark' : 'light'
-                      ].card
-                    "
-                  >
-                    <template v-slot:item.tags="{ item }">
-                      <v-chip-group column>
-                        <v-chip color="red" v-if="item.important">
-                          <v-icon>mdi-alert-octagon-outline </v-icon> Important
-                        </v-chip>
-                        <v-chip color="blue" v-if="item.rubricWikiNodeIds">
-                          <v-icon>mdi-format-list-bulleted </v-icon> Rubric
-                        </v-chip>
-                        <v-chip
-                          v-if="getCategory(item)"
-                          :color="getCategory(item).color"
-                        >
-                          {{ getCategory(item).categoryName }}
-                        </v-chip>
-                      </v-chip-group>
-                    </template>
-                    <template v-slot:item.status="{ item }">
-                      <v-icon v-if="getStatus(item).status === 'pending'">
-                        mdi-circle-outline
-                      </v-icon>
-                      <v-icon
-                        v-if="getStatus(item).status === 'submitted'"
-                        color="green"
+                <v-data-table
+                  :headers="learningTasksHeaders"
+                  :items="computeLearningTasks"
+                  :items-per-page="5"
+                  class="elevation-3"
+                  @click:row="learningTaskDialog"
+                  style="cursor: pointer"
+                  :style="
+                    'background-color: ' +
+                    $vuetify.theme.themes[
+                      $vuetify.theme.dark ? 'dark' : 'light'
+                    ].card
+                  "
+                >
+                  <template v-slot:item.tags="{ item }">
+                    <v-chip-group column>
+                      <v-chip color="red" v-if="item.important">
+                        <v-icon>mdi-alert-octagon-outline </v-icon> Important
+                      </v-chip>
+                      <v-chip color="blue" v-if="item.rubricWikiNodeIds">
+                        <v-icon>mdi-format-list-bulleted </v-icon> Rubric
+                      </v-chip>
+                      <v-chip
+                        v-if="getCategory(item)"
+                        :color="getCategory(item).color"
                       >
-                        mdi-check-circle-outline
-                      </v-icon>
-                      <v-icon
-                        v-if="getStatus(item).status === 'submittedLate'"
-                        color="orange"
-                      >
-                        mdi-check-circle-outline
-                      </v-icon>
-                      <v-icon
-                        v-if="getStatus(item).status === 'pendingLate'"
-                        color="red"
-                      >
-                        mdi-alert-circle-outline
-                      </v-icon>
-                      {{ getStatus(item).text }}
-                    </template>
-                  </v-data-table>
-                </v-container>
+                        {{ getCategory(item).categoryName }}
+                      </v-chip>
+                    </v-chip-group>
+                  </template>
+                  <template v-slot:item.status="{ item }">
+                    <v-icon v-if="getStatus(item).status === 'pending'">
+                      mdi-circle-outline
+                    </v-icon>
+                    <v-icon
+                      v-if="getStatus(item).status === 'submitted'"
+                      color="green"
+                    >
+                      mdi-check-circle-outline
+                    </v-icon>
+                    <v-icon
+                      v-if="getStatus(item).status === 'submittedLate'"
+                      color="orange"
+                    >
+                      mdi-check-circle-outline
+                    </v-icon>
+                    <v-icon
+                      v-if="getStatus(item).status === 'pendingLate'"
+                      color="red"
+                    >
+                      mdi-alert-circle-outline
+                    </v-icon>
+                    {{ getStatus(item).text }}
+                  </template>
+                </v-data-table>
               </v-card>
               <v-card
                 color="card"
                 class="rounded-xl mb-3"
                 elevation="7"
                 v-if="item.name === 'home.bookmarks'"
-                >
+              >
                 <v-toolbar color="toolbar">
-                  <v-btn text fab disabled>
-                  </v-btn>
+                  <v-btn text fab disabled> </v-btn>
                   <v-spacer></v-spacer>
                   <v-toolbar-title>Bookmarks</v-toolbar-title>
                   <v-spacer></v-spacer>
@@ -1452,27 +1573,34 @@
                     :items="$store.state.user.bcUser.bookmarks"
                     :headers="bookmarks.headers"
                     :style="
-                'background-color: ' +
-                $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
-                  .card
-              "
+                      'background-color: ' +
+                      $vuetify.theme.themes[
+                        $vuetify.theme.dark ? 'dark' : 'light'
+                      ].card
+                    "
                   >
                     <template v-slot:item.actions="{ item }">
                       <v-btn icon :href="item.url" target="_blank">
                         <v-icon> mdi-open-in-new </v-icon>
                       </v-btn>
                       <v-btn icon @click="removeBookmark(item)">
-                        <v-icon>
-                          mdi-delete
-                        </v-icon>
+                        <v-icon> mdi-delete </v-icon>
                       </v-btn>
                     </template>
                   </v-data-table>
                 </v-container>
               </v-card>
-              <v-card color="card" class="rounded-xl mb-3" elevation="7" v-if="item.name === 'home.chronicles'">
+              <v-card
+                color="card"
+                class="rounded-xl mb-3"
+                elevation="7"
+                v-if="item.name === 'home.chronicles'"
+              >
                 <v-overlay :value="chronicle.loading" absolute>
-                  <v-progress-circular indeterminate size="64"></v-progress-circular>
+                  <v-progress-circular
+                    indeterminate
+                    size="64"
+                  ></v-progress-circular>
                 </v-overlay>
                 <v-toolbar color="toolbar">
                   <v-spacer></v-spacer>
@@ -1503,21 +1631,22 @@
                     <v-toolbar color="toolbar">
                       <v-avatar
                         @click="
-                    $router.push(
-                      '/user/' + item.chronicleEntries[0].userIdCreator
-                    )
-                  "
+                          $router.push(
+                            '/user/' + item.chronicleEntries[0].userIdCreator
+                          )
+                        "
                         style="cursor: pointer"
                         large
                         class="mr-3"
                       >
                         <img
                           :src="
-                      '/download/cdn/square/' +
-                      getStaff(item.chronicleEntries[0].userIdCreator).pv +
-                      '?compassInstance=' +
-                      $store.state.school.instance
-                    "
+                            '/download/cdn/square/' +
+                            getStaff(item.chronicleEntries[0].userIdCreator)
+                              .pv +
+                            '?compassInstance=' +
+                            $store.state.school.instance
+                          "
                         />
                       </v-avatar>
                       <v-toolbar-title>
@@ -1526,19 +1655,21 @@
                           Recorded by:
                           <span
                             @click="
-                        $router.push(
-                          '/user/' + item.chronicleEntries[0].userIdCreator
-                        )
-                      "
+                              $router.push(
+                                '/user/' +
+                                  item.chronicleEntries[0].userIdCreator
+                              )
+                            "
                             style="cursor: pointer"
-                          >{{
-                              getStaff(item.chronicleEntries[0].userIdCreator)?.n
+                            >{{
+                              getStaff(item.chronicleEntries[0].userIdCreator)
+                                ?.n
                             }}</span
                           >, on
                           {{
-                            $date(item.chronicleEntries[0].createdTimestamp).format(
-                              "MMMM Do, YYYY"
-                            )
+                            $date(
+                              item.chronicleEntries[0].createdTimestamp
+                            ).format("MMMM Do, YYYY")
                           }}
                         </div>
                       </v-toolbar-title>
@@ -1551,22 +1682,24 @@
                                 disabled
                                 style="opacity: 1"
                                 @click="
-                            chronicle.selected = item
-                            chronicle.info = true
-                          "
-                              ><v-icon small>mdi-pin-outline</v-icon></v-chip
+                                  chronicle.selected = item
+                                  chronicle.info = true
+                                "
+                                ><v-icon small>mdi-pin-outline</v-icon></v-chip
                               >
                             </div>
                           </div>
                         </template>
-                        <span v-if="item.chronicleEntries[0].attendees[0].pinExpiry">
-                    This chronicle is pinned until:
-                    {{
+                        <span
+                          v-if="item.chronicleEntries[0].attendees[0].pinExpiry"
+                        >
+                          This chronicle is pinned until:
+                          {{
                             $date(
                               item.chronicleEntries[0].attendees[0].pinExpiry
                             ).format("MMMM Do YYYY")
                           }}) }}
-                  </span>
+                        </span>
                         <span v-else> This pin has no expiry </span>
                       </v-tooltip>
                     </v-toolbar>
@@ -1593,21 +1726,22 @@
                     <v-toolbar color="toolbar">
                       <v-avatar
                         @click="
-                    $router.push(
-                      '/user/' + item.chronicleEntries[0].userIdCreator
-                    )
-                  "
+                          $router.push(
+                            '/user/' + item.chronicleEntries[0].userIdCreator
+                          )
+                        "
                         style="cursor: pointer"
                         large
                         class="mr-3"
                       >
                         <img
                           :src="
-                      '/download/cdn/square/' +
-                      getStaff(item.chronicleEntries[0].userIdCreator).pv +
-                      '?compassInstance=' +
-                      $store.state.school.instance
-                    "
+                            '/download/cdn/square/' +
+                            getStaff(item.chronicleEntries[0].userIdCreator)
+                              .pv +
+                            '?compassInstance=' +
+                            $store.state.school.instance
+                          "
                         />
                       </v-avatar>
                       <v-toolbar-title>
@@ -1616,19 +1750,21 @@
                           Recorded by:
                           <span
                             @click="
-                        $router.push(
-                          '/user/' + item.chronicleEntries[0].userIdCreator
-                        )
-                      "
+                              $router.push(
+                                '/user/' +
+                                  item.chronicleEntries[0].userIdCreator
+                              )
+                            "
                             style="cursor: pointer"
-                          >{{
-                              getStaff(item.chronicleEntries[0].userIdCreator)?.n
+                            >{{
+                              getStaff(item.chronicleEntries[0].userIdCreator)
+                                ?.n
                             }}</span
                           >, on
                           {{
-                            $date(item.chronicleEntries[0].createdTimestamp).format(
-                              "MMMM Do, YYYY"
-                            )
+                            $date(
+                              item.chronicleEntries[0].createdTimestamp
+                            ).format("MMMM Do, YYYY")
                           }}
                         </div>
                       </v-toolbar-title>
@@ -1704,7 +1840,7 @@ export default {
             text: "Actions",
             value: "actions"
           }
-        ],
+        ]
       },
       calendarSettings: {
         dialog: false,
@@ -2062,36 +2198,39 @@ export default {
       this.axios
         .post("/Services/Calendar.svc/GetCalendarEventsByUser", {
           activityId: null,
-          endDate: this.$date()
-            .add(7, "day")
-            .format("YYYY-MM-DD"),
+          endDate: this.$date().add(7, "day").format("YYYY-MM-DD"),
           homePage: true,
           limit: 25,
           locationId: null,
           page: 1,
           staffIds: null,
           start: 0,
-          startDate: this.$date()
-            .subtract(7, "day")
-            .format("YYYY-MM-DD"),
+          startDate: this.$date().subtract(7, "day").format("YYYY-MM-DD"),
           userId:
             this.$store.state.user?.userId || localStorage.getItem("userId")
-        }).then((res) => {
-          localStorage.setItem("calendarCache", JSON.stringify(res.data.d.map((event) => {
-            return {
-              name: this.subjectName(event),
-              content: event.longTitle,
-              color: event.backgroundColor,
-              start: event.start,
-              finish: event.finish,
-              timed: event.timed,
-              activityType: event.activityType,
-              activityId: event.activityId,
-              instanceId: event.instanceId,
-              calendarId: event.calendarId
-            }
-          })))
-      }).catch(() => {})
+        })
+        .then((res) => {
+          localStorage.setItem(
+            "calendarCache",
+            JSON.stringify(
+              res.data.d.map((event) => {
+                return {
+                  name: this.subjectName(event),
+                  content: event.longTitle,
+                  color: event.backgroundColor,
+                  start: event.start,
+                  finish: event.finish,
+                  timed: event.timed,
+                  activityType: event.activityType,
+                  activityId: event.activityId,
+                  instanceId: event.instanceId,
+                  calendarId: event.calendarId
+                }
+              })
+            )
+          )
+        })
+        .catch(() => {})
     },
     getJSON(json) {
       const parsed = JSON.parse(json)
@@ -2166,7 +2305,7 @@ export default {
               chronicle.chronicleEntries[0].attendees[0].pinToProfile &&
               this.$date(
                 chronicle.chronicleEntries[0].attendees[0].pinExpiry ||
-                "01-01-9999"
+                  "01-01-9999"
               ).isAfter(this.$date())
             ) {
               return chronicle
@@ -2215,46 +2354,51 @@ export default {
       this.$store.dispatch("saveOnlineSettings")
       this.bookmarks.creation = {
         url: "",
-        name: "",
+        name: ""
       }
       this.bookmarks.dialog = false
     },
     removeBookmark(item) {
-      this.$store.state.user.bcUser.bookmarks = this.$store.state.user.bcUser.bookmarks.filter(
-        (bookmark) => {
+      this.$store.state.user.bcUser.bookmarks =
+        this.$store.state.user.bcUser.bookmarks.filter((bookmark) => {
           return item.url !== bookmark.url
-        }
-      )
+        })
       this.$store.dispatch("saveOnlineSettings")
     },
     saveCalendars() {
       if (this.calendarSettings.all) {
-        this.$store.state.user.bcUser.calendars = this.$store.state.calendars.reduce((acc, calendar) => {
-          acc[calendar.id] = true
-          return acc
-        }, {})
+        this.$store.state.user.bcUser.calendars =
+          this.$store.state.calendars.reduce((acc, calendar) => {
+            acc[calendar.id] = true
+            return acc
+          }, {})
       }
       this.$store.dispatch("saveOnlineSettings", {
         calendars: this.$store.state.user.bcUser.calendars
       })
     },
     getCalendars() {
-      this.axios.post("/Services/Calendar.svc/GetCalendarsByUser", {
-        start: 0
-      }).then((res) => {
-        this.$store.commit("setCalendars", res.data.d)
-        if(!this.$store.state.user.bcUser.calendars) {
-          this.$store.state.user.bcUser.calendars = res.data.d.reduce((acc, calendar) => {
-            acc[calendar.id] = true
-            return acc
-          }, {})
-          this.calendarSettings.all = true
-          this.$store.dispatch("saveOnlineSettings", {
-            calendars: this.$store.state.user.bcUser.calendars
-          })
-        }
-      }).catch(() => {
-      })
+      this.axios
+        .post("/Services/Calendar.svc/GetCalendarsByUser", {
+          start: 0
+        })
+        .then((res) => {
+          this.$store.commit("setCalendars", res.data.d)
+          if (!this.$store.state.user.bcUser.calendars) {
+            this.$store.state.user.bcUser.calendars = res.data.d.reduce(
+              (acc, calendar) => {
+                acc[calendar.id] = true
+                return acc
+              },
+              {}
+            )
+            this.calendarSettings.all = true
+            this.$store.dispatch("saveOnlineSettings", {
+              calendars: this.$store.state.user.bcUser.calendars
+            })
+          }
+        })
+        .catch(() => {})
     },
     updateRows(val) {
       this.$store.dispatch("saveOnlineSettings", {
@@ -2746,7 +2890,7 @@ export default {
     addTask(edit) {
       const route = edit ? "UpdateTaskItem" : "SaveTaskItem"
       const date =
-        this.task.dueDate === "Invalid date" ? null : this.task.dueDate
+        this.task.dueDate === "Invalid Date" ? null : this.task.dueDate
       if (!this.task.richNote) {
         this.axios
           .post("/Services/TaskService.svc/" + route, {
@@ -2814,7 +2958,7 @@ export default {
       }
     },
     setTaskStatus(task) {
-      const date = task.dueDate === "Invalid date" ? null : this.task.dueDate
+      const date = task.dueDate === "Invalid Date" ? null : this.task.dueDate
       this.loading.tasks = true
       if (!task.richNote) {
         this.axios
@@ -2976,7 +3120,7 @@ export default {
         return event.longTitleWithoutTime
       } else if (!subject && event.attendanceMode === 2 && !event.allDay) {
         return event.longTitle
-      } else if(!subject) {
+      } else if (!subject) {
         return event.longTitleWithoutTime
       } else {
         if (/<strike>.*<\/strike>&nbsp;/.test(event.longTitleWithoutTime)) {
@@ -3087,7 +3231,7 @@ export default {
     this.grids = this.$store.state.user.bcUser?.homeGrids
     this.$store.dispatch("getUserInfo").then((res) => {
       this.fetchEventsForCache()
-      if(!this.$store.state.user.bcUser.bookmarks) {
+      if (!this.$store.state.user.bcUser.bookmarks) {
         this.$store.state.user.bcUser.bookmarks = []
         this.$store.dispatch("saveOnlineSettings")
       }

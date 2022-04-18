@@ -45,7 +45,7 @@
       <v-card color="card">
         <v-toolbar color="toolbar">
           <v-toolbar-title>
-            {{selectedTask.name}}
+            {{ selectedTask.name }}
           </v-toolbar-title>
         </v-toolbar>
         <v-container>
@@ -66,10 +66,16 @@
                     <v-container>
                       Name: <b>{{ selectedTask.name }}</b
                       ><br />
-                      Creation Date: <b>{{$date(selectedTask.createdTimestamp).format("dddd, MMMM Do YYYY, hh:mm A")}}</b><br>
+                      Creation Date:
+                      <b>{{
+                        $date(selectedTask.createdTimestamp).format(
+                          "dddd, MMMM Do YYYY, hh:mm A"
+                        )
+                      }}</b
+                      ><br />
                       <template v-if="selectedTask.dueDateTimestamp"
                         >Due Date:
-                        <b>{{selectedTask.dueDateTimestamp}}</b></template
+                        <b>{{ selectedTask.dueDateTimestamp }}</b></template
                       ><br />
                       Online Submission Enabled:
                       <b>{{ selectedTask.submissionItems ? "Yes" : "No" }}</b
@@ -974,6 +980,15 @@ export default {
           text: "Marked as Submitted",
           color: "success"
         }
+      } else if (
+        !submittedSubmission &&
+        this.selectedTask.students[0].submissionStatus === 4
+      ) {
+        return {
+          status: "submitted",
+          text: "Marked as Submitted Late",
+          color: "warning"
+        }
       } else {
         return {
           status: "unknown",
@@ -1065,11 +1080,13 @@ export default {
     this.getLearningSchemes()
     this.getLearningTasks()
     this.getCategories()
-    this.hideIrrelevantTasks = this.$store.state.user.bcUser?.hideIrrelevantTasks
+    this.hideIrrelevantTasks =
+      this.$store.state.user.bcUser?.hideIrrelevantTasks
   },
   watch: {
     "$store.state.user.bcUser"() {
-      this.hideIrrelevantTasks = this.$store.state.user.bcUser?.hideIrrelevantTasks
+      this.hideIrrelevantTasks =
+        this.$store.state.user.bcUser?.hideIrrelevantTasks
     },
     hideIrrelevantTasks(value) {
       this.$store.dispatch("saveOnlineSettings", {

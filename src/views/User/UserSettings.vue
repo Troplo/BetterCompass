@@ -210,7 +210,13 @@
       </v-alert>
       <v-card-title>Website Settings</v-card-title>
       <v-card-text>
-        <v-text-field v-model="$store.state.user.bcUser.discussionsImage" label="Avatar URL (override, only visible to you)" append-outer-icon="mdi-content-save" @click:append-outer="saveSettings" @keyup.enter="saveSettings"></v-text-field>
+        <v-text-field
+          v-model="$store.state.user.bcUser.discussionsImage"
+          label="Avatar URL (override, only visible to you)"
+          append-outer-icon="mdi-content-save"
+          @click:append-outer="saveSettings"
+          @keyup.enter="saveSettings"
+        ></v-text-field>
       </v-card-text>
       <v-card-text>
         <v-switch
@@ -230,24 +236,16 @@
         ></v-switch>
       </v-card-text>
       <v-card-text v-if="debugModeEnabled">
-        <v-alert type="error" text>
-          Seizure warning.
-        </v-alert>
-        <v-slider
-          v-model="slider"
-          hint="Speed"
-          max="2000"
-          min="10"
-        ></v-slider>
-        <v-btn class="mr-2" @click="randomColorTheme()">
-          Set
-        </v-btn>
-        <v-btn @click="stopColorTheme()">
-          Stop
-        </v-btn>
+        <v-alert type="error" text> Seizure warning. </v-alert>
+        <v-slider v-model="slider" hint="Speed" max="2000" min="10"></v-slider>
+        <v-btn class="mr-2" @click="randomColorTheme()"> Set </v-btn>
+        <v-btn @click="stopColorTheme()"> Stop </v-btn>
       </v-card-text>
       <v-card-text>
-        <p>Minimize header events has been replaced.<br>You can now disable individual calendars via Calendar Settings on the homepage.</p>
+        <p>
+          Minimize header events has been replaced.<br />You can now disable
+          individual calendars via Calendar Settings on the homepage.
+        </p>
       </v-card-text>
       <v-card-text v-if="this.$store.state.site.release === 'dev'">
         <v-tooltip top>
@@ -490,8 +488,8 @@ export default {
   },
   computed: {
     debugModeEnabled() {
-      if(localStorage.getItem("debugModeEnabled")) {
-        return JSON.parse(localStorage.getItem('debugModeEnabled'))
+      if (localStorage.getItem("debugModeEnabled")) {
+        return JSON.parse(localStorage.getItem("debugModeEnabled"))
       } else {
         return false
       }
@@ -541,9 +539,9 @@ export default {
             "#" + Math.floor(Math.random() * 16777215).toString(16),
           calendarActivityType10:
             "#" + Math.floor(Math.random() * 16777215).toString(16),
-          calendarExternalActivity: Math.floor(Math.random() * 16777215).toString(
-            16
-          )
+          calendarExternalActivity: Math.floor(
+            Math.random() * 16777215
+          ).toString(16)
         }
         this.$vuetify.theme.themes.dark = {
           primary: "#" + Math.floor(Math.random() * 16777215).toString(16),
@@ -567,9 +565,9 @@ export default {
             "#" + Math.floor(Math.random() * 16777215).toString(16),
           calendarActivityType10:
             "#" + Math.floor(Math.random() * 16777215).toString(16),
-          calendarExternalActivity: Math.floor(Math.random() * 16777215).toString(
-            16
-          )
+          calendarExternalActivity: Math.floor(
+            Math.random() * 16777215
+          ).toString(16)
         }
       }, this.slider)
     },
@@ -857,7 +855,8 @@ export default {
     },
     "$store.state.user.bcUser.theme": {
       handler() {
-        this.$vuetify.theme.dark = this.$store.state.user.bcUser.theme === "dark"
+        this.$vuetify.theme.dark =
+          this.$store.state.user.bcUser.theme === "dark"
       },
       deep: true
     }

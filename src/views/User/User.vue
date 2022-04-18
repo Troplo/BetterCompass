@@ -2,7 +2,10 @@
   <div>
     <v-container v-if="permissionError">
       <v-alert type="info" text>
-        You are viewing an incomplete profile due to lack of permission. ({{name}} / {{$route.params.id}})
+        You are viewing an incomplete profile due to lack of permission. ({{
+          name
+        }}
+        / {{ $route.params.id }})
       </v-alert>
     </v-container>
     <v-overlay :value="loading" absolute>
@@ -28,10 +31,7 @@
           <v-tab to="reports" v-if="!permissionError"> Reports </v-tab>
           <v-tab to="analytics" v-if="!permissionError"> Analytics </v-tab>
           <v-tab to="events" v-if="!permissionError"> Events </v-tab>
-          <v-tab
-            to="settings"
-            v-if="user.userId === $store.state.user.userId"
-          >
+          <v-tab to="settings" v-if="user.userId === $store.state.user.userId">
             BetterCompass
           </v-tab>
           <v-tab to="score" v-if="compassScore"> Compass Score </v-tab>
@@ -127,7 +127,7 @@ export default {
           color: "grey",
           icon: "mdi-help",
           status: "Unknown"
-        },
+        }
       ]
       return userStatus[this.user.userStatus - 1]
     }
@@ -160,21 +160,24 @@ export default {
           targetUserId: this.$route.params.id || this.$store.state.user?.userId
         })
         .then((res) => {
-          if(!res.data.d) {
+          if (!res.data.d) {
             this.loading = false
             this.permissionError = true
-            this.axios.post("/Services/Mobile.svc/GetUsersNameById", {
-              "userId": this.$route.params.id
-            }).then((res) => {
-              this.name = res.data.d.data
-              this.user = {
-                userId: this.$route.params.id || this.$store.state.user?.userId,
-                userName: this.name,
-                userBaseRole: 8,
-                userStatus: 13,
-                userFullName: this.name
-              }
-            })
+            this.axios
+              .post("/Services/Mobile.svc/GetUsersNameById", {
+                userId: this.$route.params.id
+              })
+              .then((res) => {
+                this.name = res.data.d.data
+                this.user = {
+                  userId:
+                    this.$route.params.id || this.$store.state.user?.userId,
+                  userName: this.name,
+                  userBaseRole: 8,
+                  userStatus: 13,
+                  userFullName: this.name
+                }
+              })
           } else {
             this.loading = false
             this.user = res.data.d

@@ -105,7 +105,10 @@ app.get("/api/v1/weather", (req, res) => {
             res.send(response2.data)
           })
           .catch((error) => {
-            res.json({message: "Weather widget API failure.", error: error.response.data})
+            res.json({
+              message: "Weather widget API failure.",
+              error: error.response.data
+            })
           })
       })
       .catch(() => {

@@ -3,25 +3,34 @@ const axios = require("axios")
 
 module.exports = function (req, res, next) {
   try {
-    axios.post("http://localhost:23994/graphql", {
-      query: `
+    axios
+      .post(
+        "http://localhost:23994/graphql",
+        {
+          query: `
       query UserData {
   currentUser {
     id
     username
   }
 }`
-    }, {
-      headers: {
-        CompassApiKey: req.header("CompassApiKey") || "",
-        compassInstance: req.header("compassInstance") ||
-          req.query.compassInstance ||
-          "devices"
-      },
-      timeout: 900
-    }).then(async (response) => {
+        },
+        {
+          headers: {
+            CompassApiKey: req.header("CompassApiKey") || "",
+            compassInstance:
+              req.header("compassInstance") ||
+              req.query.compassInstance ||
+              "devices"
+          },
+          timeout: 900
+        }
+      )
+      .then(async (response) => {
         if (response.data.data) {
-          response.data.data.currentUser.id = JSON.parse(response.data.data.currentUser.id)
+          response.data.data.currentUser.id = JSON.parse(
+            response.data.data.currentUser.id
+          )
           req.compassUser = response.data.data.currentUser
           const user = await User.findOne({
             where: {

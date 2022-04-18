@@ -511,7 +511,7 @@ export default {
       }
     },
     setTaskStatus(task) {
-      const date = task.dueDate === "Invalid date" ? null : this.task.dueDate
+      const date = task.dueDate === "Invalid Date" ? null : this.task.dueDate
       this.loading.tasks = true
       if (!task.richNote) {
         this.axios

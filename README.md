@@ -1,4 +1,5 @@
 # BetterCompass
+
 [![BetterCompass Actions Status](https://github.com/Troplo/BetterCompass/workflows/build/badge.svg)](https://github.com/Troplo/BetterCompass/actions)
 
 BetterCompass is a frontend for
@@ -18,7 +19,9 @@ your own instance.
 BetterCompass may have missing features that are out of scope, this is likely
 because I do not have full access to the Compass platform, and feature
 availability can differ between different instances.
+
 ## Screenshots
+
 <img src="https://i.troplo.com/i/5da430fb.png" alt="Homepage" width="45%"></img>
 <img src="https://i.troplo.com/i/74103ed9.png" alt="Homepage with AMOLED Theme" width="45%"></img>
 <img src="https://i.troplo.com/i/733cc7e6.png" alt="Homepage with AMOLED Theme and maximized weekly calendar view with settings" width="45%"></img>

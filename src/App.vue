@@ -8,25 +8,6 @@
     <v-overlay :value="$store.state.site.loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <!--<v-overlay :value="!$store.state.online && !$store.state.user.bcUser.cache">
-      <v-card color="card">
-        <v-toolbar color="toolbar">
-          <v-toolbar-title>
-            You are offline.
-          </v-toolbar-title>
-        </v-toolbar>
-        <v-container>
-          <v-card-text>
-            <p>
-              You are currently offline. Please check your internet connection and try again, or Compass is experiencing issues.
-              <br>
-              If you would like to mitigate this message in the future, enable the "Offline Caching" option in BetterCompass Settings.
-            </p>
-            <v-btn @click="retryConnection" :loading="connectionLoading">Retry</v-btn>
-          </v-card-text>
-        </v-container>
-      </v-card>
-    </v-overlay>-->
     <v-dialog
       v-if="$store.state.user.bcUser"
       v-model="$store.state.user.bcUser.guidedWizard"
@@ -209,9 +190,7 @@
     <v-dialog v-model="$store.state.modals.search" max-width="600px">
       <v-card color="card">
         <v-toolbar color="toolbar">
-          <v-toolbar-title>
-            BetterCompass QuickSwitcher
-          </v-toolbar-title>
+          <v-toolbar-title> BetterCompass QuickSwitcher </v-toolbar-title>
         </v-toolbar>
         <v-container>
           <v-autocomplete
@@ -240,9 +219,16 @@
           version is {{ $store.state.site.latestVersion }})
         </v-alert>
       </v-container>
-      <v-container v-if="$store.state.site.notification && $store.state.user.bcUser">
+      <v-container
+        v-if="$store.state.site.notification && $store.state.user.bcUser"
+      >
         <v-alert text class="mx-4" type="info">
           {{ $store.state.site.notification }}
+        </v-alert>
+      </v-container>
+      <v-container v-if="!$store.state.online">
+        <v-alert text class="mx-4" type="warning">
+          You are currently offline. BetterCompass functionality is limited.
         </v-alert>
       </v-container>
       <v-container
@@ -267,6 +253,7 @@
 import Header from "./components/Header.vue"
 import AjaxErrorHandler from "@/lib/errorHandler"
 import Vue from "vue"
+import Vuetify from "@/plugins/vuetify"
 export default {
   name: "App",
   components: {
@@ -306,8 +293,14 @@ export default {
   },
   methods: {
     baseRole() {
-      if(this.$store.state.user?.baseRole) {
-        return this.$store.state.user.baseRole.toLowerCase().charAt(0).toUpperCase() + this.$store.state.user.baseRole.toLowerCase().slice(1)
+      if (this.$store.state.user?.baseRole) {
+        return (
+          this.$store.state.user.baseRole
+            .toLowerCase()
+            .charAt(0)
+            .toUpperCase() +
+          this.$store.state.user.baseRole.toLowerCase().slice(1)
+        )
       } else {
         return "Not Authenticated"
       }
@@ -408,15 +401,36 @@ export default {
       localStorage.getItem("schoolInstance")
     this.axios.defaults.headers.common["compassSchoolId"] =
       localStorage.getItem("schoolId")
-    if(localStorage.getItem("calendarCache")?.length) {
-      console.log(1)
-      this.$store.commit("setCalendar", JSON.parse(localStorage.getItem("calendarCache")).map((event) => {
-        return {
-          ...event,
-          start: new Date(event.start),
-          end: new Date(event.finish)
-        }
-      }))
+    if (JSON.parse(localStorage.getItem("userCache"))?.bcUser?.id) {
+      const user = JSON.parse(localStorage.getItem("userCache"))
+      const name = user.bcUser.themeObject.id
+      const dark = user.bcUser.themeObject.theme.dark
+      const light = user.bcUser.themeObject.theme.light
+      if (user.bcUser.accentColor) {
+        user.bcUser.themeObject.theme.dark.primary = user.bcUser.accentColor
+        user.bcUser.themeObject.theme.light.primary = user.bcUser.accentColor
+      }
+      Vuetify.framework.theme.themes.dark = dark
+      Vuetify.framework.theme.themes.light = light
+      Vuetify.framework.theme.themes.name = name
+      Vuetify.framework.theme.themes.primaryType =
+        user.bcUser.themeObject.theme.primaryType
+      this.$store.commit(
+        "setUser",
+        JSON.parse(localStorage.getItem("userCache"))
+      )
+    }
+    if (localStorage.getItem("calendarCache")?.length) {
+      this.$store.commit(
+        "setCalendar",
+        JSON.parse(localStorage.getItem("calendarCache")).map((event) => {
+          return {
+            ...event,
+            start: new Date(event.start),
+            end: new Date(event.finish)
+          }
+        })
+      )
     }
     this.getThemes()
     this.$store.dispatch("getState")
@@ -437,7 +451,8 @@ export default {
   watch: {
     "$store.state.user.bcUser.theme": {
       handler() {
-        this.$vuetify.theme.dark = this.$store.state.user.bcUser.theme === "dark"
+        this.$vuetify.theme.dark =
+          this.$store.state.user.bcUser.theme === "dark"
       },
       deep: true
     },

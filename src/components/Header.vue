@@ -3,9 +3,7 @@
     <v-dialog v-model="feedback.modal" width="700">
       <v-card color="card" elevation="7">
         <v-toolbar color="toolbar">
-          <v-toolbar-title>
-            Provide Feedback
-          </v-toolbar-title>
+          <v-toolbar-title> Provide Feedback </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <v-container>
@@ -69,9 +67,7 @@
     <v-dialog v-model="route.modal" width="700">
       <v-card color="card" elevation="7">
         <v-toolbar color="toolbar">
-          <v-toolbar-title>
-            Go to Route
-          </v-toolbar-title>
+          <v-toolbar-title> Go to Route </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <v-container>
@@ -87,11 +83,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            class="rounded-xl"
-            text
-            @click="feedback.modal = false"
-          >
+          <v-btn class="rounded-xl" text @click="feedback.modal = false">
             Close
           </v-btn>
           <v-btn
@@ -128,7 +120,11 @@
         disabled
         >{{ $store.state.site.release }}</v-app-bar-nav-icon
       >
-      <button class="search-button" @click="$store.commit('setSearch', true)" text>
+      <button
+        class="search-button"
+        @click="$store.commit('setSearch', true)"
+        text
+      >
         <v-text-field
           ref="searchInput"
           autocomplete="off"
@@ -139,10 +135,10 @@
           outlined
           placeholder="English"
           :label="
-          $vuetify.breakpoint.mobile
-            ? 'Search BetterCompass...'
-            : 'Search BetterCompass... (CTRL + K)'
-        "
+            $vuetify.breakpoint.mobile
+              ? 'Search BetterCompass...'
+              : 'Search BetterCompass... (CTRL + K)'
+          "
           @click="$store.commit('setSearch', true)"
           style="opacity: 1; max-width: 450px"
         >
@@ -212,7 +208,14 @@
               class="text-center"
               size="38"
             >
-              <img :src="$store.state.user.bcUser.discussionsImage || $store.state.school.fqdn + '/download/cdn/square/' + $store.state.user.idPhotoGuidVersioned">
+              <img
+                :src="
+                  $store.state.user.bcUser.discussionsImage ||
+                  $store.state.school.fqdn +
+                    '/download/cdn/square/' +
+                    $store.state.user.idPhotoGuidVersioned
+                "
+              />
             </v-avatar>
           </v-btn>
         </template>
@@ -293,7 +296,12 @@
 
                 <v-list-item-title>Home</v-list-item-title>
               </v-list-item>
-              <template v-if="$store.state.user.baseRole !== 'STUDENT' && $store.state.online">
+              <template
+                v-if="
+                  $store.state.user.baseRole !== 'STUDENT' &&
+                  $store.state.online
+                "
+              >
                 <v-list-item
                   v-for="user in $store.state.user.children"
                   :key="user.userId"
@@ -304,12 +312,15 @@
                   </v-list-item-icon>
 
                   <v-list-item-title
-                  >{{ user.firstName }}'s Profile</v-list-item-title
+                    >{{ user.firstName }}'s Profile</v-list-item-title
                   >
                 </v-list-item>
               </template>
 
-              <v-list-item :to="'/user/' + $store.state.user.userId" v-if="$store.state.online">
+              <v-list-item
+                :to="'/user/' + $store.state.user.userId"
+                v-if="$store.state.online"
+              >
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
                 </v-list-item-icon>
@@ -394,7 +405,10 @@
 
                 <v-list-item-title>Everything</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="feedback.modal = true" v-if="$store.state.online">
+              <v-list-item
+                @click="feedback.modal = true"
+                v-if="$store.state.online"
+              >
                 <v-list-item-icon>
                   <v-icon>mdi-bug</v-icon>
                 </v-list-item-icon>
@@ -494,7 +508,7 @@ export default {
     return {
       route: {
         modal: false,
-        value: "",
+        value: ""
       },
       feedback: {
         modal: false,
@@ -523,7 +537,7 @@ export default {
             id: 8,
             name: "Logout",
             click() {
-              this.$store.dispatch("logout");
+              this.$store.dispatch("logout")
               this.$router.push("/login")
             },
             color: "#c53030",
@@ -568,8 +582,8 @@ export default {
   },
   computed: {
     debugModeEnabled() {
-      if(localStorage.getItem("debugModeEnabled")) {
-        return JSON.parse(localStorage.getItem('debugModeEnabled'))
+      if (localStorage.getItem("debugModeEnabled")) {
+        return JSON.parse(localStorage.getItem("debugModeEnabled"))
       } else {
         return false
       }

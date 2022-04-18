@@ -100,27 +100,30 @@ export default new Vuex.Store({
   },
   actions: {
     logout(context) {
-      Vue.axios.post("/api/v1/user/logout").then(() => {
-        context.commit("setUser", null)
-        context.commit("setToken", null)
-        context.commit("setSchool", null)
-        context.commit("setCalendar", null)
-        context.commit("setCalendars", [])
-        context.commit("setEditMode", false)
-        context.commit("setCalendarInit", false)
-        context.commit("setEvents", [])
-        context.commit("setUpcomingEvents", [])
-        context.commit("setAlerts", [])
-        context.commit("setSubjects", [])
-        localStorage.removeItem("apiKey")
-        localStorage.removeItem("userId")
-        localStorage.removeItem("calendarCache")
-        localStorage.removeItem("userCache")
-        localStorage.removeItem("compassScore")
-        Vue.axios.defaults.headers.common["CompassAPIKey"] = null
-      }).catch(() => {
-        Vue.$toast.error("Failed to logout.")
-      })
+      Vue.axios
+        .post("/api/v1/user/logout")
+        .then(() => {
+          context.commit("setUser", null)
+          context.commit("setToken", null)
+          context.commit("setSchool", null)
+          context.commit("setCalendar", null)
+          context.commit("setCalendars", [])
+          context.commit("setEditMode", false)
+          context.commit("setCalendarInit", false)
+          context.commit("setEvents", [])
+          context.commit("setUpcomingEvents", [])
+          context.commit("setAlerts", [])
+          context.commit("setSubjects", [])
+          localStorage.removeItem("apiKey")
+          localStorage.removeItem("userId")
+          localStorage.removeItem("calendarCache")
+          localStorage.removeItem("userCache")
+          localStorage.removeItem("compassScore")
+          Vue.axios.defaults.headers.common["CompassAPIKey"] = null
+        })
+        .catch(() => {
+          Vue.$toast.error("Failed to logout.")
+        })
     },
     generateCache(context) {
       function subjectName(event) {
@@ -187,7 +190,7 @@ export default new Vuex.Store({
           context.commit("setSite", {
             release: "stable",
             loading: false,
-            notification: "You are offline. BetterCompass functionality is limited.",
+            notification: "",
             latestVersion: "1.0.0"
           })
           context.commit("setOnline", false)
@@ -299,8 +302,10 @@ export default new Vuex.Store({
             const dark = res.data.bcUser.themeObject.theme.dark
             const light = res.data.bcUser.themeObject.theme.light
             if (res.data.bcUser.accentColor) {
-              res.data.bcUser.themeObject.theme.dark.primary = res.data.bcUser.accentColor
-              res.data.bcUser.themeObject.theme.light.primary = res.data.bcUser.accentColor
+              res.data.bcUser.themeObject.theme.dark.primary =
+                res.data.bcUser.accentColor
+              res.data.bcUser.themeObject.theme.light.primary =
+                res.data.bcUser.accentColor
             }
             Vuetify.framework.theme.themes.dark = dark
             Vuetify.framework.theme.themes.light = light
@@ -341,25 +346,27 @@ export default new Vuex.Store({
             resolve(res.data)
           })
           .catch((e) => {
-            if(JSON.parse(localStorage.getItem("userCache"))?.bcUser.id) {
+            if (JSON.parse(localStorage.getItem("userCache"))?.bcUser.id) {
               const user = JSON.parse(localStorage.getItem("userCache"))
               const name = user.bcUser.themeObject.id
               const dark = user.bcUser.themeObject.theme.dark
               const light = user.bcUser.themeObject.theme.light
               if (user.bcUser.accentColor) {
-                user.bcUser.themeObject.theme.dark.primary = user.bcUser.accentColor
-                user.bcUser.themeObject.theme.light.primary = user.bcUser.accentColor
+                user.bcUser.themeObject.theme.dark.primary =
+                  user.bcUser.accentColor
+                user.bcUser.themeObject.theme.light.primary =
+                  user.bcUser.accentColor
               }
               Vuetify.framework.theme.themes.dark = dark
               Vuetify.framework.theme.themes.light = light
               Vuetify.framework.theme.themes.name = name
-              Vuetify.framework.theme.themes.primaryType = user.bcUser.themeObject.theme.primaryType
+              Vuetify.framework.theme.themes.primaryType =
+                user.bcUser.themeObject.theme.primaryType
               context.commit("setLoading", false)
               context.commit("setOnline", false)
               context.commit("setUser", user)
               resolve(user)
             } else {
-              context.commit("setUser", JSON.parse(localStorage.getItem("userCache")))
               const theme = {
                 id: 1,
                 name: "BetterCompass Classic",
