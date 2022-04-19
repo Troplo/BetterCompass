@@ -1,5 +1,30 @@
 <template>
   <div id="login">
+    <v-dialog v-model="tokenInfo" max-width="700px">
+      <v-card color="card">
+        <v-toolbar color="toolbar">
+          <v-toolbar-title> Compass Token Information </v-toolbar-title>
+        </v-toolbar>
+        <v-container>
+          <v-card-title>Why would you need to use this?</v-card-title>
+          <v-card-text>This authentication method may be useful if your school uses SSO (Single-Sign-On)/SAML authentication instead of the regular default Compass username/password which currently isn't supported by BetterCompass, and you'll need to manually provide your token here.</v-card-text>
+          <v-card-text>If your school uses the default Compass username/password authentication, it is recommended to ignore this option for convenience, however you may use this anyway if you do not feel comfortable entering your password on this website.</v-card-text>
+          <v-card-title>How can I obtain it?</v-card-title>
+          <ul>
+            <li>Please login to normal Compass, (eg. {{$store.state.school.instance ? $store.state.school.instance + ".compass.education" : "school.compass.education"}}) using SSO.</li>
+            <li>On the page, press CTRL + SHIFT + I to open up DevTools, and head over to the "Application" tab.</li>
+            <li>On the sidebar, go to Cookies, and then you should see the option to select your Compass domain.</li>
+            <li>You should see a list of cookies on the right, find ASP.NET_SessionId and copy the value.</li>
+            <li>Paste/enter the value in the token box, and login (leave Username and Password blank as it is optional with this authentication method.</li>
+            <img src="../assets/images/cookieInstructions.png" height="400" alt="Screenshot of Chromium DevTools" />
+          </ul>
+        </v-container>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="tokenInfo = false" text>Got it</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="usageDisclaimer" max-width="700px">
       <v-card color="card">
         <v-toolbar color="toolbar">
@@ -96,9 +121,12 @@
                   @keyup.enter="doLogin()"
                   class="rounded-xl"
                   v-model="token"
-                  label="Token (if you do not know what this is, leave it blank)"
+                  label="Token (alternate authentication method, optional)"
                   placeholder="AAAABBBBCCCCDDDD"
                   type="password"></v-text-field>
+                <small style="color: #0190ea; cursor: pointer" @click="tokenInfo = true">
+                  How to obtain your token, and why you might need to use this.
+                </small>
                 <v-switch
                   inset
                   label="Remember Me"
@@ -158,6 +186,7 @@ export default {
       rememberMe: false,
       usageDisclaimer: false,
       privacyPolicy: false,
+      tokenInfo: false,
       token: "",
       username: "",
       password: "",
@@ -275,6 +304,9 @@ export default {
             this.$store.dispatch("getUserInfo").then(() => {
               this.$router.push("/")
             })
+          }).catch(() => {
+            this.$toast.error("Invalid token.")
+            this.loading = false
           })
         }).catch(() => {
           this.$toast.error("Invalid token.")
