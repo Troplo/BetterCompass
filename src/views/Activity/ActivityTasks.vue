@@ -1056,7 +1056,8 @@ export default {
           limit: 2000,
           page: this.page,
           sort: '[{"property":"dueDateTimestamp","direction":"ASC"}]',
-          start: this.offset
+          start: this.offset,
+          showHiddenTasks: true
         })
         .then((res) => {
           this.loading = false

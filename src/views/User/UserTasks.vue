@@ -538,6 +538,8 @@
             tasks older than 2 weeks
           </span>
         </v-tooltip>
+        &nbsp;&nbsp;
+        <v-select style="width: 300px; max-width: 300px" solo hide-details single-line v-model="academicGroupId" :items="academicGroups" label="Academic Group" item-value="id" item-text="importIdentifier" @change="getLearningTasks"></v-select>
       </v-toolbar>
       <v-overlay :value="loading" absolute>
         <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -623,6 +625,8 @@ export default {
       },
       page: 1,
       offset: 0,
+      academicGroups: [],
+      academicGroupId: null,
       selectedTask: {
         __type: "Task:http://jdlf.com.au/ns/data/learningtasks/",
         activityId: 0,
@@ -1034,6 +1038,11 @@ export default {
           this.gradingSchemes = res.data.d
         })
     },
+    getAcademicGroups() {
+      this.axios.get("/Services/ReferenceDataCache.svc/GetAllAcademicGroups").then((res) => {
+        this.academicGroups = res.data.d
+      })
+    },
     getLearningTasks() {
       this.loading = true
       this.axios
@@ -1043,6 +1052,7 @@ export default {
           page: this.page,
           sort: '[{"property":"dueDateTimestamp","direction":"ASC"}]',
           start: this.offset,
+          academicGroupId: this.academicGroupId,
           showHiddenTasks: true,
           userId: this.$route.params.id || this.$store.state.user?.userId
         })
@@ -1066,6 +1076,7 @@ export default {
     }
   },
   mounted() {
+    this.getAcademicGroups()
     this.getLearningSchemes()
     this.getLearningTasks()
     this.getCategories()
