@@ -89,6 +89,16 @@
                   label="Password"
                   type="password"
                 ></v-text-field>
+                <p class="text-center">
+                  OR
+                </p>
+                <v-text-field
+                  @keyup.enter="doLogin()"
+                  class="rounded-xl"
+                  v-model="token"
+                  label="Token (if you do not know what this is, leave it blank)"
+                  placeholder="AAAABBBBCCCCDDDD"
+                  type="password"></v-text-field>
                 <v-switch
                   inset
                   label="Remember Me"
@@ -148,6 +158,7 @@ export default {
       rememberMe: false,
       usageDisclaimer: false,
       privacyPolicy: false,
+      token: "",
       username: "",
       password: "",
       school: {
@@ -223,33 +234,53 @@ export default {
       localStorage.setItem("schoolInstance", this.school.instance)
       this.$store.commit("setSchool", this.school)
       this.loading = true
-      this.axios
-        .post("/api/v1/user/login", {
-          password: this.password,
-          username: this.username,
-          schoolId: this.$store.state.school.id,
-          rememberMe: this.rememberMe
-        })
-        .then((res) => {
-          if (!res.data.success) {
+      if(!this.token) {
+        this.axios
+          .post("/api/v1/user/login", {
+            password: this.password,
+            username: this.username,
+            schoolId: this.$store.state.school.id,
+            rememberMe: this.rememberMe
+          })
+          .then((res) => {
+            if (!res.data.success) {
+              this.$toast.error("Invalid username or password.")
+              this.loading = false
+            } else {
+              localStorage.setItem("userId", res.data.userId)
+              this.loading = false
+              localStorage.setItem("apiKey", res.data.token)
+              Vue.axios.defaults.headers.common["CompassAPIKey"] =
+                localStorage.getItem("apiKey")
+              this.$store.commit("setToken", res.data.token)
+              this.$store.dispatch("getUserInfo").then(() => {
+                this.$router.push("/")
+              })
+            }
+          })
+          .catch(() => {
             this.$toast.error("Invalid username or password.")
             this.loading = false
-          } else {
-            localStorage.setItem("userId", res.data.userId)
-            this.loading = false
-            localStorage.setItem("apiKey", res.data.token)
+          })
+      } else {
+        this.axios.post("/api/v1/user/loginWithToken", {
+          token: this.token,
+          rememberMe: this.rememberMe
+        }).then(() => {
+          this.axios.get("/api/v1/user").then((res) => {
+            localStorage.setItem("userId", res.data.id)
+            localStorage.setItem("apiKey", "")
             Vue.axios.defaults.headers.common["CompassAPIKey"] =
               localStorage.getItem("apiKey")
-            this.$store.commit("setToken", res.data.token)
             this.$store.dispatch("getUserInfo").then(() => {
               this.$router.push("/")
             })
-          }
-        })
-        .catch(() => {
-          this.$toast.error("Invalid username or password.")
+          })
+        }).catch(() => {
+          this.$toast.error("Invalid token.")
           this.loading = false
         })
+      }
     }
   },
   mounted() {

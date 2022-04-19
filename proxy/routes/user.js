@@ -58,8 +58,6 @@ router.post("/login", (req, res, next) => {
                 ]
               })
             } else {
-              console.log(response.headers["set-cookie"])
-              console.log(1000 * 60 * 60 * 24 * 365)
               if (req.body.rememberMe) {
                 res.cookie(
                   "ASP.NET_SessionId",
@@ -103,6 +101,42 @@ router.post("/login", (req, res, next) => {
   }
 })
 
+router.post("/loginWithToken", (req, res, next) => {
+  try {
+    if (req.body.rememberMe) {
+      res.cookie(
+        "ASP.NET_SessionId",
+        req.body.token,
+        {
+          maxAge: 1000 * 60 * 60 * 24 * 365,
+          httpOnly: true,
+          secure: true,
+          domain: process.env.HOSTNAME,
+          sameSite: "strict"
+        }
+      )
+      res.json({
+        success: true
+      })
+    } else {
+      res.cookie(
+        "ASP.NET_SessionId",
+        req.body.token,
+        {
+          httpOnly: true,
+          secure: true,
+          domain: process.env.HOSTNAME,
+          sameSite: "strict"
+        }
+      )
+      res.json({
+        success: true
+      })
+    }
+  } catch (err) {
+    next(err)
+  }
+})
 router.get("/", auth, (req, res, next) => {
   try {
     axios
@@ -117,8 +151,10 @@ router.get("/", auth, (req, res, next) => {
             compassInstance:
               req.header("compassInstance") ||
               req.query.compassInstance ||
-              "devices"
-          }
+              "devices",
+            Cookie: req.header("Cookie") || ""
+          },
+          timeout: 900
         }
       )
       .then((response) => {

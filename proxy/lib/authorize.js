@@ -21,7 +21,8 @@ module.exports = function (req, res, next) {
             compassInstance:
               req.header("compassInstance") ||
               req.query.compassInstance ||
-              "devices"
+              "devices",
+            Cookie: req.header("Cookie") || "",
           },
           timeout: 900
         }
@@ -81,7 +82,7 @@ module.exports = function (req, res, next) {
           })
         }
       })
-      .catch((e) => {
+      .catch(() => {
         res.status(500).json({
           errors: [
             {
