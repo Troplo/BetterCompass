@@ -402,7 +402,11 @@
 
                 <v-list-item-title>Changelog</v-list-item-title>
               </v-list-item>
-              <v-list-item to="/everything" v-if="debugModeEnabled" :color="active('/everything')">
+              <v-list-item
+                to="/everything"
+                v-if="debugModeEnabled"
+                :color="active('/everything')"
+              >
                 <v-list-item-icon>
                   <v-icon>mdi-magnify</v-icon>
                 </v-list-item-icon>
@@ -604,8 +608,13 @@ export default {
       this.menus.dropdownAuthenticated[index].click.call(this)
     },
     active(path) {
-      if (path === this.$route?.matched[0]?.path || path === this.$route?.path) {
-        return this.$vuetify.theme.themes[this.$vuetify.theme.dark ? "dark" : "light"].primary
+      if (
+        path === this.$route?.matched[0]?.path ||
+        path === this.$route?.path
+      ) {
+        return this.$vuetify.theme.themes[
+          this.$vuetify.theme.dark ? "dark" : "light"
+        ].primary
       } else {
         return null
       }

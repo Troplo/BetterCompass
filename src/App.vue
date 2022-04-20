@@ -383,6 +383,15 @@ export default {
     }
   },
   mounted() {
+    window.addEventListener("offline", () => {
+      this.$store.commit("setOnline", false)
+      this.$store.dispatch("getState")
+    })
+    window.addEventListener("online", () => {
+      this.$store.commit("setOnline", true)
+      this.$store.dispatch("getState")
+      this.$store.dispatch("getUserInfo")
+    })
     Vue.axios.defaults.headers.common["CompassAPIKey"] =
       localStorage.getItem("apiKey")
     document.title = this.$route.name

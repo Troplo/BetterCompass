@@ -363,7 +363,6 @@ export default new Vuex.Store({
               Vuetify.framework.theme.themes.primaryType =
                 user.bcUser.themeObject.theme.primaryType
               context.commit("setLoading", false)
-              context.commit("setOnline", false)
               context.commit("setUser", user)
               resolve(user)
             } else {

@@ -539,7 +539,18 @@
           </span>
         </v-tooltip>
         &nbsp;&nbsp;
-        <v-select style="width: 300px; max-width: 300px" solo hide-details single-line v-model="academicGroupId" :items="academicGroups" label="Academic Group" item-value="id" item-text="importIdentifier" @change="getLearningTasks"></v-select>
+        <v-select
+          style="width: 300px; max-width: 300px"
+          solo
+          hide-details
+          single-line
+          v-model="academicGroupId"
+          :items="academicGroups"
+          label="Academic Group"
+          item-value="id"
+          item-text="importIdentifier"
+          @change="getLearningTasks"
+        ></v-select>
       </v-toolbar>
       <v-overlay :value="loading" absolute>
         <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -1039,9 +1050,11 @@ export default {
         })
     },
     getAcademicGroups() {
-      this.axios.get("/Services/ReferenceDataCache.svc/GetAllAcademicGroups").then((res) => {
-        this.academicGroups = res.data.d
-      })
+      this.axios
+        .get("/Services/ReferenceDataCache.svc/GetAllAcademicGroups")
+        .then((res) => {
+          this.academicGroups = res.data.d
+        })
     },
     getLearningTasks() {
       this.loading = true

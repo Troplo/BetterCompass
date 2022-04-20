@@ -104,31 +104,23 @@ router.post("/login", (req, res, next) => {
 router.post("/loginWithToken", (req, res, next) => {
   try {
     if (req.body.rememberMe) {
-      res.cookie(
-        "ASP.NET_SessionId",
-        req.body.token,
-        {
-          maxAge: 1000 * 60 * 60 * 24 * 365,
-          httpOnly: true,
-          secure: true,
-          domain: process.env.HOSTNAME,
-          sameSite: "strict"
-        }
-      )
+      res.cookie("ASP.NET_SessionId", req.body.token, {
+        maxAge: 1000 * 60 * 60 * 24 * 365,
+        httpOnly: true,
+        secure: true,
+        domain: process.env.HOSTNAME,
+        sameSite: "strict"
+      })
       res.json({
         success: true
       })
     } else {
-      res.cookie(
-        "ASP.NET_SessionId",
-        req.body.token,
-        {
-          httpOnly: true,
-          secure: true,
-          domain: process.env.HOSTNAME,
-          sameSite: "strict"
-        }
-      )
+      res.cookie("ASP.NET_SessionId", req.body.token, {
+        httpOnly: true,
+        secure: true,
+        domain: process.env.HOSTNAME,
+        sameSite: "strict"
+      })
       res.json({
         success: true
       })

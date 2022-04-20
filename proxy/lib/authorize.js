@@ -22,7 +22,7 @@ module.exports = function (req, res, next) {
               req.header("compassInstance") ||
               req.query.compassInstance ||
               "devices",
-            Cookie: req.header("Cookie") || "",
+            Cookie: req.header("Cookie") || ""
           },
           timeout: 900
         }
