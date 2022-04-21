@@ -145,18 +145,19 @@ export default {
         "blue",
         "purple",
         "amber",
-        "light-green",
-        "deep-purple",
+        "lightGreen",
+        "deepPurple",
         "yellow",
         "teal",
         "cyan",
         "pink",
         "lime",
         "grey",
-        "deep-orange",
-        "blue-grey"
+        "deepOrange",
+        "blueGrey"
       ]
       const randomColor = colors[approvedColors[index % approvedColors.length]]
+      console.log(colors)
       return randomColor.base
     },
     progressReportTable() {
