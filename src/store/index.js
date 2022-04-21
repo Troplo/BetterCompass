@@ -204,7 +204,7 @@ export default new Vuex.Store({
         route: "/"
       })
       context.commit("updateQuickSwitchCache", {
-        subjectLongName: "Your Profile",
+        subjectLongName: "My Profile",
         customType: 1,
         route: "/user/" + context.state.user.userId + "/dashboard"
       })

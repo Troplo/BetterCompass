@@ -74,7 +74,6 @@
             append-outer-icon="mdi-send"
             @click:append-outer="addComment(selectedTopic)"
           ></v-text-field>
-          <v-divider></v-divider>
           <v-list two-line v-if="selectedTopic.comments" color="card">
             <v-subheader>Comments</v-subheader>
             <v-card
@@ -103,16 +102,13 @@
                     ({{ comment.createdByUser.userId }})
                   </span>
                 </div>
-                <v-divider></v-divider>
               </v-card-title>
               <p class="ml-6">{{ comment.contents[0].body }}</p>
               <small class="ml-6">{{
                 $date(comment.contents[0].createdAt).fromNow()
               }}</small>
-              <!-- sub replies to comments -->
-              <v-divider></v-divider>
-              <v-list v-if="comment.replies && false" class="mx-5" color="card">
-                <v-subheader>Replies</v-subheader>
+              <v-divider class="mt-2"></v-divider>
+              <v-list v-if="comment.replies" class="mx-5" color="card">
                 <v-card
                   v-for="reply in comment.replies.nodes"
                   :key="reply.id"
