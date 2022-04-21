@@ -17,6 +17,8 @@
       <v-tabs background-color="card">
         <v-tab to="resources"> Resources </v-tab>
         <v-tab to="staff"> Staff </v-tab>
+        <v-tab to="subjects"> Subjects </v-tab>
+        <v-tab to="classes"> Classes </v-tab>
       </v-tabs>
       <router-view :resources="resources"></router-view>
     </div>

@@ -120,7 +120,7 @@
       <v-card color="card" class="rounded-xl ma-3" elevation="7">
         <v-container>
           <v-row>
-            <v-col>
+            <v-col v-if="activity.managers">
               <h3>Teacher</h3>
               <h1>
                 <router-link

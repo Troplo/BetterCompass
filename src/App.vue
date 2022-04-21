@@ -447,9 +447,12 @@ export default {
       .dispatch("getUserInfo")
       .then(() => {
         // eslint-disable-next-line no-undef
-        _paq.push(["setUserId", this.$store.state.user.bcUser.id])
-        // eslint-disable-next-line no-undef
-        _paq.push(["trackPageView"])
+        if(JSON.parse(process.env.VUE_APP_MATOMO_ENABLED)) {
+          // eslint-disable-next-line no-undef
+          _paq.push(["setUserId", this.$store.state.user.bcUser.id])
+          // eslint-disable-next-line no-undef
+          _paq.push(["trackPageView"])
+        }
         this.$store.dispatch("updateQuickSwitch")
       })
       .catch((e) => {

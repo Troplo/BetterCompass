@@ -3,6 +3,13 @@
     <v-overlay :value="loading" absolute>
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
+    <div v-if="error">
+      <v-container>
+        <v-alert :value="true" type="error" text>
+          Something went wrong while loading this activity, it may not exist or you may not have permission to view it.
+        </v-alert>
+      </v-container>
+    </div>
     <div v-if="headerImage">
       <v-img :src="headerImage" aspect-ratio="16/9">
         <v-container fill-height fluid>
@@ -80,6 +87,7 @@ export default {
   name: "Activity",
   data() {
     return {
+      error: false,
       activity: null,
       activityFull: {},
       resources: {},
@@ -129,41 +137,100 @@ export default {
           [type]: this.$route.params.id
         })
         .then((res) => {
-          this.activity = res.data.d
-          if (!this.activity.LocationDetails) {
-            this.activity.LocationDetails = {
-              longName: "???",
-              seatNumber: 0,
-              computerNumber: 0
+          if(!res.data.d) {
+            this.axios
+              .post(`/Services/Activity.svc/GetLessonsBy${type2}Id`, {
+                [type]: this.$route.params.id
+              })
+              .then((res) => {
+                this.activity = res.data.d
+                this.activity.FacultyManagerIds.forEach((id) => {
+                  this.axios
+                    .post("/Services/User.svc/GetUserDetailsBlobByUserId", {
+                      userId: this.$store.state.user.userId,
+                      targetUserId: id
+                    }).then((res) => {
+                    if(!this.activity.managers) this.activity.managers = []
+                    this.activity.managers.push({
+                        ManagerUserId: res.data.d.userId,
+                        ManagerText: res.data.d.userFullName,
+                        CoveringImportIdentifier: null,
+                        CoveringName: null,
+                        CoveringPhotoPath: null,
+                        CoveringUserId: null,
+                        ManagerImportIdentifier: res.data.d.userDisplayCode,
+                        ManagerName: res.data.d.userFullName,
+                        ManagerPhotoPath: res.data.d.userPhotoPath,
+                      })
+                    this.activity.ManagerTextReadable = res.data.d.userFullName
+
+                  })
+                })
+                this.axios
+                  .post("/Services/User.svc/GetUserDetailsBlobByUserId", {
+                    userId: this.$store.state.user.userId,
+                    targetUserId: this.activity.ActivityManagerId
+                  }).then((res) => {
+                  if(!this.activity.managers) this.activity.managers = []
+                  this.activity.managers.push({
+                    ManagerUserId: res.data.d.userId,
+                    ManagerText: res.data.d.userFullName,
+                    CoveringImportIdentifier: null,
+                    CoveringName: null,
+                    CoveringPhotoPath: null,
+                    CoveringUserId: null,
+                    ManagerImportIdentifier: res.data.d.userDisplayCode,
+                    ManagerName: res.data.d.userFullName,
+                    ManagerPhotoPath: res.data.d.userPhotoPath,
+                  })
+                  this.activity.ManagerTextReadable = res.data.d.userFullName
+
+                })
+                this.activity.LocationDetails = {
+                  longName: "???",
+                  seatNumber: 0,
+                  computerNumber: 0
+                }
+                this.headerImage = "/Assets/Pix/ActivityHeader/Generic.svg"
+                this.loading = false
+              })
+          } else {
+            this.activity = res.data.d
+            if (!this.activity.LocationDetails) {
+              this.activity.LocationDetails = {
+                longName: "???",
+                seatNumber: 0,
+                computerNumber: 0
+              }
             }
+            this.loading = false
+            this.getLessonPlan()
+            this.axios
+              .post("/Services/NewsFeed.svc/GetActivityNewsFeedPaged", {
+                activityId: this.activity.ActivityId,
+                limit: 15,
+                start: 0
+              })
+              .then((res) => {
+                this.news = res.data.d.data
+              })
+            this.axios
+              .post("/Services/Wiki.svc/GetActivityAndSubjectResourcesNode", {
+                activityId: this.activity.ActivityId
+              })
+              .then((res) => {
+                this.resources = res.data.d.children[0]
+              })
+            this.axios
+              .post("/Services/Activity.svc/GetHeaderImageUrlByActivityId", {
+                activityId: this.activity.ActivityId
+              })
+              .then((res) => {
+                this.headerImage =
+                  this.$store.state.school.fqdn +
+                  res.data.d.replace("assetPath", "Assets12.1.155.1")
+              })
           }
-          this.loading = false
-          this.getLessonPlan()
-          this.axios
-            .post("/Services/NewsFeed.svc/GetActivityNewsFeedPaged", {
-              activityId: this.activity.ActivityId,
-              limit: 15,
-              start: 0
-            })
-            .then((res) => {
-              this.news = res.data.d.data
-            })
-          this.axios
-            .post("/Services/Wiki.svc/GetActivityAndSubjectResourcesNode", {
-              activityId: this.activity.ActivityId
-            })
-            .then((res) => {
-              this.resources = res.data.d.children[0]
-            })
-          this.axios
-            .post("/Services/Activity.svc/GetHeaderImageUrlByActivityId", {
-              activityId: this.activity.ActivityId
-            })
-            .then((res) => {
-              this.headerImage =
-                this.$store.state.school.fqdn +
-                res.data.d.replace("assetPath", "Assets12.1.155.1")
-            })
         })
 
       this.axios

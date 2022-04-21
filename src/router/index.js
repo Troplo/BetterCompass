@@ -256,7 +256,23 @@ const routes = [
           import(
             /* webpackChunkName: "schoolStaff" */ "../views/School/SchoolStaff"
           )
-      }
+      },
+      {
+        path: "subjects",
+        name: "School Subjects",
+        component: () =>
+          import(
+            /* webpackChunkName: "schoolSubjects" */ "../views/School/SchoolSubjects"
+            )
+      },
+      {
+        path: "classes",
+        name: "School Classes",
+        component: () =>
+          import(
+            /* webpackChunkName: "schoolClasses" */ "../views/School/SchoolClasses"
+            )
+      },
     ],
     component: () =>
       import(/* webpackChunkName: "school" */ "../views/School/School")
