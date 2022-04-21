@@ -1384,6 +1384,13 @@
                       Redesigned the subject/class roll to match the other
                       pages.
                     </li>
+                    <li>
+                      You can now change your academic group (year) for learning
+                      tasks.
+                    </li>
+                    <li>
+                      Hidden tasks are now always shown for learning tasks.
+                    </li>
                     <li>Additional Performance & Bug fixes.</li>
                   </ul>
                   <small
@@ -2220,11 +2227,11 @@ export default {
                   color: event.backgroundColor,
                   start: event.start,
                   finish: event.finish,
-                  timed: event.timed,
+                  timed: !event.allDay && event.attendanceMode === 1,
                   activityType: event.activityType,
                   activityId: event.activityId,
                   instanceId: event.instanceId,
-                  calendarId: event.calendarId
+                  calendarId: event.calendarId || 0
                 }
               })
             )

@@ -116,6 +116,10 @@
               date.
             </li>
             <li>Redesigned the subject/class roll to match the other pages.</li>
+            <li>
+              You can now change your academic group (year) for learning tasks.
+            </li>
+            <li>Hidden tasks are now always shown for learning tasks.</li>
             <li>Additional Performance & Bug fixes.</li>
           </ul>
 

@@ -18,7 +18,7 @@ export default new Vuex.Store({
       release: process.env.RELEASE
     },
     site: {
-      release: "beta",
+      release: "stable",
       loading: true
     },
     user: {
