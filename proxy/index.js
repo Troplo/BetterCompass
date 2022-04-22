@@ -12,6 +12,7 @@ app.use(cookieParser())
 app.set("trust proxy", true)
 const { Feedback } = require("./models")
 const auth = require("./lib/authorize.js")
+const semver = require("semver")
 
 const compassRouter = function (req) {
   const instance =
@@ -55,12 +56,30 @@ app.use("/api/v1/user", require("./routes/user.js"))
 app.use("/api/v1/themes", require("./routes/theme.js"))
 app.use("/api/v1/communications", require("./routes/communications.js"))
 app.get("/api/v1/state", async (req, res) => {
-  res.json({
-    release: process.env.RELEASE,
-    loading: true,
-    notification: process.env.NOTIFICATION,
-    latestVersion: require("../package.json").version
-  })
+  try {
+    if (semver.lte(req.query.v, "1.0.88")) {
+      res.json({
+        release: process.env.RELEASE,
+        loading: true,
+        notification: "You are using a critically outdated version of BetterCompass, you must update to continue.",
+        latestVersion: require("../package.json").version
+      })
+    } else {
+      res.json({
+        release: process.env.RELEASE,
+        loading: true,
+        notification: process.env.NOTIFICATION,
+        latestVersion: require("../package.json").version
+      })
+    }
+  } catch {
+    res.json({
+      release: process.env.RELEASE,
+      loading: true,
+      notification: process.env.NOTIFICATION,
+      latestVersion: require("../package.json").version
+    })
+  }
 })
 
 app.post("/api/v1/feedback", auth, async (req, res, next) => {

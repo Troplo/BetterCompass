@@ -19,6 +19,7 @@
     "jade": "~1.11.0",
     "local-cors-proxy": "^1.1.0",
     "mariadb": "^3.0.0",
+    "semver": "^7.3.7",
     "sequelize": "^6.17.0"
   }
 }

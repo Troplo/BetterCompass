@@ -27,7 +27,7 @@
               Some major improvements that can be seen throughout BetterCompass
               are:
             </p>
-            <dl style="list-style-type: none">
+            <ul style="list-style-type: none">
               <li>Themes & Customization</li>
               <li>Quick Route Switching</li>
               <li>Significantly Faster</li>
@@ -35,7 +35,7 @@
               <li>Exclusive Features</li>
               <li>Mobile compatibility & Responsiveness</li>
               <li>Enhanced calendar</li>
-            </dl>
+            </ul>
 
             <v-btn
               color="red"
