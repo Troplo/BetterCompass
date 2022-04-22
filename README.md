@@ -1,6 +1,7 @@
 # BetterCompass
 
 [![BetterCompass Actions Status](https://github.com/Troplo/BetterCompass/workflows/build/badge.svg)](https://github.com/Troplo/BetterCompass/actions)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Troplo_BetterCompass&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Troplo_BetterCompass)
 
 BetterCompass is a frontend for
 [JDLF's compass.education](http://compass.education/) written in Vue 2 and
