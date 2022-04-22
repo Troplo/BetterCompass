@@ -114,7 +114,7 @@ app.get("/api/v1/weather", (req, res) => {
       .catch(() => {
         res.json({ success: false })
       })
-  } catch () {
+  } catch {
     res.status(500).json({success: false})
   }
 })
