@@ -31,6 +31,7 @@
           <v-tab to="reports" v-if="!permissionError"> Reports </v-tab>
           <v-tab to="analytics" v-if="!permissionError"> Analytics </v-tab>
           <v-tab to="events" v-if="!permissionError"> Events </v-tab>
+          <v-tab to="subjects"> Subjects </v-tab>
           <v-tab to="settings" v-if="user.userId === $store.state.user.userId">
             BetterCompass
           </v-tab>

@@ -70,6 +70,16 @@
                     Age: <b>{{ user.userDetails }}</b
                     ><br />
                   </template>
+                  <template v-if="parents.length && user.userId === $store.state.user.id">
+                    Parent(s):
+                    <br>
+                    <b>
+                      <template v-for="parent in parents">
+                        {{ parent.name }} ({{parent.importIdentifier}} / {{parent.id}})
+                        <br :key="parent.id">
+                      </template>
+                    </b>
+                  </template>
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <v-chip color="indigo" v-on="on">{{
@@ -135,6 +145,19 @@
             </v-toolbar-title>
           </v-toolbar>
           <v-container>
+            <v-card color="card" class="mb-3 rounded-xl">
+              <v-toolbar color="toolbar">
+                <v-toolbar-title>
+                  Parent Summary
+                </v-toolbar-title>
+              </v-toolbar>
+              <v-data-table :items="chronicle.summary" :headers="chronicle.summaryHeaders" :style="
+          'background-color: ' +
+          $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card
+        ">
+
+              </v-data-table>
+            </v-card>
             <v-card
               color="card"
               v-for="item in chronicle.pinned"
@@ -322,6 +345,25 @@ export default {
   data() {
     return {
       chronicle: {
+        summary: [],
+        summaryHeaders: [
+          {
+            text: "Name",
+            value: "categoryName"
+          },
+          {
+            text: "Total Points",
+            value: "totalPoints"
+          },
+          {
+            text: this.$date().year(),
+            value: "yearCount"
+          },
+          {
+            text: "Total",
+            value: "totalCount"
+          }
+        ],
         loading: true,
         loadingPinned: true,
         pinned: [],
@@ -334,7 +376,8 @@ export default {
         period: 32,
         page: 1,
         items: []
-      }
+      },
+      parents: []
     }
   },
   computed: {
@@ -350,6 +393,27 @@ export default {
     }
   },
   methods: {
+    getParents() {
+      this.axios.post("/Services/Communications.svc/GetEmailRecipientsAndParentRecipientsByStudents", {
+        "userIds":[this.user.userId || this.$store.state.user.userId],
+        "activityId":null,
+        "subjectUserId": this.user.userId || this.$store.state.user.userId,
+        "startDate":"",
+        "endDate":""
+      }).then((res) => {
+        this.parents = res.data.d
+      })
+    },
+    getParentSummary() {
+      this.axios.post("/Services/ChronicleV2.svc/GetSummaryForParent", {
+        parentUserId: this.user.userId || this.$store.state.user.userId,
+        page: 1,
+        start: 0,
+        limit: 9999
+      }).then((res) => {
+        this.chronicle.summary = res.data.d
+      })
+    },
     baseRole() {
       const userBaseRole = [
         "Guest",
@@ -516,6 +580,8 @@ export default {
     this.generateYears()
     this.getChronicle()
     this.getAllChronicles()
+    this.getParentSummary()
+    this.getParents()
   },
   watch: {
     "chronicle.year"() {

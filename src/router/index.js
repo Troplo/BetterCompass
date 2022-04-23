@@ -160,6 +160,14 @@ const routes = [
           import(
             /* webpackChunkName: "userScore" */ "../views/User/UserCompassScore"
           )
+      },
+      {
+        path: "subjects",
+        name: "User Subjects",
+        component: () =>
+          import(
+            /* webpackChunkName: "userSubjects" */ "../views/User/UserSubjects"
+          )
       }
     ],
     component: () =>
@@ -231,6 +239,14 @@ const routes = [
           import(
             /* webpackChunkName: "userScore" */ "../views/User/UserCompassScore"
           )
+      },
+      {
+        path: "subjects",
+        name: "User Subjects",
+        component: () =>
+          import(
+            /* webpackChunkName: "userSubjects" */ "../views/User/UserSubjects"
+          )
       }
     ],
     component: () =>
@@ -263,7 +279,7 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "schoolSubjects" */ "../views/School/SchoolSubjects"
-            )
+          )
       },
       {
         path: "classes",
@@ -271,8 +287,8 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "schoolClasses" */ "../views/School/SchoolClasses"
-            )
-      },
+          )
+      }
     ],
     component: () =>
       import(/* webpackChunkName: "school" */ "../views/School/School")
