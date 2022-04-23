@@ -3145,7 +3145,7 @@ export default {
     fetchEvents(init, load) {
       if (init) {
         if (
-          this.$date().day() === 0 &&
+          this.$date(this.$store.state.focus).day() === 0 &&
           this.$store.state.user.bcUser.calendarAutoJump &&
           !this.$store.state.calendarInit
         ) {
@@ -3154,7 +3154,7 @@ export default {
             .format("YYYY-MM-DD")
           this.fetchEvents(false, false)
         } else if (
-          this.$date().day() === 6 &&
+          this.$date(this.$store.state.focus).day() === 6 &&
           this.$store.state.user.bcUser.calendarAutoJump &&
           !this.$store.state.calendarInit
         ) {
@@ -3163,7 +3163,6 @@ export default {
             .format("YYYY-MM-DD")
           this.fetchEvents(false, false)
         }
-        this.loading.calendar = true
       }
       if (load) {
         this.loading.calendar = true
@@ -3247,11 +3246,7 @@ export default {
       this.getChronicle()
       this.getAllChronicles()
       this.grids = this.$store.state.user.bcUser?.homeGrids
-      if (this.$store.state.calendar.length) {
-        this.fetchEvents(false, false)
-      } else {
-        this.fetchEvents(true, false)
-      }
+      this.fetchEvents(true, false)
       this.getWeather()
       this.getNews()
       this.getAlerts()
