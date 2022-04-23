@@ -2195,9 +2195,14 @@ export default {
       return tasks
     },
     computeEvents() {
-      return this.$store.state.calendar.filter((event) => {
-        return this.$store.state.user.bcUser.calendars[event.calendarId]
-      })
+      try {
+        return this.$store.state.calendar.filter((event) => {
+          return this.$store.state.user.bcUser.calendars[event.calendarId]
+        })
+      } catch {
+        this.getCalendars(true)
+        return this.$store.state.calendar
+      }
     }
   },
   methods: {
@@ -2384,14 +2389,14 @@ export default {
         calendars: this.$store.state.user.bcUser.calendars
       })
     },
-    getCalendars() {
+    getCalendars(reset) {
       this.axios
         .post("/Services/Calendar.svc/GetCalendarsByUser", {
           start: 0
         })
         .then((res) => {
           this.$store.commit("setCalendars", res.data.d)
-          if (!this.$store.state.user.bcUser.calendars) {
+          if (!this.$store.state.user.bcUser.calendars || reset) {
             this.$store.state.user.bcUser.calendars = res.data.d.reduce(
               (acc, calendar) => {
                 acc[calendar.id] = true
