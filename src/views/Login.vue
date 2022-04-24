@@ -45,7 +45,7 @@
             <li>
               Paste/enter the value in the token box, and login (leave Username
               and Password blank as it is optional with this authentication
-              method.
+              method).
             </li>
             <img
               src="../assets/images/cookieInstructions.png"
