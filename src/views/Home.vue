@@ -263,13 +263,16 @@
                     <v-container>
                       Name: <b>{{ selectedTask.name }}</b
                       ><br />
+                      Creation Date:
+                      <b>{{
+                        $date(selectedTask.createdTimestamp).format(
+                          "dddd, MMMM Do YYYY, hh:mm A"
+                        )
+                      }}</b
+                      ><br />
                       <template v-if="selectedTask.dueDateTimestamp"
                         >Due Date:
-                        <b>{{
-                          $date(selectedTask.dueDateTimestamp).format(
-                            "dddd, MMMM Do YYYY, hh:mm A"
-                          )
-                        }}</b></template
+                        <b>{{ selectedTask.dueDateTimestamp }}</b></template
                       ><br />
                       Online Submission Enabled:
                       <b>{{ selectedTask.submissionItems ? "Yes" : "No" }}</b
@@ -3054,7 +3057,16 @@ export default {
         })
         .then((res) => {
           this.loading.learningTasks = false
-          this.learningTasks = res.data.d.data
+          this.learningTasks = res.data.d.data.map((item) => {
+            return {
+              ...item,
+              dueDateTimestamp: item.dueDateTimestamp
+                ? this.$date(item.dueDateTimestamp).format(
+                    "hh:mm A, dddd, MMMM Do YYYY"
+                  )
+                : "No due date"
+            }
+          })
 
           this.computeLearningTasks.forEach((item) => {
             if (this.getStatus(item).status === "pendingLate") {

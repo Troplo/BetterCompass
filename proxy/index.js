@@ -13,6 +13,7 @@ app.set("trust proxy", true)
 const { Feedback } = require("./models")
 const auth = require("./lib/authorize.js")
 const semver = require("semver")
+const path = require("path")
 
 const compassRouter = function (req) {
   const instance =
@@ -40,6 +41,11 @@ app.use(function (req, res, next) {
 })
 
 app.use(
+  "/Assets/Scripts/Lib/ckeditor/plugins/smiley/images",
+  express.static(path.join(__dirname, "./assets/smiley"))
+)
+
+app.use(
   ["/Services", "/services", "/download", "/Assets*", "/graphql"],
   createProxyMiddleware({
     target: "devices.compass.education",
@@ -61,7 +67,8 @@ app.get("/api/v1/state", async (req, res) => {
       res.json({
         release: process.env.RELEASE,
         loading: true,
-        notification: "You are using a critically outdated version of BetterCompass, you must update to continue.",
+        notification:
+          "You are using a critically outdated version of BetterCompass, you must update to continue.",
         latestVersion: require("../package.json").version
       })
     } else {
@@ -134,7 +141,7 @@ app.get("/api/v1/weather", (req, res) => {
         res.json({ success: false })
       })
   } catch {
-    res.status(500).json({success: false})
+    res.status(500).json({ success: false })
   }
 })
 
