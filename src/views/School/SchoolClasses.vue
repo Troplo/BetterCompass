@@ -6,10 +6,14 @@
           <v-toolbar-title> Classes ({{subjects.length}}) </v-toolbar-title>
         </v-toolbar>
         <v-container>
+          <v-overlay :value="loading" absolute>
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay>
           <v-card
             v-for="(subject, index) in subjects"
             :key="subject.id"
             class="mb-3"
+            @click="$router.push('/activity/activity/' + subject.id)"
             color="card"
           >
             <v-container>
@@ -41,8 +45,7 @@ export default {
   methods: {
     getSubjects() {
       this.loading = true
-      this.axios.post("/Services/UserInclusion.svc/GetThinSubjects", {
-
+      this.axios.post("/Services/UserInclusion.svc/GetThinClasses", {
       }).then((res) => {
         this.subjects = res.data.d
         this.loading = false

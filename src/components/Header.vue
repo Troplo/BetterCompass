@@ -353,6 +353,12 @@
                   <v-list-item link to="/school/staff">
                     <v-list-item-title>School Staff</v-list-item-title>
                   </v-list-item>
+                  <v-list-item link to="/school/subjects">
+                    <v-list-item-title>School Subjects</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link to="/school/classes">
+                    <v-list-item-title>School Classes</v-list-item-title>
+                  </v-list-item>
                 </v-list-group>
 
                 <v-list-group no-action sub-group>
