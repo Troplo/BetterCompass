@@ -1269,7 +1269,7 @@
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-container>
-                  <v-card-title> 08/04/2022 - 24/04/2022 </v-card-title>
+                  <v-card-title> 08/04/2022 - 25/04/2022 </v-card-title>
                   <ul>
                     <li>
                       You can now select what particular calendars show on your
@@ -1399,6 +1399,8 @@
                       classes that run for the subjects on the School Subjects
                       page.
                     </li>
+                    <li>You can now see your Chronicle Summary.</li>
+                    <li>You can now see CompassIdentity card information.</li>
                     <li>Additional Performance & Bug fixes.</li>
                   </ul>
                   <small

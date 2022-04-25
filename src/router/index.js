@@ -168,6 +168,14 @@ const routes = [
           import(
             /* webpackChunkName: "userSubjects" */ "../views/User/UserSubjects"
           )
+      },
+      {
+        path: "identity",
+        name: "CompassIdentity",
+        component: () =>
+          import(
+            /* webpackChunkName: "userIdentity" */ "../views/User/UserIdentity"
+          )
       }
     ],
     component: () =>
@@ -246,6 +254,14 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "userSubjects" */ "../views/User/UserSubjects"
+          )
+      },
+      {
+        path: "identity",
+        name: "CompassIdentity",
+        component: () =>
+          import(
+            /* webpackChunkName: "userIdentity" */ "../views/User/UserIdentity"
           )
       }
     ],

@@ -70,13 +70,18 @@
                     Age: <b>{{ user.userDetails }}</b
                     ><br />
                   </template>
-                  <template v-if="parents.length && user.userId === $store.state.user.id">
+                  <template
+                    v-if="
+                      parents.length && user.userId === $store.state.user.id
+                    "
+                  >
                     Parent(s):
-                    <br>
+                    <br />
                     <b>
                       <template v-for="parent in parents">
-                        {{ parent.name }} ({{parent.importIdentifier}} / {{parent.id}})
-                        <br :key="parent.id">
+                        {{ parent.name }} ({{ parent.importIdentifier }} /
+                        {{ parent.id }})
+                        <br :key="parent.id" />
                       </template>
                     </b>
                   </template>
@@ -147,15 +152,17 @@
           <v-container>
             <v-card color="card" class="mb-3 rounded-xl">
               <v-toolbar color="toolbar">
-                <v-toolbar-title>
-                  Parent Summary
-                </v-toolbar-title>
+                <v-toolbar-title> Chronicle Summary </v-toolbar-title>
               </v-toolbar>
-              <v-data-table :items="chronicle.summary" :headers="chronicle.summaryHeaders" :style="
-          'background-color: ' +
-          $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light'].card
-        ">
-
+              <v-data-table
+                :items="chronicle.summary"
+                :headers="chronicle.summaryHeaders"
+                :style="
+                  'background-color: ' +
+                  $vuetify.theme.themes[$vuetify.theme.dark ? 'dark' : 'light']
+                    .card
+                "
+              >
               </v-data-table>
             </v-card>
             <v-card
@@ -394,25 +401,34 @@ export default {
   },
   methods: {
     getParents() {
-      this.axios.post("/Services/Communications.svc/GetEmailRecipientsAndParentRecipientsByStudents", {
-        "userIds":[this.user.userId || this.$store.state.user.userId],
-        "activityId":null,
-        "subjectUserId": this.user.userId || this.$store.state.user.userId,
-        "startDate":"",
-        "endDate":""
-      }).then((res) => {
-        this.parents = res.data.d
-      })
+      if (this.user.userId === this.$store.state.user.id) {
+        this.axios
+          .post(
+            "/Services/Communications.svc/GetEmailRecipientsAndParentRecipientsByStudents",
+            {
+              userIds: [this.user.userId || this.$store.state.user.userId],
+              activityId: null,
+              subjectUserId: this.user.userId || this.$store.state.user.userId,
+              startDate: "",
+              endDate: ""
+            }
+          )
+          .then((res) => {
+            this.parents = res.data.d
+          })
+      }
     },
     getParentSummary() {
-      this.axios.post("/Services/ChronicleV2.svc/GetSummaryForParent", {
-        parentUserId: this.user.userId || this.$store.state.user.userId,
-        page: 1,
-        start: 0,
-        limit: 9999
-      }).then((res) => {
-        this.chronicle.summary = res.data.d
-      })
+      this.axios
+        .post("/Services/ChronicleV2.svc/GetSummaryForParent", {
+          parentUserId: this.user.userId || this.$store.state.user.userId,
+          page: 1,
+          start: 0,
+          limit: 9999
+        })
+        .then((res) => {
+          this.chronicle.summary = res.data.d
+        })
     },
     baseRole() {
       const userBaseRole = [
