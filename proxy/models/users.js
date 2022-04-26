@@ -182,8 +182,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       calendars: {
         type: DataTypes.JSON,
-        allowNull: false,
-        defaultValue: {}
+        allowNull: true,
+        defaultValue: null
       },
       bookmarks: {
         type: DataTypes.JSON,

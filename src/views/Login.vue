@@ -308,7 +308,7 @@ export default {
             schoolId: this.$store.state.school.id,
             rememberMe: this.rememberMe
           })
-          .then((res) => {
+          .then(async (res) => {
             if (!res.data.success) {
               this.$toast.error("Invalid username or password.")
               this.loading = false
@@ -319,9 +319,8 @@ export default {
               Vue.axios.defaults.headers.common["CompassAPIKey"] =
                 localStorage.getItem("apiKey")
               this.$store.commit("setToken", res.data.token)
-              this.$store.dispatch("getUserInfo").then(() => {
-                this.$router.push("/")
-              })
+              await this.$store.dispatch("getUserInfo")
+              this.$router.push("/")
             }
           })
           .catch(() => {
