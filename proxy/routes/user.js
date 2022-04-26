@@ -146,7 +146,7 @@ router.get("/", auth, (req, res, next) => {
               "devices",
             Cookie: req.header("Cookie") || ""
           },
-          timeout: 900
+          timeout: 2000
         }
       )
       .then((response) => {
