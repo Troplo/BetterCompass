@@ -6,7 +6,8 @@
     <div v-if="error">
       <v-container>
         <v-alert :value="true" type="error" text>
-          Something went wrong while loading this activity, it may not exist or you may not have permission to view it.
+          Something went wrong while loading this activity, it may not exist or
+          you may not have permission to view it.
         </v-alert>
       </v-container>
     </div>
@@ -137,7 +138,7 @@ export default {
           [type]: this.$route.params.id
         })
         .then((res) => {
-          if(!res.data.d) {
+          if (!res.data.d) {
             this.axios
               .post(`/Services/Activity.svc/GetLessonsBy${type2}Id`, {
                 [type]: this.$route.params.id
@@ -149,9 +150,10 @@ export default {
                     .post("/Services/User.svc/GetUserDetailsBlobByUserId", {
                       userId: this.$store.state.user.userId,
                       targetUserId: id
-                    }).then((res) => {
-                    if(!this.activity.managers) this.activity.managers = []
-                    this.activity.managers.push({
+                    })
+                    .then((res) => {
+                      if (!this.activity.managers) this.activity.managers = []
+                      this.activity.managers.push({
                         ManagerUserId: res.data.d.userId,
                         ManagerText: res.data.d.userFullName,
                         CoveringImportIdentifier: null,
@@ -160,32 +162,32 @@ export default {
                         CoveringUserId: null,
                         ManagerImportIdentifier: res.data.d.userDisplayCode,
                         ManagerName: res.data.d.userFullName,
-                        ManagerPhotoPath: res.data.d.userPhotoPath,
+                        ManagerPhotoPath: res.data.d.userPhotoPath
                       })
-                    this.activity.ManagerTextReadable = res.data.d.userFullName
-
-                  })
+                      this.activity.ManagerTextReadable =
+                        res.data.d.userFullName
+                    })
                 })
                 this.axios
                   .post("/Services/User.svc/GetUserDetailsBlobByUserId", {
                     userId: this.$store.state.user.userId,
                     targetUserId: this.activity.ActivityManagerId
-                  }).then((res) => {
-                  if(!this.activity.managers) this.activity.managers = []
-                  this.activity.managers.push({
-                    ManagerUserId: res.data.d.userId,
-                    ManagerText: res.data.d.userFullName,
-                    CoveringImportIdentifier: null,
-                    CoveringName: null,
-                    CoveringPhotoPath: null,
-                    CoveringUserId: null,
-                    ManagerImportIdentifier: res.data.d.userDisplayCode,
-                    ManagerName: res.data.d.userFullName,
-                    ManagerPhotoPath: res.data.d.userPhotoPath,
                   })
-                  this.activity.ManagerTextReadable = res.data.d.userFullName
-
-                })
+                  .then((res) => {
+                    if (!this.activity.managers) this.activity.managers = []
+                    this.activity.managers.push({
+                      ManagerUserId: res.data.d.userId,
+                      ManagerText: res.data.d.userFullName,
+                      CoveringImportIdentifier: null,
+                      CoveringName: null,
+                      CoveringPhotoPath: null,
+                      CoveringUserId: null,
+                      ManagerImportIdentifier: res.data.d.userDisplayCode,
+                      ManagerName: res.data.d.userFullName,
+                      ManagerPhotoPath: res.data.d.userPhotoPath
+                    })
+                    this.activity.ManagerTextReadable = res.data.d.userFullName
+                  })
                 this.activity.LocationDetails = {
                   longName: "???",
                   seatNumber: 0,
@@ -239,6 +241,14 @@ export default {
         })
         .then((res) => {
           this.activityFull = res.data.d
+          this.activityFull.Instances = this.activityFull.Instances.map(
+            (instance) => {
+              return {
+                ...instance,
+                dt: instance.dt.replaceAll("&gt;", "-").replaceAll("&lt;", "-")
+              }
+            }
+          )
         })
     }
   },

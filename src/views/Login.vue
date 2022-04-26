@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <div id="login" v-if="!$store.state.user?.bcUser?.id">
     <v-dialog v-model="tokenInfo" max-width="700px">
       <v-card color="card">
         <v-toolbar color="toolbar">
@@ -358,6 +358,9 @@ export default {
     }
   },
   mounted() {
+    if (this.$store.state.user?.bcUser?.id) {
+      this.$router.push("/")
+    }
     this.school.fqdn = localStorage.getItem("schoolFqdn")
     this.school.name = localStorage.getItem("schoolName")
     this.school.id = localStorage.getItem("schoolId")

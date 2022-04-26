@@ -3,7 +3,7 @@
     <v-container>
       <v-card color="card" elevation="7" class="rounded-xl">
         <v-toolbar color="toolbar">
-          <v-toolbar-title> Classes ({{subjects.length}}) </v-toolbar-title>
+          <v-toolbar-title> Classes ({{ subjects.length }}) </v-toolbar-title>
         </v-toolbar>
         <v-container>
           <v-overlay :value="loading" absolute>
@@ -21,7 +21,8 @@
                 <v-toolbar-title>
                   {{ subject.name }}
                   <div class="subheading subtitle-1">
-                    ID: {{ subject.id }} - {{ $store.state.school.name }} - Index: {{ index }}
+                    ID: {{ subject.id }} - {{ $store.state.school.name }} -
+                    Index: {{ index }}
                   </div>
                 </v-toolbar-title>
               </v-card-title>
@@ -45,11 +46,12 @@ export default {
   methods: {
     getSubjects() {
       this.loading = true
-      this.axios.post("/Services/UserInclusion.svc/GetThinClasses", {
-      }).then((res) => {
-        this.subjects = res.data.d
-        this.loading = false
-      })
+      this.axios
+        .post("/Services/UserInclusion.svc/GetThinClasses", {})
+        .then((res) => {
+          this.subjects = res.data.d
+          this.loading = false
+        })
     }
   },
   mounted() {
@@ -58,6 +60,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
