@@ -46,6 +46,6 @@ support legacy jdlf.com.au hostnames, but those are unlikely to be used anymore.
 
 ## Other information
 
-- The `CompassAPIKey` header is used for Compass' GraphQL server (currently only
-  used for Compass Discussions), it is not required for authentication on the
-  REST API, Cookie-based authentication is used instead.
+- The `CompassAPIKey` header is used for Compass' GraphQL server currently only
+  used for Compass Discussions on Compass' API, however, it can be used for authentication on BetterCompass' APIs such as GET /api/v1/user
+- Cookie authentication can bypass the requirement for the `CompassAPIKey` header, however it is sent in all requests as a fallback.
