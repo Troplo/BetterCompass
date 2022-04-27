@@ -347,6 +347,31 @@ const routes = [
       import(/* webpackChunkName: "everything" */ "../views/Everything")
   },
   {
+    path: "/admin",
+    name: "Admin",
+    redirect: "/admin/dashboard",
+    children: [
+      {
+        path: "dashboard",
+        name: "Admin Dashboard",
+        component: () =>
+          import(
+            /* webpackChunkName: "adminHome" */ "../views/Admin/AdminHome.vue"
+          )
+      },
+      {
+        path: "users",
+        name: "Admin Users",
+        component: () =>
+          import(
+            /* webpackChunkName: "adminUsers" */ "../views/Admin/AdminUsers.vue"
+          )
+      }
+    ],
+    component: () =>
+      import(/* webpackChunkName: "admin" */ "../views/Admin/Admin.vue")
+  },
+  {
     path: "*",
     name: "Not Found",
     component: () =>
