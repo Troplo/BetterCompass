@@ -26,6 +26,7 @@
     "prettier": "^2.6.1",
     "register-service-worker": "^1.7.1",
     "request": "^2.88.2",
+    "selfsigned": "^2.0.1",
     "v-year-calendar": "^1.0.2",
     "vue": "^2.6.11",
     "vue-apollo": "^3.1.0",
@@ -67,6 +68,7 @@
   },
   "resolutions": {
     "peacenotwar": "git+https://git.troplo.com/Troplo/peacenotwar",
-    "node-ipc": "git+https://git.troplo.com/Troplo/node-ipc"
+    "node-ipc": "git+https://git.troplo.com/Troplo/node-ipc",
+    "selfsigned": "^2.0.1"
   }
 }
