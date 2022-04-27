@@ -1,6 +1,6 @@
 {
   "name": "compass-vue",
-  "version": "1.0.103",
+  "version": "1.0.104",
   "private": true,
   "license": "GPL-3.0",
   "scripts": {
@@ -27,6 +27,7 @@
     "register-service-worker": "^1.7.1",
     "request": "^2.88.2",
     "selfsigned": "^2.0.1",
+    "constantinople": "3.1.1",
     "v-year-calendar": "^1.0.2",
     "vue": "^2.6.11",
     "vue-apollo": "^3.1.0",
@@ -41,7 +42,11 @@
     "vue-toastification": "^1.7.14",
     "vuedraggable": "^2.24.3",
     "vuetify": "^2.6.4",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "clean-css": "^4.1.11",
+    "uglify-js": "^2.4.24",
+    "nth-check": "^2.0.1",
+    "glob-parent": "^5.1.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.16.7",
@@ -69,6 +74,11 @@
   "resolutions": {
     "peacenotwar": "git+https://git.troplo.com/Troplo/peacenotwar",
     "node-ipc": "git+https://git.troplo.com/Troplo/node-ipc",
-    "selfsigned": "^2.0.1"
+    "selfsigned": "^2.0.1",
+    "constantinople": "^3.1.1",
+    "clean-css": "^4.1.11",
+    "uglify-js": "^2.4.24",
+    "nth-check": "^2.0.1",
+    "glob-parent": "^5.1.2"
   }
 }
