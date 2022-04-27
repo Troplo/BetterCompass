@@ -39,14 +39,59 @@
           </v-card>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col>
+          <Chart
+            v-if="metrics"
+            :chart-options="options"
+            :chart-data="metrics"
+            :height="250"
+          />
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
 
 <script>
+import { Line as Chart } from "vue-chartjs/legacy"
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement
+} from "chart.js"
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement
+)
 export default {
   name: "AdminHome",
-  props: ["admin"]
+  props: ["admin", "metrics"],
+  components: {
+    Chart
+  },
+  data() {
+    return {
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        title: {
+          display: false
+        }
+      }
+    }
+  }
 }
 </script>
 

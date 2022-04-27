@@ -10,15 +10,19 @@
         </v-toolbar>
         <v-tabs background-color="transparent">
           <v-tab to="/admin/dashboard">
-            <v-icon>mdi-view-dashboard</v-icon>
+            <v-icon>mdi-view-dashboard</v-icon>&nbsp;
             <span>Dashboard</span>
           </v-tab>
           <v-tab to="/admin/users">
-            <v-icon>mdi-account-multiple</v-icon>
+            <v-icon>mdi-account-multiple</v-icon>&nbsp;
             <span>Users</span>
           </v-tab>
+          <v-tab to="/admin/feedback">
+            <v-icon>mdi-bug</v-icon>&nbsp;
+            <span>Feedback</span>
+          </v-tab>
         </v-tabs>
-        <router-view :admin="admin"></router-view>
+        <router-view :admin="admin" :metrics="metrics"></router-view>
       </v-card>
     </v-container>
   </div>
@@ -32,10 +36,21 @@ export default {
   data() {
     return {
       admin: null,
+      metrics: null,
       loading: true
     }
   },
   methods: {
+    getAdminMetrics() {
+      this.axios
+        .get("/api/v1/admin/metrics")
+        .then((res) => {
+          this.metrics = res.data
+        })
+        .catch((e) => {
+          AjaxErrorHandler(e)
+        })
+    },
     getAdminInfo() {
       this.loading = true
       this.axios
@@ -53,6 +68,7 @@ export default {
   },
   mounted() {
     this.getAdminInfo()
+    this.getAdminMetrics()
   }
 }
 </script>

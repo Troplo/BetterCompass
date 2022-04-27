@@ -382,9 +382,9 @@ export default {
         .post("/Services/LearningTasks.svc/GetAllLearningTasksByUserId", {
           forceTaskId: 0,
           limit: 2000,
-          page: this.page,
+          page: 1,
           sort: '[{"property":"dueDateTimestamp","direction":"ASC"}]',
-          start: this.offset,
+          start: 0,
           showHiddenTasks: true,
           userId: this.$route.params.id || this.$store.state.user?.userId
         })

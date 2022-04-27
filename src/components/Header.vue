@@ -419,6 +419,13 @@
 
                 <v-list-item-title>Everything</v-list-item-title>
               </v-list-item>
+              <v-list-item to="/admin" v-if="$store.state.user.bcUser.admin">
+                <v-list-item-icon>
+                  <v-icon>mdi-gavel</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-title>Admin</v-list-item-title>
+              </v-list-item>
               <v-list-item
                 @click="feedback.modal = true"
                 v-if="$store.state.online"
