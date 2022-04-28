@@ -2,19 +2,21 @@
   <div>
     <v-dialog v-model="createTheme" max-width="950px">
       <v-card color="card">
-        <v-card-title>
-          Theme {{ creatorType === "create" ? "Creator" : "Editor" }}
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
-              <div v-on="on" v-bind="attrs">
-                <v-btn fab small text @click="randomizeTheme">
-                  <v-icon>mdi-dice-multiple</v-icon>
-                </v-btn>
-              </div>
-            </template>
-            <span> Randomize theme </span>
-          </v-tooltip>
-        </v-card-title>
+        <v-toolbar color="toolbar">
+          <v-toolbar-title>
+            Theme {{ creatorType === "create" ? "Creator" : "Editor" }}
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <span v-on="on" v-bind="attrs">
+                  <v-btn fab small text @click="randomizeTheme">
+                    <v-icon>mdi-dice-multiple</v-icon>
+                  </v-btn>
+                </span>
+              </template>
+              <span> Randomize theme </span>
+            </v-tooltip>
+          </v-toolbar-title>
+        </v-toolbar>
         <v-container>
           <v-form>
             <v-text-field
@@ -30,49 +32,103 @@
               v-model="creator.primaryType"
             >
             </v-select>
-            <v-card-title>Dark:</v-card-title>
-            <v-menu
-              offset-y
-              v-for="(item, index) in creator.dark"
-              :key="index + '-dark'"
+            <v-text-field
+              v-model="creatorJSON"
+              label="JSON"
+              class="mx-3"
+            ></v-text-field>
+            <h2
+              class="ml-2 mt-2 mb-3"
+              v-if="
+                creator.primaryType === 'dark' || creator.primaryType === 'all'
+              "
             >
-              <template v-slot:activator="{ on }">
-                <v-btn dark class="ma-1" :color="creator.dark[index]" v-on="on">
-                  {{ index }}
-                </v-btn>
-              </template>
-              <v-color-picker
-                v-model="creator.dark[index]"
-                hide-canvas
-                hide-inputs
-                show-swatches
-                class="mx-auto"
-              ></v-color-picker>
-            </v-menu>
-            <v-card-title>Light:</v-card-title>
-            <v-menu
-              offset-y
-              v-for="(item, index) in creator.light"
-              :key="index + '-light'"
+              Dark:
+            </h2>
+            <v-row
+              v-if="
+                creator.primaryType === 'dark' || creator.primaryType === 'all'
+              "
             >
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  dark
-                  class="ma-1"
-                  :color="creator.light[index]"
-                  v-on="on"
-                >
-                  {{ index }}
-                </v-btn>
-              </template>
-              <v-color-picker
-                v-model="creator.light[index]"
-                hide-canvas
-                hide-inputs
-                show-swatches
-                class="mx-auto"
-              ></v-color-picker>
-            </v-menu>
+              <v-col
+                sm="3"
+                v-for="(item, index) in creator.dark"
+                :key="index + '-dark-card'"
+              >
+                <v-card color="card">
+                  <h3 class="ml-2 mt-2 mb-2">
+                    {{ friendlyName(index) }}
+                  </h3>
+                  <v-menu offset-y>
+                    <template v-slot:activator="{ on }">
+                      <v-card
+                        class="mb-2 mx-2"
+                        :color="creator.dark[index]"
+                        v-on="on"
+                      >
+                        <v-container></v-container>
+                      </v-card>
+                    </template>
+                    <v-color-picker
+                      v-model="creator.dark[index]"
+                      show-swatches
+                      hide-inputs
+                    ></v-color-picker>
+                  </v-menu>
+                  <v-text-field
+                    class="mx-2"
+                    label="#HEX"
+                    v-model="creator.dark[index]"
+                  ></v-text-field>
+                </v-card>
+              </v-col>
+            </v-row>
+            <h2
+              class="ml-2 mt-2 mb-3"
+              v-if="
+                creator.primaryType === 'light' || creator.primaryType === 'all'
+              "
+            >
+              Light:
+            </h2>
+            <v-row
+              v-if="
+                creator.primaryType === 'light' || creator.primaryType === 'all'
+              "
+            >
+              <v-col
+                sm="3"
+                v-for="(item, index) in creator.light"
+                :key="index + '-light-card'"
+              >
+                <v-card color="card">
+                  <h3 class="ml-2 mt-2 mb-2">
+                    {{ friendlyName(index) }}
+                  </h3>
+                  <v-menu offset-y>
+                    <template v-slot:activator="{ on }">
+                      <v-card
+                        class="mb-2 mx-2"
+                        :color="creator.light[index]"
+                        v-on="on"
+                      >
+                        <v-container></v-container>
+                      </v-card>
+                    </template>
+                    <v-color-picker
+                      v-model="creator.light[index]"
+                      show-swatches
+                      hide-inputs
+                    ></v-color-picker>
+                  </v-menu>
+                  <v-text-field
+                    class="mx-2"
+                    label="#HEX"
+                    v-model="creator.light[index]"
+                  ></v-text-field>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-form>
           <v-card-actions>
             <v-btn color="primary" text @click="doCreateTheme">{{
@@ -381,7 +437,7 @@
                 v-for="(key, index) in Object.keys(theme.dark)"
                 :key="index"
               >
-                {{ key }}</v-chip
+                {{ friendlyName(key) }}</v-chip
               >
             </v-chip-group>
           </div>
@@ -434,9 +490,11 @@ export default {
       agree: false,
       loading: false,
       accent: null,
+      creatorJSON: "",
       creator: {
         id: 1,
         name: "",
+        json: {},
         primaryType: "all",
         dark: {
           primary: "#0190ea",
@@ -511,6 +569,33 @@ export default {
     }
   },
   methods: {
+    /*determineColor(color) {
+      const hexCode = color.charAt(0) === "#" ? color.substr(1, 6) : color
+      const hexR = parseInt(hexCode.substr(0, 2), 16)
+      const hexG = parseInt(hexCode.substr(2, 2), 16)
+      const hexB = parseInt(hexCode.substr(4, 2), 16)
+      const contrastRatio = (hexR + hexG + hexB) / (255 * 3)
+      return contrastRatio >= 0.7 ? "black" : "white"
+    },*/
+    friendlyName(index) {
+      if (index === "calendarNormalActivity") {
+        return "Standard Class"
+      } else if (index === "calendarActivityType7") {
+        return "Relief Event"
+      } else if (index === "calendarActivityType8") {
+        return "Generic Type 8"
+      } else if (index === "calendarActivityType10") {
+        return "Learning Task"
+      } else if (index === "calendarExternalActivity") {
+        return "External Activity"
+      } else if (index === "bg") {
+        return "Background"
+      } else if (index === "dark") {
+        return "Sidebar & Header"
+      } else {
+        return index.charAt(0).toUpperCase() + index.slice(1)
+      }
+    },
     stopColorTheme() {
       clearInterval(this.interval)
     },
@@ -686,6 +771,7 @@ export default {
     },
     initEditTheme(theme) {
       this.creator = theme
+      this.creatorJSON = JSON.stringify(theme)
       this.creatorType = "edit"
       this.createTheme = true
     },
@@ -735,10 +821,12 @@ export default {
           calendarExternalActivity: "#2196f3"
         }
       }
+      this.creatorJSON = JSON.stringify(this.creator)
       this.creatorType = "create"
       this.createTheme = false
     },
     initThemeCreator() {
+      this.doDiscardTheme()
       this.creatorType = "create"
       this.createTheme = true
     },
@@ -834,6 +922,9 @@ export default {
     this.getThemes()
   },
   watch: {
+    creatorJSON() {
+      this.creator = JSON.parse(this.creatorJSON)
+    },
     accent() {
       this.setTheme(
         this.themes.find(
@@ -863,5 +954,3 @@ export default {
   }
 }
 </script>
-
-<style scoped></style>
