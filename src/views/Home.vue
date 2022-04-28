@@ -1117,10 +1117,11 @@
                     <v-container>
                       <router-link
                         style="text-decoration: none"
+                        v-if="item.LinkText"
                         :to="'/user/' + $store.state.user.userId + '/events'"
                         >{{ item.LinkText }}</router-link
-                      ><br />
-                      <small>{{ item.Body }}</small>
+                      ><br v-if="item.LinkText" />
+                      <html v-html="item.Content"></html>
                     </v-container>
                   </v-card>
                 </v-container>
@@ -1269,8 +1270,16 @@
                   <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-container>
-                  <v-card-title> 08/04/2022 - 26/04/2022 </v-card-title>
+                  <v-card-title> 08/04/2022 - 28/04/2022 </v-card-title>
                   <ul>
+                    <li>
+                      Upcoming Events now shows the proper content description,
+                      and title.
+                    </li>
+                    <li>
+                      Improved the theme editor to allow for custom colors, and
+                      a hex input.
+                    </li>
                     <li>Improved login flow & registration.</li>
                     <li>
                       Fixed bug where new users would have a default preset of

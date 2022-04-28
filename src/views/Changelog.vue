@@ -6,8 +6,22 @@
           <v-toolbar-title>BetterCompass Changelog</v-toolbar-title>
         </v-toolbar>
         <v-container>
-          <v-card-title> 08/04/2022 - 25/04/2022 </v-card-title>
+          <v-card-title> 08/04/2022 - 28/04/2022 </v-card-title>
           <ul>
+            <li>
+              Upcoming Events now shows the proper content description, and
+              title.
+            </li>
+            <li>
+              Improved the theme editor to allow for custom colors, and a hex
+              input.
+            </li>
+            <li>Improved login flow & registration.</li>
+            <li>
+              Fixed bug where new users would have a default preset of no
+              calendars enabled, if you still cannot see your calendars, click
+              the Settings icon on the calendar and enable all.
+            </li>
             <li>
               You can now select what particular calendars show on your homepage
               calendar with the cog/settings icon located on the calendar card
