@@ -44,7 +44,7 @@
           <v-tab to="score" v-if="compassScore"> Compass Score </v-tab>
         </v-tabs>
         <v-container>
-          <router-view :user="user"></router-view>
+          <router-view :user="user" :extendedUser="extendedUser"></router-view>
         </v-container>
       </v-card>
     </v-container>
@@ -61,7 +61,8 @@ export default {
       name: null,
       permissionError: false,
       user: null,
-      loading: true
+      loading: true,
+      extendedUser: null
     }
   },
   computed: {
@@ -160,6 +161,21 @@ export default {
       this.name = null
       this.permissionError = false
       this.loading = true
+      this.axios
+        .post("/services/mobile.svc/GetExtendedUser", {
+          userId: this.$route.params.id || this.$store.state.user?.userId
+        })
+        .then((res) => {
+          if (res.data.d.data) {
+            this.extendedUser = res.data.d
+            this.loading = false
+          } else {
+            this.extendedUser = null
+          }
+        })
+        .catch(() => {
+          this.extendedUser = null
+        })
       this.axios
         .post("/Services/User.svc/GetUserDetailsBlobByUserId", {
           userId:

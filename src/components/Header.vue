@@ -330,7 +330,11 @@
                 <v-list-item-title>My Profile</v-list-item-title>
               </v-list-item>
 
-              <v-list-group prepend-icon="mdi-pen" v-if="$store.state.online">
+              <v-list-group
+                prepend-icon="mdi-pen"
+                v-if="$store.state.online"
+                :value="true"
+              >
                 <template v-slot:activator>
                   <v-list-item-title>Curriculum</v-list-item-title>
                 </template>
@@ -361,7 +365,7 @@
                   </v-list-item>
                 </v-list-group>
 
-                <v-list-group no-action sub-group>
+                <v-list-group no-action sub-group :value="true">
                   <template v-slot:activator>
                     <v-list-item-content>
                       <v-list-item-title>Subjects & Classes</v-list-item-title>

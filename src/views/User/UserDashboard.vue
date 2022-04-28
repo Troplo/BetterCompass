@@ -127,6 +127,28 @@
             </v-row>
           </v-container>
         </v-card>
+        <v-card
+          color="card"
+          elevation="7"
+          class="rounded-xl mt-3"
+          v-if="extendedUser?.data?.medicalInformation?.length"
+        >
+          <v-toolbar color="toolbar">
+            <v-toolbar-title>Medical Record</v-toolbar-title>
+          </v-toolbar>
+          <v-container
+            v-for="medical in extendedUser.data.medicalInformation"
+            :key="medical.id"
+          >
+            <strong>{{ medical.title }}</strong>
+            <p>Regular Medication: {{ medical.regularMedication }}</p>
+            <p>Symptoms: {{ medical.symptoms }}</p>
+            <p>Description: {{ medical.description }}</p>
+            <p style="white-space: pre-line; overflow-wrap: anywhere">
+              Action: {{ medical.action }}
+            </p>
+          </v-container>
+        </v-card>
       </v-col>
       <v-col>
         <v-card color="card" class="rounded-xl" elevation="7">
@@ -348,7 +370,7 @@ import JSONExtract from "@/lib/jsonExtract"
 
 export default {
   name: "UserDashboard",
-  props: ["user"],
+  props: ["user", "extendedUser"],
   data() {
     return {
       chronicle: {
