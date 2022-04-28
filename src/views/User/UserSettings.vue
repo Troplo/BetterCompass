@@ -490,7 +490,6 @@ export default {
       agree: false,
       loading: false,
       accent: null,
-      creatorJSON: "",
       creator: {
         id: 1,
         name: "",
@@ -545,6 +544,14 @@ export default {
     }
   },
   computed: {
+    creatorJSON: {
+      get() {
+        return JSON.stringify(this.creator)
+      },
+      set(value) {
+        this.creator = JSON.parse(value)
+      }
+    },
     debugModeEnabled() {
       if (localStorage.getItem("debugModeEnabled")) {
         return JSON.parse(localStorage.getItem("debugModeEnabled"))
@@ -749,7 +756,7 @@ export default {
           })
           .then(() => {
             this.getThemes()
-            this.doDiscardTheme()
+            this.createTheme = false
           })
           .catch((e) => {
             AjaxErrorHandler(this.$store)(e)
@@ -762,7 +769,7 @@ export default {
           })
           .then(() => {
             this.getThemes()
-            this.doDiscardTheme()
+            this.createTheme = false
           })
           .catch((e) => {
             AjaxErrorHandler(this.$store)(e)
@@ -771,7 +778,6 @@ export default {
     },
     initEditTheme(theme) {
       this.creator = theme
-      this.creatorJSON = JSON.stringify(theme)
       this.creatorType = "edit"
       this.createTheme = true
     },
@@ -821,7 +827,6 @@ export default {
           calendarExternalActivity: "#2196f3"
         }
       }
-      this.creatorJSON = JSON.stringify(this.creator)
       this.creatorType = "create"
       this.createTheme = false
     },
@@ -922,8 +927,10 @@ export default {
     this.getThemes()
   },
   watch: {
-    creatorJSON() {
-      this.creator = JSON.parse(this.creatorJSON)
+    creator() {
+      this.$vuetify.theme.themes.dark = this.creator.dark
+      this.$vuetify.theme.themes.light = this.creator.light
+      this.$vuetify.theme.themes.name = this.creator.id
     },
     accent() {
       this.setTheme(
