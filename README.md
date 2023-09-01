@@ -1,4 +1,12 @@
-# BetterCompass is no longer being maintained.
+# Looking for BetterCompass?
+As requested by The Department of Education & Training and Compass Education (JDLF International), the open source Vue frontend for Compass School Manager is no longer available for download via this repository, and is no longer maintained, if you are still using BetterCompass, it may break in the future as no more updates have been provided past June 2022 as Compass makes changes to their REST & GraphQL APIs. I apologize for the inconvenience caused by the product discontinuation. 
+
+If you have any questions about BetterCompass, or in general, please email [troplo@troplo.com](mailto:troplo@troplo.com), or on Discord [@troplo](https://discord.com/users/692259321907773460).
+
+If you liked my work, you can check out my latest project, [PrivateUploader](https://privateuploader.com) - The ultimate open source collaborative solution, with cloud file storage, document editing, and chatting functionality ([GitHub](https://github.com/PrivateUploader/PrivateUploader)).
+
+The original README is below:
+
 # BetterCompass
 
 [![BetterCompass Actions Status](https://github.com/Troplo/BetterCompass/workflows/build/badge.svg)](https://github.com/Troplo/BetterCompass/actions)
